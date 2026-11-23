@@ -77,10 +77,15 @@ jobs:
           lake env lean --run scripts/check_axioms.lean
           lake env lean --run scripts/audit_spec_gaps.lean --strict
 
+      - name: Python 3.13 for leanblueprint (plasTeX does not support 3.14 yet)
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.13"
+
       - name: Blueprint declarations match Lean
         run: |
           sudo apt-get update && sudo apt-get install -y --no-install-recommends graphviz libgraphviz-dev
-          pipx install --include-deps leanblueprint
+          pipx install --python "$(which python)" --include-deps leanblueprint
           leanblueprint web
           leanblueprint checkdecls
 

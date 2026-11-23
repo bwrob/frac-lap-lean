@@ -48,6 +48,11 @@ jobs:
           build: true
           lint: false
 
+      - name: Python 3.13 for leanblueprint (plasTeX does not support 3.14 yet)
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.13"
+
       - name: Install TeX Live, Graphviz & leanblueprint
         run: |
           sudo apt-get update
@@ -55,7 +60,7 @@ jobs:
             graphviz libgraphviz-dev latexmk \
             texlive-latex-base texlive-latex-recommended \
             texlive-latex-extra texlive-fonts-recommended texlive-science lmodern
-          pipx install --include-deps leanblueprint
+          pipx install --python "$(which python)" --include-deps leanblueprint
 
       - name: Compile the interactive blueprint (web; best effort)
         continue-on-error: true
