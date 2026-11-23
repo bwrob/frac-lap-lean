@@ -57,7 +57,7 @@ jobs:
             texlive-latex-extra texlive-fonts-recommended texlive-science lmodern
           uv tool install --python 3.13 leanblueprint
           uv tool list --show-with
-          export PATH="$HOME/.local/bin:$PATH"
+          echo "$HOME/.local/bin" >> "$GITHUB_PATH"
 
       - name: Compile the interactive blueprint (web; best effort)
         continue-on-error: true
