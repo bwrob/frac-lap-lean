@@ -55,7 +55,7 @@ jobs:
             graphviz libgraphviz-dev latexmk \
             texlive-latex-base texlive-latex-recommended \
             texlive-latex-extra texlive-fonts-recommended texlive-science lmodern
-          uv tool install --python 3.13 leanblueprint
+          uv tool install --python 3.13 leanblueprint --with-executables-from plastex
           uv tool list --show-with
           echo "$HOME/.local/bin" >> "$GITHUB_PATH"
 

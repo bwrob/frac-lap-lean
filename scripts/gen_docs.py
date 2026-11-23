@@ -304,11 +304,6 @@ def apply_provenance(chapters: list[Chapter], prov: dict[str, Any]) -> list[str]
     return problems
 
 
-def origin_badge(origin: str, prov: dict[str, Any]) -> str:
-    label = prov["origins"][origin]["label"]
-    return f'<span class="fl-badge fl-origin-{origin}">{label}</span>'
-
-
 def project_links(c: Chapter, prov: dict[str, Any], from_path: str) -> str:
     from posixpath import relpath
 
@@ -400,21 +395,6 @@ def _resolver(ch: Chapter, labels: dict[str, tuple[str, Node]]) -> Callable[[str
     return resolve
 
 
-def _badges(n: Node, origin: str = "") -> str:
-    badges = []
-    if origin:
-        badges.append(origin_badge(origin, _PROV))
-    if n.mathlibok:
-        badges.append('<span class="fl-badge fl-mathlib">standard result · Mathlib</span>')
-    if n.lean and n.leanok:
-        badges.append('<span class="fl-badge fl-ok">statement formalized</span>')
-    if n.proof and n.proof_leanok:
-        badges.append('<span class="fl-badge fl-ok">proof formalized</span>')
-    if n.lean and not n.leanok:
-        badges.append('<span class="fl-badge fl-todo">statement not yet formalized</span>')
-    return " ".join(badges)
-
-
 def _lean_tab(n: Node, ch: Chapter, lean_idx: dict[str, list[Chunk]], miss: list[str]) -> str:
     own_file = f"FracLap/{ch.path}.lean"
     parts: list[str] = []
@@ -446,7 +426,7 @@ def render_node(
     resolve = _resolver(ch, labels)
     head = f"{KINDS[n.kind]} {n.number}" + (f" ({n.title})" if n.title else "")
     anchor = f" {{#{n.label}}}" if n.label else ""
-    out = [f"### {head}{anchor}", "", _badges(n, ch.origin), ""]
+    out = [f"### {head}{anchor}", ""]
     uses = list(dict.fromkeys(n.uses + n.proof_uses))
     bp = [tex_to_md(n.statement, resolve)]
     if n.proof:
@@ -467,22 +447,6 @@ def _rel(from_path: str, to_path: str) -> str:
     return relpath(f"{to_path}.md", start=Path(from_path).parent.as_posix() or ".")
 
 
-def _provenance_block(ch: Chapter) -> list[str]:
-    if not ch.origin:
-        return []
-    meaning = _PROV["origins"][ch.origin]["meaning"]
-    lines = [
-        '!!! info "Provenance"',
-        "",
-        f"    {origin_badge(ch.origin, _PROV)}",
-        "",
-        f"    {meaning}",
-    ]
-    if ch.projects:
-        lines += ["", f"    **Projects:** {project_links(ch, _PROV, ch.path)}"]
-    return [*lines, ""]
-
-
 def render_chapter(
     ch: Chapter,
     labels: dict[str, tuple[str, Node]],
@@ -492,18 +456,14 @@ def render_chapter(
     resolve = _resolver(ch, labels)
     lean_rel = f"FracLap/{ch.path}.lean"
     has_lean = (ROOT / lean_rel).exists()
-    done = sum(1 for n in ch.nodes if n.leanok or n.mathlibok)
     parts = [
         f"# {ch.number}. {tex_to_md(ch.title, resolve)}",
-        "",
-        f"`{ch.path}` · {len(ch.nodes)} nodes · {done} formalized",
         "",
     ]
     links = [f"[Blueprint source]({REPO_URL}/blob/main/blueprint/src/{ch.path}.tex)"]
     if has_lean:
         links.insert(0, f"[Lean source]({REPO_URL}/blob/main/{lean_rel})")
     parts += [" · ".join(links), ""]
-    parts += _provenance_block(ch)
     intro = tex_to_md(ch.intro, resolve)
     if intro:
         parts += [intro, ""]
@@ -539,43 +499,17 @@ def render_index(chapters: list[Chapter]) -> str:
         "[open the blueprint](../blueprint/index.html).",
         "",
     ]
-    lines += _origin_legend(chapters)
     by_section: dict[str, list[Chapter]] = defaultdict(list)
     for c in chapters:
         by_section[section_of(c.path)].append(c)
     for sec, cs in by_section.items():
-        lines += [f"## {sec}", "", "| Chapter | Origin | Nodes | Formalized |", "|---|---|---|---|"]
+        lines += [f"## {sec}", "", "| Chapter | Nodes | Formalized |", "|---|---|---|"]
         for c in cs:
             d = sum(1 for n in c.nodes if n.leanok or n.mathlibok)
-            org = _PROV["origins"][c.origin]["label"] if c.origin else "unclassified"
-            lines.append(
-                f"| [{c.number}. {_plain(c.title)}]({c.path}.md) | {org} | {len(c.nodes)} | {d} |"
-            )
+            lines.append(f"| [{c.number}. {_plain(c.title)}]({c.path}.md) | {len(c.nodes)} | {d} |")
         lines.append("")
     lines += ["## Bibliography", "", "[All cited sources](bibliography.md).", ""]
     return "\n".join(lines)
-
-
-def _origin_legend(chapters: list[Chapter]) -> list[str]:
-    lines = [
-        "## How to read the origin labels",
-        "",
-        "| Origin | Chapters | Nodes | Meaning |",
-        "|---|---|---|---|",
-    ]
-    for oid, o in _PROV["origins"].items():
-        cs = [c for c in chapters if c.origin == oid]
-        lines.append(
-            f"| {origin_badge(oid, _PROV)} | {len(cs)} | {sum(len(c.nodes) for c in cs)} | "
-            f"{o['meaning']} |"
-        )
-    lines += [
-        "",
-        "The assignment is a maintainer decision recorded in "
-        f"[`docs/provenance.toml`]({REPO_URL}/blob/main/docs/provenance.toml).",
-        "",
-    ]
-    return lines
 
 
 def _plain(s: str) -> str:

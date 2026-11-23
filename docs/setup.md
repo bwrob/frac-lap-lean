@@ -1,6 +1,6 @@
 # Repository setup
 
-The repository couples a Lean library, a LaTeX blueprint, a test suite and a set of audits. The idea is simple: **nothing is claimed that a machine has not checked, and nothing is checked that a human cannot read.**
+The repository couples a Lean library, a LaTeX blueprint, a test suite and a set of audits. The blueprint records the statements and proof sketches alongside their Lean declarations.
 
 ## Layout
 
@@ -28,17 +28,6 @@ The [Knowledge](knowledge/index.md) pages of this site are generated from exactl
 2. **No `sorry`, no custom axioms.** All declarations must depend only on `propext`, `Classical.choice` and `Quot.sound`; no `native_decide`, `axiom`, `opaque`, `partial`, `unsafe`, `implemented_by` or `extern` in the library.
 3. **Spec-locking.** A target statement is never weakened to make a proof go through. If a statement looks unprovable, the work stops and the specification question is raised explicitly.
 4. **Claim discipline.** Docstrings, blueprint text and tests may only state what the Lean code proves.
-
-## Provenance: original work and common knowledge {#provenance}
-
-Not every chapter has the same standing, so each carries an **origin**, recorded in [`docs/provenance.toml`](https://github.com/bwrob/frac-lap-lean/blob/main/docs/provenance.toml):
-
-| Origin | Meaning |
-|---|---|
-| **Original work** | results of the author's master's thesis and their direct formalization, together with the modules they rest on |
-| **Common knowledge** | published, standard results formalized from the literature |
-
-Origin badges appear on every chapter and node of the [Knowledge](knowledge/index.md) section, and the build fails if a chapter is unclassified, so new modules must be placed on creation.
 
 ## Tests that guard against vacuity
 
