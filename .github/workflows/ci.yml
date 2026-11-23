@@ -85,7 +85,7 @@ jobs:
       - name: Blueprint declarations match Lean
         run: |
           sudo apt-get update && sudo apt-get install -y --no-install-recommends graphviz libgraphviz-dev
-          pipx install --python "$(which python)" --include-deps leanblueprint && pipx inject leanblueprint "plastex==3.1" --force
+          pipx install --python "$(which python)" --include-deps leanblueprint && pipx inject leanblueprint "plastex==3.1" "plastexdepgraph==0.0.5" "plastexshowmore==0.0.2" --force
           leanblueprint web
           leanblueprint checkdecls
 
