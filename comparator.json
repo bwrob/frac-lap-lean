@@ -111,7 +111,7 @@
     "FracLap.norm_generator_restrictedFracLapSemigroup_le",
     "FracLap.exists_fracLapAnalyticSemigroup_nontrivial",
     "FracLap.hasDerivAt_fourierOp",
-    "FracLap.generatedSemigroup_mem_generatorDomain_of_pos"
+    "FracLap.ContractiveResolvent.generatedSemigroup_mem_generatorDomain_of_pos"
   ],
   "definition_names": [
     "FracLap.stableKernel",
