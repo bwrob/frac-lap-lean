@@ -1,0 +1,74 @@
+\chapter{Density of Schwartz Functions in the Gagliardo Space}
+
+This chapter mirrors \texttt{FracLap/WholeLine/GagliardoDensity.lean}. The complex density theorem (Theorem~\ref{thm:schwartz_density_complex}) is transferred to the real Hilbert space $H^{\alpha/2}(\mathbb{R})$ of Definition~\ref{def:gagliardo_space} by taking real parts: the map $z \mapsto \operatorname{Re} z$ is $1$-Lipschitz, so it can only decrease both the $L^2$ norm and the Gagliardo energy.
+
+\begin{lemma}\label{lem:gagliardo_mk}
+\lean{FracLap.gagliardoEnergyR, FracLap.integrable_sq_diff_of_energy, FracLap.gagliardoDiffL2, FracLap.gagliardoMk_mem, FracLap.gagliardoMk, FracLap.gagliardoL2Part_mk}
+\uses{def:gagliardo_space, thm:std_L2_sq_integrable, thm:std_withdensity}
+\leanok
+Let $g \in L^2(\mathbb{R})$ be real valued with finite Gagliardo energy $E_\alpha(g) = \iint (g(x) - g(y))^2 \, \mathrm{d}\mu_\alpha < \infty$. Then $(x, y) \mapsto g(x) - g(y)$ belongs to $L^2(\mu_\alpha)$, and the pair $\bigl(g, g(x) - g(y)\bigr)$ is an element $\mathrm{mk}(g)$ of $H^{\alpha/2}(\mathbb{R})$ whose $L^2$ component is $g$.
+\end{lemma}
+
+\begin{proof}
+\uses{def:gagliardo_space, thm:std_L2_sq_integrable, thm:std_withdensity}
+\leanok
+Square integrability of the difference quotient against $\mu_\alpha$ is, by Theorem~\ref{thm:std_L2_sq_integrable} and the density formula (Theorem~\ref{thm:std_withdensity}), exactly the finiteness of $E_\alpha(g)$. The graph relation holds by construction.
+\end{proof}
+
+\begin{theorem}\label{thm:norm_gagliardo_space}
+\lean{FracLap.lintegral_enorm_sq_eq_general, FracLap.ofReal_norm_sq_gagliardoSpace}
+\uses{def:gagliardo_space, lem:gagliardo_mk, thm:std_withdensity}
+\leanok
+For every $v \in H^{\alpha/2}(\mathbb{R})$ with $L^2$ component $v_0$,
+\[
+  \lVert v \rVert^2 = \lVert v_0 \rVert_{L^2}^2 + E_\alpha(v_0).
+\]
+\end{theorem}
+
+\begin{proof}
+\uses{def:gagliardo_space, thm:std_withdensity}
+\leanok
+By Definition~\ref{def:gagliardo_space}, $\lVert v \rVert^2 = \lVert v_0 \rVert^2 + \lVert F_v \rVert^2_{L^2(\mu_\alpha)}$, and $F_v(x, y) = v_0(x) - v_0(y)$ for $\mu_\alpha$-almost every $(x, y)$. Writing the $L^2(\mu_\alpha)$ norm as an integral against Lebesgue measure with density (Theorem~\ref{thm:std_withdensity}) gives $E_\alpha(v_0)$.
+\end{proof}
+
+\begin{lemma}\label{lem:real_part_contraction}
+\lean{FracLap.reL2, FracLap.ofRealL2, FracLap.coeFn_reL2, FracLap.coeFn_ofRealL2, FracLap.reL2_ofRealL2, FracLap.ae_prod_fst, FracLap.ae_prod_snd, FracLap.gagliardoEnergyR_reL2_le, FracLap.gagliardoEnergyC_ofRealL2, FracLap.enorm_sq_reL2_le, FracLap.enorm_sq_ofRealL2}
+\uses{thm:norm_energy_fourier, def:gagliardo_measure}
+\leanok
+Let $\mathrm{Re} : L^2(\mathbb{R}; \mathbb{C}) \to L^2(\mathbb{R}; \mathbb{R})$ and $\iota : L^2(\mathbb{R}; \mathbb{R}) \to L^2(\mathbb{R}; \mathbb{C})$ be pointwise real part and inclusion. Then $\mathrm{Re}\, \iota g = g$, $\lVert \iota g \rVert = \lVert g \rVert$, $E_\alpha(\iota g) = E_\alpha(g)$, and for every complex $h$,
+\[
+  \lVert \mathrm{Re}\, h \rVert_{L^2}^2 \le \lVert h \rVert_{L^2}^2, \qquad E_\alpha(\mathrm{Re}\, h) \le E_\alpha(h).
+\]
+\end{lemma}
+
+\begin{proof}
+\uses{def:gagliardo_measure}
+\leanok
+All statements are pointwise almost everywhere: $\lvert \operatorname{Re} z \rvert \le \lvert z \rvert$, hence $\bigl(\operatorname{Re} h(x) - \operatorname{Re} h(y)\bigr)^2 = \bigl(\operatorname{Re}(h(x) - h(y))\bigr)^2 \le \lvert h(x) - h(y) \rvert^2$. Almost-everywhere statements on $\mathbb{R}$ transfer to $\mathbb{R} \times \mathbb{R}$ through the two coordinate projections, which are quasi-measure preserving.
+\end{proof}
+
+\begin{lemma}\label{lem:schwartz_finite_energy}
+\lean{FracLap.gagliardoEnergyC_schwartz_lt_top}
+\uses{thm:norm_energy_fourier, def:gagliardo_spectral_measure, thm:std_schwartz_dense_Lp}
+\leanok
+For $\alpha \in (0, 2)$ every Schwartz function $\varphi \in \mathcal{S}(\mathbb{R}; \mathbb{C})$ has $E_\alpha(\varphi) < \infty$.
+\end{lemma}
+
+\begin{proof}
+\uses{thm:norm_energy_fourier, def:gagliardo_spectral_measure, thm:std_schwartz_dense_Lp}
+\leanok
+By Theorem~\ref{thm:norm_energy_fourier}, $\lVert \varphi \rVert^2 + E_\alpha(\varphi) = \int \lvert \mathcal{F}\varphi \rvert^2 \, \mathrm{d}\nu_\alpha$. Since $\mathcal{F}\varphi$ is again a Schwartz function and $\nu_\alpha$ has temperate growth (Definition~\ref{def:gagliardo_spectral_measure}), $\mathcal{F}\varphi \in L^2(\nu_\alpha)$ by Theorem~\ref{thm:std_schwartz_dense_Lp}, so the integral is finite.
+\end{proof}
+
+\begin{theorem}\label{thm:schwartz_density_real}
+\lean{FracLap.exists_schwartz_close_real}
+\uses{thm:schwartz_density_complex, thm:norm_gagliardo_space, lem:real_part_contraction, lem:schwartz_finite_energy, lem:gagliardo_mk}
+\leanok
+Let $\alpha \in (0, 2)$. For every $u \in H^{\alpha/2}(\mathbb{R})$ and every $\varepsilon > 0$ there is a real Schwartz function $\varphi \in \mathcal{S}(\mathbb{R}; \mathbb{R})$ with $E_\alpha(\varphi) < \infty$ and $\lVert \mathrm{mk}(\varphi) - u \rVert < \varepsilon$. In particular real Schwartz functions are dense in $H^{\alpha/2}(\mathbb{R})$.
+\end{theorem}
+
+\begin{proof}
+\uses{thm:schwartz_density_complex, thm:norm_gagliardo_space, lem:real_part_contraction, lem:schwartz_finite_energy, lem:gagliardo_mk}
+\leanok
+Let $u_0$ be the $L^2$ component of $u$ and $f = \iota u_0$. By Theorem~\ref{thm:norm_gagliardo_space} and Lemma~\ref{lem:real_part_contraction}, $E_\alpha(f) = E_\alpha(u_0) < \infty$. Theorem~\ref{thm:schwartz_density_complex} gives a complex Schwartz function $\varphi_c$ with $\lVert \varphi_c - f \rVert^2 + E_\alpha(\varphi_c - f) < \varepsilon^2$. Put $\varphi = \operatorname{Re} \varphi_c$, which is a real Schwartz function. Its energy is finite by Lemma~\ref{lem:real_part_contraction} and Lemma~\ref{lem:schwartz_finite_energy}, so $\mathrm{mk}(\varphi)$ is defined (Lemma~\ref{lem:gagliardo_mk}). Because $\mathrm{Re} f = u_0$, the $L^2$ component of $\mathrm{mk}(\varphi) - u$ is $\mathrm{Re}(\varphi_c - f)$. By Theorem~\ref{thm:norm_gagliardo_space} and the contraction estimates of Lemma~\ref{lem:real_part_contraction}, $\lVert \mathrm{mk}(\varphi) - u \rVert^2 \le \lVert \varphi_c - f \rVert^2 + E_\alpha(\varphi_c - f) < \varepsilon^2$.
+\end{proof}

@@ -1,0 +1,34 @@
+\chapter{Chapter Title}
+
+Motivate the section before introducing formal definitions. Explain the analytic role of each
+lemma and how the hypotheses correspond to Lean declarations in \texttt{FracLap/}.
+
+\begin{definition}[Descriptive Name]\label{def:example_object}
+\lean{FracLap.ExampleObject}
+\leanok
+Let $s \in (0, 1)$. A function $u \in L^2(\mathbb{R}^d)$ belongs to $\dot{H}^s(\mathbb{R}^d)$ if
+its Gagliardo seminorm is finite.
+\end{definition}
+
+\begin{lemma}[Intermediate Bound]\label{lem:example_bound}
+\lean{FracLap.example_bound}
+\uses{def:example_object}
+\leanok
+Suppose that $u$ satisfies Definition~\ref{def:example_object}. Then there exists a constant
+$C = C(d, s) > 0$ such that
+\begin{equation}\label{eq:example_bound}
+  \lVert u \rVert_{\dot{H}^s(\mathbb{R}^d)} \le C \lVert u \rVert_{H^1(\mathbb{R}^d)}.
+\end{equation}
+\end{lemma}
+
+\begin{proof}
+\uses{def:example_object}
+% Add \leanok here only once FracLap.example_bound has zero `sorry`s in Lean.
+Splitting the frequency integral at $\lvert \xi \rvert = 1$ gives
+\begin{align*}
+  \int_{\mathbb{R}^d} \lvert \xi \rvert^{2s} \lvert \hat{u}(\xi) \rvert^2 \dd\xi
+  &\le \int_{\lvert \xi \rvert \le 1} \lvert \hat{u}(\xi) \rvert^2 \dd\xi
+    + \int_{\lvert \xi \rvert > 1} \lvert \xi \rvert^2 \lvert \hat{u}(\xi) \rvert^2 \dd\xi \\
+  &\le \lVert u \rVert_{H^1(\mathbb{R}^d)}^2. \qedhere
+\end{align*}
+\end{proof}

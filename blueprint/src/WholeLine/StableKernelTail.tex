@@ -1,0 +1,66 @@
+\chapter{Tail Estimates for the Stable Kernel}
+
+This chapter mirrors \texttt{FracLap/WholeLine/StableKernelTail.lean}. It proves the algebraic tail bound $\lvert P_\alpha(x, 1) \rvert \lesssim \lvert x \rvert^{-1-\alpha}$ of the stable kernel for $0 < \alpha \le 1$ by a half-period shift of the sine transform, avoiding any asymptotic expansion.
+
+\begin{lemma}\label{lem:half_period_shift}
+\lean{FracLap.integrableOn_Ioi_shift, FracLap.integral_Ioi_shift, FracLap.integral_sin_shift, FracLap.integrableOn_mul_sin, FracLap.abs_integral_sin_le_of_antitone}
+\uses{thm:std_translation_invariance}
+\leanok
+Let $x > 0$, $\delta = \pi / x$, and let $f : \mathbb{R} \to \mathbb{R}$ be integrable on $\{\nu > 0\}$. Then
+\[
+  \int_0^\infty f(\nu) \sin(x\nu)\, \mathrm{d}\nu = -\int_\delta^\infty f(\nu - \delta) \sin(x\nu)\, \mathrm{d}\nu.
+\]
+If moreover $f \ge 0$ is nonincreasing, then
+\[
+  \Bigl\lvert \int_0^\infty f(\nu) \sin(x\nu)\, \mathrm{d}\nu \Bigr\rvert \le \int_0^\delta f(\nu)\, \mathrm{d}\nu.
+\]
+\end{lemma}
+
+\begin{proof}
+\uses{thm:std_translation_invariance}
+\leanok
+Since $x \delta = \pi$ we have $\sin(x(\nu - \delta)) = -\sin(x\nu)$, and the substitution $\nu \mapsto \nu - \delta$ gives the first identity. Adding it to the splitting $\int_0^\infty = \int_0^\delta + \int_\delta^\infty$ yields
+\[
+  2 \int_0^\infty f \sin(x \cdot) = \int_0^\delta f \sin(x\,\cdot) + \int_\delta^\infty \bigl(f(\nu) - f(\nu - \delta)\bigr) \sin(x\nu)\, \mathrm{d}\nu.
+\]
+The first term is at most $\int_0^\delta f$ in modulus. For the second, monotonicity gives $\lvert f(\nu) - f(\nu - \delta) \rvert = f(\nu - \delta) - f(\nu)$, and the translation invariance shows $\int_\delta^\infty (f(\nu - \delta) - f(\nu))\, \mathrm{d}\nu = \int_0^\delta f$. Hence the modulus of the left side is at most $2 \int_0^\delta f$.
+\end{proof}
+
+\begin{definition}\label{def:stable_density}
+\lean{FracLap.stableDensity}
+\leanok
+For $\alpha > 0$ let $k_\alpha(\omega) = \alpha \omega^{\alpha - 1} e^{-\omega^\alpha}$ for $\omega > 0$. It is the negative of the derivative of $\omega \mapsto e^{-\omega^\alpha}$.
+\end{definition}
+
+\begin{lemma}\label{lem:stable_density}
+\lean{FracLap.integrableOn_stableDensity, FracLap.hasDerivAt_exp_neg_rpow, FracLap.stableDensity_nonneg, FracLap.stableDensity_antitoneOn, FracLap.integral_stableDensity_Ioc}
+\uses{def:stable_density, thm:std_stretched_exponential, thm:std_ftc_interval}
+\leanok
+Let $\alpha > 0$. The function $k_\alpha$ is nonnegative and integrable on $\{\omega > 0\}$. If $\alpha \le 1$ it is nonincreasing. For $\delta > 0$, $\int_0^\delta k_\alpha(\omega)\, \mathrm{d}\omega = 1 - e^{-\delta^\alpha}$.
+\end{lemma}
+
+\begin{proof}
+\uses{def:stable_density, thm:std_stretched_exponential, thm:std_ftc_interval}
+\leanok
+Integrability follows from Theorem~\ref{thm:std_stretched_exponential} applied with the weight $\omega^{\alpha - 1}$, where $\alpha - 1 > -1$. For $\alpha \le 1$ both factors $\omega^{\alpha - 1}$ and $e^{-\omega^\alpha}$ are nonnegative and nonincreasing, so their product is. The mass formula is Theorem~\ref{thm:std_ftc_interval} for $F(\omega) = -e^{-\omega^\alpha}$.
+\end{proof}
+
+\begin{theorem}\label{thm:stable_tail_le_one}
+\lean{FracLap.integral_exp_neg_rpow_mul_cos, FracLap.abs_stableKernel_le_of_le_one}
+\uses{def:stable_kernel, lem:half_period_shift, lem:stable_density, thm:std_ibp_half_line}
+\leanok
+Let $0 < \alpha \le 1$ and $x > 0$. Then
+\[
+  \lvert P_\alpha(x, 1) \rvert \le \frac{1}{\pi x} \Bigl(\frac{\pi}{x}\Bigr)^{\alpha} = \pi^{\alpha - 1}\, x^{-1-\alpha}.
+\]
+\end{theorem}
+
+\begin{proof}
+\uses{def:stable_kernel, lem:half_period_shift, lem:stable_density, thm:std_ibp_half_line}
+\leanok
+Integration by parts (Theorem~\ref{thm:std_ibp_half_line}) with $u = e^{-\omega^\alpha}$ and $v = \sin(x\omega)/x$, whose boundary terms vanish, gives
+\[
+  \int_0^\infty e^{-\omega^\alpha} \cos(x\omega)\, \mathrm{d}\omega = \frac{1}{x} \int_0^\infty k_\alpha(\omega) \sin(x\omega)\, \mathrm{d}\omega.
+\]
+By Lemma~\ref{lem:stable_density} the density $k_\alpha$ is nonnegative and nonincreasing, so Lemma~\ref{lem:half_period_shift} with $\delta = \pi / x$ bounds the sine transform by $\int_0^\delta k_\alpha = 1 - e^{-\delta^\alpha} \le \delta^\alpha$.
+\end{proof}

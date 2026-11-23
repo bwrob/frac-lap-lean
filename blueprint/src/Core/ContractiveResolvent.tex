@@ -1,0 +1,57 @@
+\chapter{Contractive Resolvents and Strong Operator Limits}
+
+This chapter mirrors \texttt{FracLap/Core/ContractiveResolvent.lean}, onboarding positive-shift filter limits, dense-core convergence principles, strong operator limits of contractions, and the contractive resolvent interface from \texttt{scottnarmstrong/MarkovProcess} and verifying it in Lean.
+
+\begin{definition}\label{def:positive_shift}
+\lean{FracLap.PositiveShift, FracLap.tendsto_positiveShift_coe_atTop, FracLap.tendsto_positiveShift_inv_atTop_zero, FracLap.tendsto_const_mul_positiveShift_inv_atTop_zero, FracLap.tendsto_zero_of_nonneg_sq_le}
+\leanok
+The type of positive resolvent shifts is the open half-line $\Lambda_+ = \{\alpha \in \mathbb{R} : \alpha > 0\}$ ordered by the underlying real order. Along the filter $\alpha \to \infty$, we have $\alpha \to +\infty$ and $C \alpha^{-1} \to 0$ for every $C \in \mathbb{R}$; moreover, any nonnegative net whose square is bounded by a net tending to zero converges to zero.
+\end{definition}
+
+\begin{lemma}\label{lem:dense_core_convergence}
+\lean{FracLap.tendsto_of_denseRange_of_opNorm_le_one, FracLap.cauchySeq_of_denseRange_of_opNorm_le_one}
+\leanok
+Let $T_i : E \to E$ be continuous linear contractions ($\lVert T_i \rVert \le 1$) and $D : F \to E$ a bounded linear map with dense range in $E$. If $T_i(Dv) \to Dv$ for every $v \in F$, then $T_i x \to x$ for every $x \in E$. Likewise, for a sequence $(T_n)_{n \in \mathbb{N}}$ of contractions, if $(T_n(Dv))_n$ is Cauchy for every $v \in F$, then $(T_n x)_n$ is Cauchy for every $x \in E$.
+\end{lemma}
+
+\begin{proof}
+\leanok
+Given $x \in E$ and $\varepsilon > 0$, density yields $v \in F$ with $\lVert x - Dv \rVert < \varepsilon / 3$. By contractivity, $\lVert T_i x - T_i(Dv) \rVert \le \lVert x - Dv \rVert < \varepsilon / 3$ uniformly in $i$, so the $\varepsilon/3$-triangle inequality reduces pointwise convergence or the Cauchy property at $x$ to that at $Dv$.
+\end{proof}
+
+\begin{definition}\label{def:strong_operator_limit}
+\lean{FracLap.strongOperatorLimit, FracLap.tendsto_strongOperatorLimit_apply, FracLap.norm_strongOperatorLimit_apply_le, FracLap.norm_strongOperatorLimit_le_one, FracLap.tendsto_apply_comp_of_opNorm_le_one}
+\uses{lem:dense_core_convergence}
+\leanok
+If $E$ is a real Banach space and $(T_n)_{n \in \mathbb{N}}$ is a sequence of linear contractions ($\lVert T_n \rVert \le 1$) such that $(T_n x)_n$ is Cauchy for every $x \in E$, the \emph{strong operator limit} $T_\infty : E \to E$ defined by $T_\infty x = \lim_{n \to \infty} T_n x$ is a bounded linear contraction ($\lVert T_\infty \rVert \le 1$). Furthermore, if $T_n x \to T_\infty x$ and $U_n x \to U_\infty x$ strongly with $\lVert T_n \rVert \le 1$, then $T_n(U_n x) \to T_\infty(U_\infty x)$.
+\end{definition}
+
+\begin{definition}\label{def:contractive_resolvent}
+\lean{FracLap.ContractiveResolvent, FracLap.ContractiveResolvent.scaledOperator}
+\uses{def:positive_shift}
+\leanok
+A \emph{contractive resolvent} on a real normed space $E$ is a family $(R_\alpha)_{\alpha > 0}$ of bounded linear operators on $E$ satisfying:
+\begin{enumerate}
+  \item the resolvent identity $R_\alpha - R_\beta = (\beta - \alpha) R_\alpha R_\beta$ for all $\alpha, \beta > 0$;
+  \item the Hille--Yosida contraction bound $\lVert R_\alpha \rVert \le \alpha^{-1}$ for all $\alpha > 0$; and
+  \item dense range $\overline{\operatorname{ran}(R_\alpha)} = E$ for every $\alpha > 0$.
+\end{enumerate}
+Its normalized counterpart at shift $\alpha > 0$ is the operator $\alpha R_\alpha$.
+\end{definition}
+
+\begin{theorem}\label{thm:contractive_resolvent_normalization}
+\lean{FracLap.ContractiveResolvent.opNorm_scaledOperator_le_one, FracLap.ContractiveResolvent.norm_scaledOperator_apply_le, FracLap.ContractiveResolvent.operator_comm, FracLap.ContractiveResolvent.scaledOperator_apply_sub_on_range, FracLap.ContractiveResolvent.tendsto_scaledOperator_apply_on_range, FracLap.ContractiveResolvent.tendsto_scaledOperator_apply}
+\uses{def:contractive_resolvent, lem:dense_core_convergence}
+\leanok
+Let $(R_\alpha)_{\alpha > 0}$ be a contractive resolvent on $E$. Then $\lVert \alpha R_\alpha \rVert \le 1$ for every $\alpha > 0$, all resolvents mutually commute ($R_\alpha R_\beta = R_\beta R_\alpha$), on the range of any $R_\mu$ we have
+\[
+  \alpha R_\alpha(R_\mu y) - R_\mu y = R_\alpha(\mu R_\mu y - y),
+\]
+and consequently $\lim_{\alpha \to \infty} \alpha R_\alpha x = x$ strongly for every $x \in E$.
+\end{theorem}
+
+\begin{proof}
+\uses{def:contractive_resolvent, lem:dense_core_convergence}
+\leanok
+The contraction estimate $\lVert \alpha R_\alpha \rVert \le \alpha \cdot \alpha^{-1} = 1$ is immediate from $\lVert R_\alpha \rVert \le \alpha^{-1}$, and commutation follows from antisymmetry of the resolvent identity for $\alpha \ne \beta$. Rearranging $R_\alpha y - R_\mu y = (\mu - \alpha) R_\alpha R_\mu y$ yields $\alpha R_\alpha(R_\mu y) - R_\mu y = R_\alpha(\mu R_\mu y - y)$, whose norm is at most $\alpha^{-1} \lVert \mu R_\mu y - y \rVert \to 0$ as $\alpha \to \infty$. Extending convergence from the dense range of $R_1$ via Lemma~\ref{lem:dense_core_convergence} gives $\alpha R_\alpha x \to x$ on all of $E$.
+\end{proof}

@@ -1,0 +1,39 @@
+name = "FracLap"
+version = "0.1.0"
+keywords = ["math"]
+defaultTargets = ["FracLap"]
+lintDriver = "batteries/runLinter"
+lintDriverArgs = ["FracLap"]
+
+[leanOptions]
+pp.unicode.fun = true
+autoImplicit = false
+relaxedAutoImplicit = false
+maxSynthPendingDepth = 3
+warningAsError = true
+weak.linter.mathlibStandardSet = true
+weak.linter.style.header = true
+weak.linter.style.longLine = true
+weak.linter.style.longFile = 1500
+weak.linter.missingDocs = true
+weak.linter.unusedVariables = true
+weak.linter.unusedTactic = true
+weak.linter.unreachableTactic = false
+weak.linter.unnecessarySeqFocus = false
+
+[[require]]
+name = "mathlib"
+scope = "leanprover-community"
+rev = "v4.36.0"
+
+[[require]]
+name = "checkdecls"
+git = "https://github.com/PatrickMassot/checkdecls"
+rev = "master"
+
+[[lean_lib]]
+name = "FracLap"
+
+[[lean_lib]]
+name = "FracLapTest"
+leanOptions = { weak.linter.missingDocs = false }

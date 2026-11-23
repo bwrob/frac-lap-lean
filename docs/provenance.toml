@@ -1,0 +1,162 @@
+# Provenance manifest: where each blueprint chapter (= Lean module) comes from.
+#
+# Every chapter gets exactly one ORIGIN. The documentation generator (scripts/gen_docs.py) turns this
+# into badges and navigation, and `--check` fails if a chapter is unclassified or a name is unknown.
+# The assignment is a maintainer decision, not something inferred from the code.
+
+[origins.thesis]
+    label   = "Original work"
+    short   = "thesis"
+    meaning = "Results of the author's master's thesis and their direct formalization (Section 5 and Appendix A), together with the modules they rest on."
+
+[origins.corpus]
+    label   = "Common knowledge"
+    short   = "corpus"
+    meaning = "Published, standard results formalized from the literature (semigroup theory, classical inequalities, textbook facts). Sources are cited in the module docstrings and the bibliography."
+
+[modules."Basic"]
+    origin = "thesis"
+
+[modules."Core/C0Semigroup"]
+    origin = "corpus"
+
+[modules."Core/ContractiveResolvent"]
+    origin = "corpus"
+
+[modules."Core/FourierSobolev"]
+    origin = "corpus"
+
+[modules."Core/HilleYosidaCorrespondence"]
+    origin = "corpus"
+
+[modules."Core/HilleYosidaGeneration"]
+    origin = "corpus"
+
+[modules."Core/LpExtension"]
+    origin = "corpus"
+
+[modules."Core/Pointwise"]
+    origin = "thesis"
+
+[modules."Core/Semigroups"]
+    origin = "thesis"
+
+[modules."HalfLine/FormOrdering"]
+    origin = "corpus"
+
+[modules."HalfLine/ReflectedSemigroup"]
+    origin = "thesis"
+
+[modules."HalfLine/RestrictedDirichlet"]
+    origin = "thesis"
+
+[modules."Tools/AbstractLemmas"]
+    origin = "corpus"
+
+[modules."Tools/Bernstein"]
+    origin = "corpus"
+
+[modules."Tools/BernsteinLp"]
+    origin = "corpus"
+
+[modules."Tools/BetaIntegral"]
+    origin = "corpus"
+
+[modules."Tools/Bootstrap"]
+    origin = "corpus"
+
+[modules."Tools/ChainRule"]
+    origin = "corpus"
+
+[modules."Tools/CompleteBernstein"]
+    origin = "corpus"
+
+[modules."Tools/GagliardoTools"]
+    origin = "corpus"
+
+[modules."Tools/Gronwall"]
+    origin = "corpus"
+
+[modules."Tools/HardyLittlewood"]
+    origin = "corpus"
+
+[modules."Tools/Interpolation"]
+    origin = "corpus"
+
+[modules."Tools/Nash"]
+    origin = "corpus"
+
+[modules."Tools/NashConsequences"]
+    origin = "corpus"
+
+[modules."Tools/NashDecay"]
+    origin = "corpus"
+
+[modules."Tools/Poincare"]
+    origin = "corpus"
+
+[modules."Tools/StroockVaropoulos"]
+    origin = "corpus"
+
+[modules."Tools/Symmetrization"]
+    origin = "corpus"
+
+[modules."Tools/Young"]
+    origin = "corpus"
+
+[modules."WholeLine/AnomalousDiffusion"]
+    origin = "thesis"
+
+[modules."WholeLine/ClassicalKernels"]
+    origin = "thesis"
+
+[modules."WholeLine/FourierSemigroup"]
+    origin = "thesis"
+
+[modules."WholeLine/GagliardoDensity"]
+    origin = "thesis"
+
+[modules."WholeLine/GagliardoFourier"]
+    origin = "thesis"
+
+[modules."WholeLine/GagliardoScaling"]
+    origin = "thesis"
+
+[modules."WholeLine/GagliardoSymbolExact"]
+    origin = "thesis"
+
+[modules."WholeLine/NashUltracontractivity"]
+    origin = "corpus"
+
+[modules."WholeLine/SemigroupDissipation"]
+    origin = "thesis"
+
+[modules."WholeLine/StableHeatKernel"]
+    origin = "thesis"
+
+[modules."WholeLine/StableKernel"]
+    origin = "thesis"
+
+[modules."WholeLine/StableKernelDecay"]
+    origin = "thesis"
+
+[modules."WholeLine/StableKernelPositivity"]
+    origin = "thesis"
+
+[modules."WholeLine/StableKernelTail"]
+    origin = "thesis"
+
+[modules."WholeLine/StableLevy"]
+    origin = "thesis"
+
+[modules."WholeLine/StableSemigroup"]
+    origin = "thesis"
+
+[modules."WholeLine/StableSubordination"]
+    origin = "thesis"
+
+[modules."WholeLine/SteinMaximal"]
+    origin = "corpus"
+
+[modules."WholeLine/TranslationFourier"]
+    origin = "thesis"

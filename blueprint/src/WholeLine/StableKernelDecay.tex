@@ -1,0 +1,52 @@
+\chapter{Algebraic Tail Decay of the Stable Kernel}
+
+This chapter mirrors \texttt{FracLap/WholeLine/StableKernelDecay.lean}, extending the algebraic decay estimate $\lvert P_\alpha(x, 1) \rvert \lesssim (1 + \lvert x \rvert)^{-1-\alpha}$ to the entire fractional range $0 < \alpha < 2$ via a second-difference half-period shift trick.
+
+\begin{lemma}\label{lem:sin_second_diff_identity}
+\lean{FracLap.integrable_mul_sin_real, FracLap.integral_sin_shift_real, FracLap.integral_sin_second_diff, FracLap.abs_sub_le_of_hasDerivAt, FracLap.abs_second_diff_le}
+\uses{thm:std_translation_invariance, thm:std_ftc_interval}
+\leanok
+Let $g \in L^1(\mathbb{R})$ and $x, \delta \in \mathbb{R}$ satisfy $x \delta = \pi$. Defining the backward second difference $(\Delta_\delta^2 g)(\nu) = g(\nu) - 2 g(\nu - \delta) + g(\nu - 2\delta)$, we have
+\[
+  \int_{\mathbb{R}} g(\nu) \sin(x \nu)\, \mathrm{d}\nu = \frac{1}{4} \int_{\mathbb{R}} (\Delta_\delta^2 g)(\nu) \sin(x \nu)\, \mathrm{d}\nu.
+\]
+Moreover, if $f \in C^2([a, b])$ satisfies $\lvert f''(w) \rvert \le C$ on $[a, b]$ and $a \le b - 2\delta$ with $\delta > 0$, then $\lvert (\Delta_\delta^2 f)(b) \rvert \le C \delta^2$.
+\end{lemma}
+
+\begin{proof}
+\uses{thm:std_translation_invariance, thm:std_ftc_interval}
+\leanok
+Substituting $\nu \mapsto \nu - \delta$ and using $\sin(x(\nu - \delta)) = -\sin(x\nu)$ gives $\int g(\nu)\sin(x\nu)\,\mathrm{d}\nu = -\int g(\nu - \delta)\sin(x\nu)\,\mathrm{d}\nu$; applying this twice yields $1 - (-2) + 1 = 4$ copies of the sine integral. The $C^2$ second-difference bound follows by applying the mean value inequality twice to $u \mapsto f(u) - f(u - \delta)$.
+\end{proof}
+
+\begin{lemma}\label{lem:stable_density_second_deriv}
+\lean{FracLap.hasDerivAt_rpow_mul_exp, FracLap.stableDensity1, FracLap.stableDensity2, FracLap.hasDerivAt_stableDensity, FracLap.hasDerivAt_stableDensity1, FracLap.stableDensity2_eq, FracLap.stableK, FracLap.stableK_nonneg, FracLap.abs_stableDensity2_le}
+\uses{def:stable_density}
+\leanok
+On $(0, \infty)$, the density $k_\alpha(\omega) = \alpha \omega^{\alpha - 1} e^{-\omega^\alpha}$ is twice differentiable, and there exists an explicit constant $K(\alpha) \ge 0$ such that
+\[
+  \lvert k_\alpha''(\omega) \rvert \le K(\alpha) \omega^{\alpha - 3} \qquad \text{for all } \omega > 0.
+\]
+\end{lemma}
+
+\begin{proof}
+\uses{def:stable_density}
+\leanok
+Differentiating $\omega^p e^{-\omega^\alpha}$ twice factors $k_\alpha''(\omega)$ into $\alpha \omega^{\alpha - 3}$ times a quadratic polynomial in $\omega^\alpha e^{-\omega^\alpha}$, where $y e^{-y} \le 1$ and $y^2 e^{-y} \le 2$ for $y = \omega^\alpha \ge 0$.
+\end{proof}
+
+\begin{theorem}\label{thm:stable_kernel_decay_all_alpha}
+\lean{FracLap.stableDensity0, FracLap.integrable_stableDensity0, FracLap.stableDensity0_nonneg, FracLap.integral_Iic_shift, FracLap.integral_stableDensity0_Iic, FracLap.integral_stableDensity0_Iic_mono, FracLap.one_sub_exp_neg_le, FracLap.stableDensity0Δ2, FracLap.integrable_stableDensity0Δ2, FracLap.integral_abs_Δ2_Iic_le, FracLap.abs_Δ2_le_of_gt, FracLap.integral_abs_Δ2_Ioi_le, FracLap.stableTailB, FracLap.stableTailB_pos, FracLap.integral_abs_Δ2_le, FracLap.abs_stableKernel_one_le_rpow, FracLap.stableDecayConst, FracLap.stableDecayConst_pos, FracLap.stableKernel_decay_unit_time}
+\uses{lem:sin_second_diff_identity, lem:stable_density_second_deriv, thm:stable_tail_le_one, thm:std_power_integrability, def:stable_kernel}
+\leanok
+Let $0 < \alpha < 2$. Extending $k_\alpha$ by zero to $\{\nu \le 0\}$ gives a function $k_{\alpha, 0} \in L^1(\mathbb{R})$ whose second difference with step $\delta = \pi / x$ satisfies $\int_{\mathbb{R}} \lvert \Delta_\delta^2 k_{\alpha, 0} \rvert \le B(\alpha) \delta^\alpha$. Consequently, there exists an explicit constant $C(\alpha) > 0$ such that
+\[
+  P_\alpha(x, 1) \le \frac{C(\alpha)}{(1 + \lvert x \rvert)^{1 + \alpha}} \qquad \text{for all } x \in \mathbb{R}.
+\]
+\end{theorem}
+
+\begin{proof}
+\uses{lem:sin_second_diff_identity, lem:stable_density_second_deriv, thm:stable_tail_le_one, thm:std_power_integrability}
+\leanok
+Split the integral $\int_{\mathbb{R}} \lvert \Delta_\delta^2 k_{\alpha, 0}(\nu) \rvert \mathrm{d}\nu$ at $\nu = 4\delta$. For $\nu \le 4\delta$, monotonicity of the primitive $1 - e^{-c^\alpha} \le c^\alpha$ gives $\int_{\nu \le 4\delta} \lvert \Delta_\delta^2 k_{\alpha, 0} \rvert \le 4(4\delta)^\alpha$. For $\nu > 4\delta$, all three shifts lie strictly in $(0, \infty)$, so Lemma~\ref{lem:sin_second_diff_identity} and Lemma~\ref{lem:stable_density_second_deriv} give $\lvert \Delta_\delta^2 k_{\alpha, 0}(\nu) \rvert \le K(\alpha) \delta^2 (\nu / 2)^{\alpha - 3}$, which integrates to $O(\delta^\alpha)$ because $\alpha - 3 < -1$. Feeding $\delta = \pi / x$ into the integration-by-parts sine representation yields $\lvert P_\alpha(x, 1) \rvert \lesssim x^{-1-\alpha}$ for $x > 0$, while for $\lvert x \rvert \le 1$ the uniform bound $\lvert P_\alpha(x, 1) \rvert \le P_\alpha(0, 1)$ suffices.
+\end{proof}

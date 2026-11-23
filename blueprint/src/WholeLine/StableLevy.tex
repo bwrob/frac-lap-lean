@@ -1,0 +1,101 @@
+\chapter{The Stable Subordinator and its Lévy Measure}
+
+This chapter mirrors \texttt{FracLap/WholeLine/StableLevy.lean}. For $0 < \beta < 1$ it proves the Lévy--Khintchine formula
+\[
+  \lambda^\beta = \frac{\beta}{\Gamma(1 - \beta)} \int_0^\infty \bigl(1 - e^{-\lambda s}\bigr) s^{-1-\beta}\, \mathrm{d}s
+\]
+for the Bernstein function $\lambda \mapsto \lambda^\beta$, builds the truncated Lévy measures as finite measures on $\mathbb{R}_{\ge 0}$, and combines this with the Gaussian mixture calculus to show that $\xi \mapsto e^{-t \lvert \xi \rvert^\alpha}$, $0 < \alpha < 2$, is Gaussian monotone.
+
+\begin{lemma}\label{lem:levy_basic}
+\lean{FracLap.integrableOn_one_sub_exp_mul_rpow, FracLap.integral_one_sub_exp_mul_rpow}
+\uses{thm:std_gamma, thm:std_power_integrability, thm:std_ibp_half_line}
+\leanok
+For $0 < \beta < 1$ the function $u \mapsto (1 - e^{-u}) u^{-1-\beta}$ is integrable on $\{u > 0\}$ and
+\[
+  \int_0^\infty \bigl(1 - e^{-u}\bigr) u^{-1-\beta}\, \mathrm{d}u = \frac{\Gamma(1 - \beta)}{\beta}.
+\]
+\end{lemma}
+
+\begin{proof}
+\uses{thm:std_gamma, thm:std_power_integrability, thm:std_ibp_half_line}
+\leanok
+Since $0 \le 1 - e^{-u} \le \min(u, 1)$, the integrand is bounded by $u^{-\beta}$ on $0 < u \le 1$ and by $u^{-1-\beta}$ for $u > 1$, both integrable by Theorem~\ref{thm:std_power_integrability}. Integrating by parts (Theorem~\ref{thm:std_ibp_half_line}) with $U = 1 - e^{-u}$ and $V = -u^{-\beta}/\beta$ has vanishing boundary terms, because $U V = O(u^{1-\beta})$ at $0$ and $O(u^{-\beta})$ at infinity, and gives $\beta^{-1} \int_0^\infty e^{-u} u^{-\beta}\, \mathrm{d}u = \Gamma(1 - \beta)/\beta$ by Theorem~\ref{thm:std_gamma}.
+\end{proof}
+
+\begin{lemma}\label{lem:levy_scaled}
+\lean{FracLap.integrableOn_one_sub_exp_scaled, FracLap.integral_one_sub_exp_scaled}
+\uses{lem:levy_basic, thm:std_half_line_scaling}
+\leanok
+For $\lambda > 0$ and $0 < \beta < 1$,
+\[
+  \int_0^\infty \bigl(1 - e^{-\lambda s}\bigr) s^{-1-\beta}\, \mathrm{d}s = \lambda^\beta \frac{\Gamma(1 - \beta)}{\beta},
+\]
+and the integrand is integrable.
+\end{lemma}
+
+\begin{proof}
+\uses{lem:levy_basic, thm:std_half_line_scaling}
+\leanok
+Apply Theorem~\ref{thm:std_half_line_scaling} with $b = \lambda$ and use $(\lambda s)^{-1-\beta} = \lambda^{-1-\beta} s^{-1-\beta}$ to compare with Lemma~\ref{lem:levy_basic}.
+\end{proof}
+
+\begin{definition}\label{def:levy_measure}
+\lean{FracLap.levyConst, FracLap.levyMeasure}
+\leanok
+Let $c_\beta = \beta / \Gamma(1 - \beta)$. For $\varepsilon > 0$ the truncated Lévy measure $\ell_{\beta, \varepsilon}$ on $\mathbb{R}_{\ge 0}$ is the image under $s \mapsto s$ of the measure with density $c_\beta s^{-1-\beta}$ on the range $s > \varepsilon$.
+\end{definition}
+
+\begin{lemma}\label{lem:levy_measure_mixture}
+\lean{FracLap.levyConst_pos, FracLap.integrableOn_levyDensity, FracLap.levyMeasure_isFiniteMeasure, FracLap.gaussMixture_levyMeasure, FracLap.integrableOn_levyDensity_mul_exp, FracLap.gaussMixture_levy_sub}
+\uses{def:levy_measure, def:gauss_mixture, thm:std_withdensity, thm:std_image_measure, thm:std_power_integrability}
+\leanok
+For $0 < \beta < 1$ and $\varepsilon > 0$ the measure $\ell_{\beta, \varepsilon}$ is finite, and with $H_\varepsilon$ its Gaussian mixture,
+\[
+  H_\varepsilon(0) - H_\varepsilon(\xi) = c_\beta \int_\varepsilon^\infty \bigl(1 - e^{-\xi^2 s}\bigr) s^{-1-\beta}\, \mathrm{d}s.
+\]
+\end{lemma}
+
+\begin{proof}
+\uses{def:levy_measure, def:gauss_mixture, thm:std_withdensity, thm:std_image_measure, thm:std_power_integrability}
+\leanok
+Finiteness is integrability of $s^{-1-\beta}$ for $s > \varepsilon$ (Theorem~\ref{thm:std_power_integrability}). Theorems~\ref{thm:std_image_measure} and~\ref{thm:std_withdensity} express $H_\varepsilon(\xi)$ as $c_\beta \int_\varepsilon^\infty e^{-\xi^2 s} s^{-1-\beta}\, \mathrm{d}s$; subtracting this at $\xi$ from its value at $0$ gives the claim.
+\end{proof}
+
+\begin{theorem}\label{thm:levy_limit}
+\lean{FracLap.tendsto_levy_sub, FracLap.sq_rpow_half}
+\uses{lem:levy_measure_mixture, lem:levy_scaled, thm:std_exhaustion}
+\leanok
+For $0 < \beta < 1$ and every $\xi \in \mathbb{R}$, $H_{1/(n+1)}(0) - H_{1/(n+1)}(\xi) \to (\xi^2)^\beta$ as $n \to \infty$. Moreover $(\xi^2)^{\alpha/2} = \lvert \xi \rvert^\alpha$.
+\end{theorem}
+
+\begin{proof}
+\uses{lem:levy_measure_mixture, lem:levy_scaled, thm:std_exhaustion}
+\leanok
+For $\xi = 0$ both sides vanish. For $\xi \ne 0$ apply Theorem~\ref{thm:std_exhaustion} to the integrable function $s \mapsto (1 - e^{-\xi^2 s}) s^{-1-\beta}$ and the sets $\{s > 1/(n+1)\}$, whose union is $\{s > 0\}$, and use Lemma~\ref{lem:levy_scaled} together with $c_\beta \Gamma(1 - \beta)/\beta = 1$.
+\end{proof}
+
+\begin{lemma}\label{lem:exp_compound_poisson}
+\lean{FracLap.continuous_gaussMixture, FracLap.gaussMixture_le_zero, FracLap.IsGaussMix.pow, FracLap.isGaussMonotone_exp_sub}
+\uses{def:gauss_mixture, lem:gauss_mixture_closure, thm:gauss_mixture_monotone, thm:gauss_monotone_limit, thm:std_exp_limit, thm:std_continuity_integral}
+\leanok
+Let $m$ be a finite measure on $\mathbb{R}_{\ge 0}$ with mixture $H$ and let $t \ge 0$. Then $\xi \mapsto \exp(-t (H(0) - H(\xi)))$ is Gaussian monotone.
+\end{lemma}
+
+\begin{proof}
+\uses{def:gauss_mixture, lem:gauss_mixture_closure, thm:gauss_mixture_monotone, thm:gauss_monotone_limit, thm:std_exp_limit, thm:std_continuity_integral}
+\leanok
+The functions $F_n(\xi) = e^{-t H(0)} (1 + t H(\xi)/n)^n$ are Gaussian mixtures by Lemma~\ref{lem:gauss_mixture_closure}, hence Gaussian monotone by Theorem~\ref{thm:gauss_mixture_monotone}. Since $0 \le H(\xi) \le H(0)$, Theorem~\ref{thm:std_exp_limit} gives $0 \le F_n \le e^{-t(H(0) - H(\xi))} \le 1$ and $F_n \to e^{-t(H(0) - H(\xi))}$ pointwise. They are continuous by Theorem~\ref{thm:std_continuity_integral}, so Theorem~\ref{thm:gauss_monotone_limit} applies.
+\end{proof}
+
+\begin{theorem}\label{thm:stable_symbol_monotone}
+\lean{FracLap.isGaussMonotone_stableSymbol}
+\uses{lem:exp_compound_poisson, thm:levy_limit, lem:levy_measure_mixture, thm:gauss_monotone_limit}
+\leanok
+For $0 < \alpha < 2$ and $t > 0$ the function $\xi \mapsto e^{-t \lvert \xi \rvert^\alpha}$ is Gaussian monotone.
+\end{theorem}
+
+\begin{proof}
+\uses{lem:exp_compound_poisson, thm:levy_limit, lem:levy_measure_mixture, thm:gauss_monotone_limit}
+\leanok
+Put $\beta = \alpha / 2 \in (0, 1)$ and let $H_n$ be the mixture of $\ell_{\beta, 1/(n+1)}$. By Lemma~\ref{lem:exp_compound_poisson} each $\xi \mapsto e^{-t(H_n(0) - H_n(\xi))}$ is Gaussian monotone, it takes values in $[0, 1]$, and by Theorem~\ref{thm:levy_limit} it converges pointwise to $e^{-t \lvert \xi \rvert^\alpha}$. Conclude with Theorem~\ref{thm:gauss_monotone_limit}.
+\end{proof}

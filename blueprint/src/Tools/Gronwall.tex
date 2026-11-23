@@ -1,0 +1,48 @@
+\chapter{A Gronwall Lemma with a Weakly Singular Kernel}
+
+This chapter mirrors \texttt{FracLap/Tools/Gronwall.lean}. It is the form of Gronwall's inequality used for mild solutions of nonlocal evolution equations (Brandolese; Biler--Karch--Woyczy\'nski): the memory kernel $(t - \tau)^{-a}$ is singular at $\tau = t$ and weighted by a decaying factor $(1 + \tau)^{-b}$.
+
+\begin{lemma}\label{lem:singular_kernel_integral}
+\lean{FracLap.integral_sub_rpow_neg, FracLap.intervalIntegrable_sub_rpow_neg}
+\leanok
+For $a < 1$ the function $\tau \mapsto (t - \tau)^{-a}$ is integrable on $0 < \tau < t$ and $\int_0^t (t - \tau)^{-a}\, \mathrm{d}\tau = t^{1-a}/(1-a)$.
+\end{lemma}
+
+\begin{proof}
+\leanok
+Reflect $\tau \mapsto t - \tau$ and integrate the power $s^{-a}$ over $0 < s < t$.
+\end{proof}
+
+\begin{lemma}\label{lem:singular_integral_bound}
+\lean{FracLap.integral_singular_le, FracLap.pow_bookkeeping}
+\uses{lem:singular_kernel_integral}
+\leanok
+Let $0 < a < 1$, $0 < b' \le b$, $b' \le 1$, $h \ge 0$ and $h(s) \le M(1 + s)$ for $0 \le s \le t$. Then
+\[
+  \int_0^t (t - \tau)^{-a} (1 + \tau)^{-b} h(\tau)\, \mathrm{d}\tau \le M\, (1 + t)^{1-b'}\, \frac{t^{1-a}}{1-a},
+\]
+and $(1 + t)^{1-b'} t^{1-a} \le (1 + t)^{1-a-b'} (1 + t)$.
+\end{lemma}
+
+\begin{proof}
+\uses{lem:singular_kernel_integral}
+\leanok
+Since $1 + \tau \ge 1$ we have $(1 + \tau)^{-b} \le (1 + \tau)^{-b'}$, hence $(1 + \tau)^{-b} h(\tau) \le M (1 + \tau)^{1-b'} \le M (1 + t)^{1-b'}$ because $1 - b' \ge 0$. Integrate against the kernel using Lemma~\ref{lem:singular_kernel_integral}. The last claim follows from $t \le 1 + t$.
+\end{proof}
+
+\begin{theorem}[Gronwall inequality with singular kernel]\label{thm:gronwall_singular}
+\lean{FracLap.gronwall_singular}
+\uses{lem:singular_integral_bound}
+\leanok
+Let $0 < a < 1$, $b > 0$, $a + b > 1$, $C_2 \ge 0$, and let $h \ge 0$ be locally bounded on $t \ge 0$ with
+\[
+  h(t) \le C_1 (1 + t) + C_2 \int_0^t (t - \tau)^{-a} (1 + \tau)^{-b} h(\tau)\, \mathrm{d}\tau \quad (t \ge 0).
+\]
+Then there is $C$ with $h(t) \le C (1 + t)$ for all $t \ge 0$.
+\end{theorem}
+
+\begin{proof}
+\uses{lem:singular_integral_bound}
+\leanok
+Put $b' = \min(b, 1)$ and $\delta = a + b' - 1 > 0$. Choose $T_0 \ge 0$ with $C_2 (1 + s)^{-\delta}/(1-a) \le 1/2$ for $s \ge T_0$. Fix $t_0 \ge 0$ and let $M = \sup_{0 \le s \le t_0} h(s)/(1+s)$, which is finite by local boundedness. For $s \le T_0$ we have $h(s)/(1+s) \le B_0 := \max(\sup_{[0, T_0]} h, 0)$. For $T_0 \le s \le t_0$, Lemma~\ref{lem:singular_integral_bound} gives $h(s) \le C_1 (1 + s) + \tfrac12 M (1 + s)$. Therefore $M \le \max(B_0, C_1 + M/2)$, so $M \le \max(B_0, 2 C_1)$, and $h(t_0) \le M (1 + t_0)$. The constant does not depend on $t_0$.
+\end{proof}

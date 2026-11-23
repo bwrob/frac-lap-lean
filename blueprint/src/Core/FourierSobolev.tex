@@ -1,0 +1,48 @@
+\chapter{Plancherel's Theorem, Fractional Sobolev Spaces, and Lax--Milgram}
+
+This chapter mirrors \texttt{FracLap/Core/FourierSobolev.lean}, connecting our fractional Laplacian development to the unitary $L^2$ Fourier transform (Theorem~\ref{thm:std_fourier_L2}), distributional Bessel-potential Sobolev spaces (Theorem~\ref{thm:std_bessel_sobolev}), and the Lax--Milgram theorem (Theorem~\ref{thm:std_lax_milgram}).
+
+\begin{theorem}\label{thm:plancherel_and_parseval}
+\lean{FracLap.plancherel_norm_eq, FracLap.parseval_inner_eq}
+\leanok
+On any finite-dimensional real inner-product space $E$ and complex Hilbert space $F$, the $L^2$ Fourier transform $\mathcal{F} : L^2(E, F) \to L^2(E, F)$ is a linear isometric equivalence satisfying Plancherel's theorem and Parseval's identity:
+\[
+  \lVert \mathcal{F} f \rVert_{L^2} = \lVert f \rVert_{L^2}
+  \qquad \text{and} \qquad
+  \langle \mathcal{F} f, \mathcal{F} g \rangle_{L^2} = \langle f, g \rangle_{L^2}
+\]
+for all $f, g \in L^2(E, F)$.
+\end{theorem}
+
+\begin{proof}
+\uses{thm:std_fourier_L2}
+\leanok
+This holds by extending the Fourier isometry from the dense subspace of Schwartz functions $\mathcal{S}(E, F) \subseteq L^2(E, F)$, as recorded in Theorem~\ref{thm:std_fourier_L2}.
+\end{proof}
+
+\begin{theorem}\label{thm:bessel_sobolev_properties}
+\lean{FracLap.schwartz_memSobolev, FracLap.memSobolev_mono, FracLap.besselPotential_add_order, FracLap.besselSymbol_le_two_rpow_mul, FracLap.half_mul_le_besselSymbol}
+\leanok
+For the Bessel potential operator $J^s = \mathcal{F}^{-1} (1 + \lvert \xi \rvert^2)^{s/2} \mathcal{F}$ and fractional Sobolev space $H^s(E, F) = \{u \in \mathcal{S}'(E, F) : J^s u \in L^2(E, F)\}$:
+\begin{enumerate}
+  \item every Schwartz function $f \in \mathcal{S}(E, F)$ belongs to $H^s(E, F)$ for all $s \in \mathbb{R}$;
+  \item $J^{s'} (J^s u) = J^{s + s'} u$ and $H^s(E, F) \subseteq H^{s'}(E, F)$ whenever $s' \le s$; and
+  \item for all $\alpha \ge 0$ and $\xi \in \mathbb{R}$, the Bessel weight $(1 + \xi^2)^\alpha$ is equivalent to $1 + \lvert \xi \rvert^{2\alpha}$:
+  \[
+    \frac{1}{2}\bigl(1 + \lvert \xi \rvert^{2\alpha}\bigr) \le \bigl(1 + \xi^2\bigr)^\alpha \le 2^\alpha \bigl(1 + \lvert \xi \rvert^{2\alpha}\bigr).
+  \]
+\end{enumerate}
+\end{theorem}
+
+\begin{proof}
+\uses{thm:std_bessel_sobolev}
+\leanok
+Properties (1) and (2) are the content of Theorem~\ref{thm:std_bessel_sobolev}. For (3), the lower bound averages $1 \le (1 + \xi^2)^\alpha$ and $\lvert \xi \rvert^{2\alpha} \le (1 + \xi^2)^\alpha$, while the upper bound splits into the cases $\lvert \xi \rvert \le 1$ (where $1 + \xi^2 \le 2$) and $\lvert \xi \rvert \ge 1$ (where $1 + \xi^2 \le 2\lvert \xi \rvert^2$).
+\end{proof}
+
+\begin{definition}\label{def:lax_milgram_equiv}
+\lean{FracLap.laxMilgramEquivOfCoercive}
+\uses{thm:std_lax_milgram}
+\leanok
+For every coercive continuous bilinear form $B : V \to V \to \mathbb{R}$ on a real Hilbert space $V$, the Lax--Milgram equivalence $\mathrm{laxMilgramEquivOfCoercive}(h_B) : V \simeq V$ is the continuous linear equivalence representing $B$ via the inner product $\langle \cdot, \cdot \rangle_V$.
+\end{definition}

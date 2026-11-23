@@ -1,0 +1,19 @@
+\chapter{Stein's Maximal Inequality for the Fractional Heat Semigroup}
+
+This chapter mirrors \texttt{FracLap/WholeLine/SteinMaximal.lean}. The stable kernels $P_\alpha(\cdot, t)$ are nonnegative, even, radially decreasing and have unit mass, so convolution with them is dominated by the Hardy--Littlewood maximal function.
+
+\begin{theorem}[Stein's maximal inequality]\label{thm:stein_maximal}
+\lean{FracLap.measurable_stableKernel, FracLap.norm_stable_conv_le_hlMax, FracLap.stein_maximal}
+\uses{thm:hl_domination, thm:hl_strong, lem:semigroup_l1_contractive}
+\leanok
+Let $0 < \alpha < 2$, $u$ a Schwartz function and $1 < p < \infty$. For every $t > 0$ and $x$, $\lvert (P_\alpha(\cdot, t) \star u)(x)\rvert \le M\lvert u\rvert(x)$, and consequently
+\[
+  \int \Bigl(\sup_{t > 0} \lvert P_\alpha(\cdot, t) \star u\rvert\Bigr)^p \le \frac{10 p 2^{p-1}}{p-1} \int \lvert u\rvert^p .
+\]
+\end{theorem}
+
+\begin{proof}
+\uses{thm:hl_domination, thm:hl_strong, lem:semigroup_l1_contractive}
+\leanok
+By the radial monotonicity and unit mass of the stable kernel, Theorem~\ref{thm:hl_domination} gives the pointwise bound $\lvert P_\alpha(\cdot, t) \star u \rvert \le M \lvert u \rvert$, uniformly in $t$. Apply Theorem~\ref{thm:hl_strong} to $h = \lvert u\rvert$.
+\end{proof}

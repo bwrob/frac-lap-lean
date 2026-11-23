@@ -1,0 +1,55 @@
+\chapter{The Hardy--Littlewood Maximal Function}
+
+This chapter mirrors \texttt{FracLap/Tools/HardyLittlewood.lean}. For $g : \mathbb{R} \to [0, \infty]$ the centered maximal function is $M g(x) = \sup_{r > 0} (2r)^{-1} \int_{x-r}^{x+r} g$.
+
+\begin{theorem}[Weak type $(1,1)$]\label{thm:hl_weak}
+\lean{FracLap.hlMax, FracLap.hlMax_weak_type}
+\uses{thm:std_vitali}
+\leanok
+For $\lambda \in (0, \infty)$, $\operatorname{meas}(M g > \lambda) \le 5 \lambda^{-1} \int g$.
+\end{theorem}
+
+\begin{proof}
+\uses{thm:std_vitali}
+\leanok
+If $\int g = \infty$ there is nothing to show. Otherwise every $x$ with $Mg(x) > \lambda$ has a radius $r_x$ with $\lambda \cdot 2 r_x \le \int_{x - r_x}^{x + r_x} g \le \int g$, so the radii are bounded. The Vitali covering lemma (Theorem~\ref{thm:std_vitali}) gives a countable pairwise disjoint subfamily of the closed balls whose $5$-fold enlargements cover $(M g > \lambda)$. Summing the measures $10 r_b$ and using $2 r_b \lambda \le \int_{B_b} g$ together with disjointness gives the claim.
+\end{proof}
+
+\begin{lemma}[Measurability and finiteness]\label{lem:hl_measurable}
+\lean{FracLap.isOpen_hlMax_gt, FracLap.measurable_hlMax, FracLap.hlMax_ae_ne_top, FracLap.lintegral_rpow_Ioo}
+\uses{thm:hl_weak}
+\leanok
+The sets $(M g > t)$ are open, so $M g$ is Borel measurable; if $\int g < \infty$ then $M g < \infty$ almost everywhere.
+\end{lemma}
+
+\begin{proof}
+\uses{thm:hl_weak}
+\leanok
+If an average over $[x-r, x+r]$ exceeds $t$, the average over $[x'-r-\delta, x'+r+\delta] \supset [x-r, x+r]$ still exceeds $t$ for $|x'-x| < \delta$ and $\delta$ small, because $(2(r+\delta))^{-1} \to (2r)^{-1}$. For finiteness, $(M g = \infty) \subset (M g > n)$ has measure $\le 5 n^{-1}\int g \to 0$.
+\end{proof}
+
+\begin{theorem}[Strong type $(p, p)$]\label{thm:hl_strong}
+\lean{FracLap.hlMax_le_add_split, FracLap.hlMax_distribution, FracLap.hlMax_strong_type}
+\uses{thm:hl_weak, lem:hl_measurable, thm:std_layer_cake, thm:std_tonelli}
+\leanok
+For $1 < p < \infty$ and measurable $h \ge 0$ with $\int h < \infty$, $\int (M h)^p \le \frac{10 p 2^{p-1}}{p-1} \int h^p$.
+\end{theorem}
+
+\begin{proof}
+\uses{thm:hl_weak, lem:hl_measurable, thm:std_layer_cake, thm:std_tonelli}
+\leanok
+Split $h \le h \mathbf 1_{h > \lambda/2} + \lambda/2$, so $M h \le M(h \mathbf 1_{h > \lambda/2}) + \lambda/2$ and by Theorem~\ref{thm:hl_weak} $\operatorname{meas}(M h > \lambda) \le 10 \lambda^{-1} \int_{h > \lambda/2} h$. By the layer-cake formula (Theorem~\ref{thm:std_layer_cake}), $\int (M h)^p = p \int_0^\infty \lambda^{p-1} \operatorname{meas}(M h > \lambda) \mathrm{d}\lambda \le 10 p \int_0^\infty \lambda^{p-2} \int_{h > \lambda/2} h  \mathrm{d}x \mathrm{d}\lambda$. Exchange the integrals (Tonelli) and integrate $\lambda^{p-2}$ over $0 < \lambda < 2h(x)$ to get $(2h)^{p-1}/(p-1)$.
+\end{proof}
+
+\begin{theorem}[Domination by the maximal function]\label{thm:hl_domination}
+\lean{FracLap.lintegral_symm_set_le, FracLap.lintegral_mul_le_hlMax}
+\uses{thm:hl_weak, thm:std_layer_cake, thm:std_tonelli}
+\leanok
+If $K \ge 0$ is measurable, even-decreasing ($\lvert a \rvert \le \lvert b \rvert \Rightarrow K(b) \le K(a)$) and integrable, then $\int K(y) g(x - y) \mathrm{d}y \le (\int K) M g(x)$.
+\end{theorem}
+
+\begin{proof}
+\uses{thm:hl_weak, thm:std_layer_cake, thm:std_tonelli}
+\leanok
+Write $K(y) = \int_0^\infty \mathbf 1_{(s < K(y))} \mathrm{d}s$ and exchange integrals (Tonelli). For each $s > 0$ the level set $A_s = (K > s)$ is a symmetric order-interval of finite measure, hence between $(-\rho, \rho)$ and $[-\rho, \rho]$ with $\rho = \sup(\lvert y \rvert : y \in A_s)$; then $\int_{A_s} g(x-y) \mathrm{d}y \le \int_{x-\rho}^{x+\rho} g \le 2\rho M g(x) \le \operatorname{meas}(A_s) M g(x)$. Finally $\int_0^\infty \operatorname{meas}(A_s) \mathrm{d}s = \int K$ by the layer-cake formula.
+\end{proof}

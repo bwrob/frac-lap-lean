@@ -1,0 +1,91 @@
+[project]
+    edit_uri         = "edit/main/docs/"
+    repo_name        = "bwrob/frac-lap-lean"
+    repo_url         = "https://github.com/bwrob/frac-lap-lean"
+    site_author      = "Bartosz Wróblewski"
+    site_description = "A Lean 4 formalization and human-readable blueprint of the fractional Laplacian."
+    site_name        = "FracLap"
+    site_url         = "https://bwrob.github.io/frac-lap-lean/"
+
+    nav = [
+        { "Home" = "index.md" },
+        { "Repository setup" = "setup.md" },
+        { "How the work is done" = "workflow.md" },
+        { "Knowledge" = [
+        # BEGIN GENERATED NAV
+        { "Overview" = "knowledge/index.md" },
+        { "General" = [{ "1. Fractional Laplacian Order Preliminaries" = "knowledge/Basic.md" }] },
+        { "Core" = [{ "2. Core Pointwise Fractional Laplacian Operators" = "knowledge/Core/Pointwise.md" }, { "3. Core Semigroup and Dirichlet Form Interfaces" = "knowledge/Core/Semigroups.md" }, { "4. Strongly Continuous Contraction Semigroups and Generators" = "knowledge/Core/C0Semigroup.md" }, { "5. Contractive Resolvents and Strong Operator Limits" = "knowledge/Core/ContractiveResolvent.md" }, { "6. Yosida Approximations and Semigroup Generation" = "knowledge/Core/HilleYosidaGeneration.md" }, { "7. The Hille--Yosida Correspondence" = "knowledge/Core/HilleYosidaCorrespondence.md" }, { "8. L^p Zero-Extension Isometry and Smooth Cutoffs" = "knowledge/Core/LpExtension.md" }, { "9. Plancherel's Theorem, Fractional Sobolev Spaces, and Lax--Milgram" = "knowledge/Core/FourierSobolev.md" }] },
+        { "WholeLine" = [{ "10. Whole-Line Anomalous Diffusion Semigroup" = "knowledge/WholeLine/AnomalousDiffusion.md" }, { "11. Classical Cauchy (alpha = 1) and Gaussian (alpha = 2) Heat Kernels" = "knowledge/WholeLine/ClassicalKernels.md" }, { "12. Concrete L^2(mathbb{R}) Fourier Multiplier Semigroup and Resolvent" = "knowledge/WholeLine/FourierSemigroup.md" }, { "13. Translation and the Fourier Transform on L^2(mathbb{R})" = "knowledge/WholeLine/TranslationFourier.md" }, { "14. Fourier Side of the Gagliardo Energy and Density of Schwartz Functions" = "knowledge/WholeLine/GagliardoFourier.md" }, { "15. Density of Schwartz Functions in the Gagliardo Space" = "knowledge/WholeLine/GagliardoDensity.md" }, { "18. The Symmetric Stable Heat Kernel" = "knowledge/WholeLine/StableKernel.md" }, { "19. Tail Estimates for the Stable Kernel" = "knowledge/WholeLine/StableKernelTail.md" }, { "20. Gaussian Mixtures and Monotone Regularized Transforms" = "knowledge/WholeLine/StableSubordination.md" }, { "21. The Stable Subordinator and its Lévy Measure" = "knowledge/WholeLine/StableLevy.md" }, { "22. Positivity and Monotonicity of the Stable Kernel" = "knowledge/WholeLine/StableKernelPositivity.md" }, { "23. Algebraic Tail Decay of the Stable Kernel" = "knowledge/WholeLine/StableKernelDecay.md" }, { "24. Symmetric Alpha-Stable Heat Kernel" = "knowledge/WholeLine/StableHeatKernel.md" }, { "25. The Stable Kernel Realizes the Fractional Heat Semigroup" = "knowledge/WholeLine/StableSemigroup.md" }, { "31. Homogeneity of the Fourier-Side Gagliardo Weight" = "knowledge/WholeLine/GagliardoScaling.md" }, { "34. The Exact Fourier Symbol of the Gagliardo Energy" = "knowledge/WholeLine/GagliardoSymbolExact.md" }, { "43. Energy Dissipation for the Fractional Heat Semigroup" = "knowledge/WholeLine/SemigroupDissipation.md" }, { "44. Nash Inequality and L^1 to L^2 Decay of the Fractional Heat Semigroup" = "knowledge/WholeLine/NashUltracontractivity.md" }, { "49. Stein's Maximal Inequality for the Fractional Heat Semigroup" = "knowledge/WholeLine/SteinMaximal.md" }] },
+        { "HalfLine" = [{ "16. Half-Line Reflected Fractional Semigroup" = "knowledge/HalfLine/ReflectedSemigroup.md" }, { "17. Half-Line Restricted Exterior-Dirichlet Semigroup" = "knowledge/HalfLine/RestrictedDirichlet.md" }, { "45. Ordering of the Restricted and Spectral Half-Line Energies" = "knowledge/HalfLine/FormOrdering.md" }] },
+        { "Tools" = [{ "26. The Stroock--Varopoulos Inequality" = "knowledge/Tools/StroockVaropoulos.md" }, { "27. Symmetrization of Nonlocal Energies" = "knowledge/Tools/Symmetrization.md" }, { "28. The Tools on the Gagliardo Measure" = "knowledge/Tools/GagliardoTools.md" }, { "29. The Bootstrap Lemma" = "knowledge/Tools/Bootstrap.md" }, { "30. The Fractional Nash Inequality" = "knowledge/Tools/Nash.md" }, { "32. The Convex Chain Rule and the Córdoba--Córdoba Inequality" = "knowledge/Tools/ChainRule.md" }, { "33. Small Abstract Lemmas" = "knowledge/Tools/AbstractLemmas.md" }, { "35. Consequences of the Exact Symbol: Explicit Nash Constant and Poincaré Inequality" = "knowledge/Tools/NashConsequences.md" }, { "36. Interpolation of Fractional Energies" = "knowledge/Tools/Interpolation.md" }, { "37. A Gronwall Lemma with a Weakly Singular Kernel" = "knowledge/Tools/Gronwall.md" }, { "38. The Real Beta Integral" = "knowledge/Tools/BetaIntegral.md" }, { "39. Nonlocal Poincar'e Inequalities for General Kernels" = "knowledge/Tools/Poincare.md" }, { "40. Derivative Estimates for Complete Bernstein Functions" = "knowledge/Tools/CompleteBernstein.md" }, { "41. Nash Inequality and Decay: the ODE Comparison Step" = "knowledge/Tools/NashDecay.md" }, { "42. Bernstein Inequalities for Band-Limited Functions" = "knowledge/Tools/Bernstein.md" }, { "46. Young's Convolution Inequality" = "knowledge/Tools/Young.md" }, { "47. Bernstein's Inequality in L^p" = "knowledge/Tools/BernsteinLp.md" }, { "48. The Hardy--Littlewood Maximal Function" = "knowledge/Tools/HardyLittlewood.md" }] },
+        { "Bibliography" = "knowledge/bibliography.md" },
+        # END GENERATED NAV
+        ] },
+    ]
+
+    extra_css = ["stylesheets/custom.css"]
+
+    extra_javascript = [
+        "javascripts/mathjax.js",
+        "https://unpkg.com/mathjax@3.2.2/es5/tex-mml-chtml.js",
+    ]
+
+    [project.theme]
+        features = [
+            "content.action.edit",
+            "content.action.view",
+            "content.code.copy",
+            "content.tabs.link",
+            "navigation.footer",
+            "navigation.indexes",
+            "navigation.instant",
+            "navigation.path",
+            "navigation.top",
+            "navigation.tracking",
+            "search.highlight",
+            "search.suggest",
+            "toc.follow",
+        ]
+        language = "en"
+
+        [[project.theme.palette]]
+            media       = "(prefers-color-scheme)"
+            toggle.icon = "lucide/sun-moon"
+            toggle.name = "Switch to light mode"
+
+        [[project.theme.palette]]
+            media       = "(prefers-color-scheme: light)"
+            scheme      = "default"
+            toggle.icon = "lucide/sun"
+            toggle.name = "Switch to dark mode"
+
+        [[project.theme.palette]]
+            media       = "(prefers-color-scheme: dark)"
+            scheme      = "slate"
+            toggle.icon = "lucide/moon"
+            toggle.name = "Switch to system preference"
+
+    [[project.extra.social]]
+        icon = "fontawesome/brands/github"
+        link = "https://github.com/bwrob/frac-lap-lean"
+
+    [project.markdown_extensions]
+        admonition = {}
+        attr_list = {}
+        def_list = {}
+        footnotes = {}
+        md_in_html = {}
+        pymdownx.arithmatex.generic = true
+        pymdownx.betterem = {}
+        pymdownx.details = {}
+        pymdownx.highlight.anchor_linenums = true
+        pymdownx.highlight.line_spans = "__span"
+        pymdownx.highlight.pygments_lang_class = true
+        pymdownx.inlinehilite = {}
+        pymdownx.magiclink = {}
+        pymdownx.superfences = {}
+        pymdownx.tabbed.alternate_style = true
+        pymdownx.tabbed.combine_header_slug = true
+        pymdownx.tasklist.custom_checkbox = true
+        toc.permalink = true

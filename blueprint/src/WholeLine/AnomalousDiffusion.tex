@@ -1,0 +1,83 @@
+\chapter{Whole-Line Anomalous Diffusion Semigroup}
+
+This chapter mirrors \texttt{FracLap/WholeLine/AnomalousDiffusion.lean}, formalizing the whole-line fractional heat kernel $P_\alpha(x, t)$, Fourier resolvent and semigroup symbols, the Markov convolution operator $T(t) u_0 = P_\alpha(\cdot, t) * u_0$, and the whole-line fractional Dirichlet form $B^\alpha$.
+
+\begin{definition}\label{def:fractional_heat_kernel}
+\lean{FracLap.FractionalHeatKernel, FracLap.fracHeatConv}
+\leanok
+For $0 < \alpha \le 2$, a \emph{fractional heat kernel} $P_\alpha : \mathbb{R} \times \mathbb{R} \to \mathbb{R}$ is a family of spatial profiles satisfying:
+\begin{enumerate}
+  \item spatial evenness $P_\alpha(-x, t) = P_\alpha(x, t)$ for all $x \in \mathbb{R}$ and $t > 0$;
+  \item self-similar scaling $P_\alpha(x, t) = t^{-1/\alpha} P_\alpha(x t^{-1/\alpha}, 1)$ for all $x \in \mathbb{R}$ and $t > 0$;
+  \item pointwise nonnegativity $P_\alpha(x, t) \ge 0$ and radial monotonicity $P_\alpha(b, t) \le P_\alpha(a, t)$ for $\lvert a \rvert \le \lvert b \rvert$ and $t > 0$;
+  \item algebraic decay $P_\alpha(x, 1) \le C (1 + \lvert x \rvert)^{-1-\alpha}$ at unit time; and
+  \item spatial integrability with unit total mass $\int_{\mathbb{R}} P_\alpha(x, t)\, \mathrm{d}x = 1$ for all $t > 0$.
+\end{enumerate}
+The associated whole-line convolution operator is defined for $t > 0$ and $u_0 : \mathbb{R} \to \mathbb{R}$ by
+\[
+  (T(t) u_0)(x) = \int_{\mathbb{R}} P_\alpha(x - y, t)\, u_0(y)\, \mathrm{d}y.
+\]
+\end{definition}
+
+\begin{lemma}\label{lem:kernel_integral_sub_eq_one}
+\lean{FracLap.FractionalHeatKernel.integral_sub_eq_one}
+\uses{def:fractional_heat_kernel}
+\leanok
+For every $x \in \mathbb{R}$ and $t > 0$, $\int_{\mathbb{R}} P_\alpha(x - y, t)\, \mathrm{d}y = 1$.
+\end{lemma}
+
+\begin{proof}
+\uses{def:fractional_heat_kernel}
+\leanok
+By translation and reflection invariance of Lebesgue measure on $\mathbb{R}$, the substitution $z = x - y$ preserves the integral and reduces it to $\int_{\mathbb{R}} P_\alpha(z, t)\, \mathrm{d}z = 1$.
+\end{proof}
+
+\begin{theorem}\label{thm:fourier_symbols}
+\lean{FracLap.fourierResolventSymbol_bounds, FracLap.fourierSemigroupSymbol_add, FracLap.wholeLineSemigroup_eq_conv, FracLap.wholeLineSemigroup_apply_eq_conv}
+\uses{def:contraction_semigroup, thm:c0_generator_uniqueness}
+\leanok
+For every $\lambda > 0$, $\alpha \in \mathbb{R}$, and frequency $\xi \in \mathbb{R}$:
+\begin{enumerate}
+  \item the Fourier resolvent multiplier satisfies $0 < (\lambda + \lvert \xi \rvert^\alpha)^{-1} \le \lambda^{-1}$;
+  \item the Fourier semigroup multiplier $m_\alpha(t, \xi) = e^{-t \lvert \xi \rvert^\alpha}$ satisfies the exponential semigroup law $m_\alpha(s + t, \xi) = m_\alpha(s, \xi)\, m_\alpha(t, \xi)$; and
+  \item if two strongly continuous contraction semigroups $S, T$ on a real Banach space $E$ have the same generator domain and the same generator on it, then $S(t) = T(t)$ for all $t \ge 0$.
+\end{enumerate}
+\end{theorem}
+
+\begin{proof}
+\uses{def:contraction_semigroup, thm:c0_generator_uniqueness}
+\leanok
+Since $\lvert \xi \rvert^\alpha \ge 0$ and $\lambda > 0$, we have $0 < \lambda \le \lambda + \lvert \xi \rvert^\alpha$, and taking reciprocals gives $0 < (\lambda + \lvert \xi \rvert^\alpha)^{-1} \le \lambda^{-1}$. The symbol semigroup identity follows from $e^{-(s+t)\lvert \xi \rvert^\alpha} = e^{-s\lvert \xi \rvert^\alpha - t\lvert \xi \rvert^\alpha} = e^{-s\lvert \xi \rvert^\alpha} e^{-t\lvert \xi \rvert^\alpha}$. The identification of semigroups with equal generators is exactly Theorem~\ref{thm:c0_generator_uniqueness} (Engel--Nagel~\cite{engel}, Theorem~II.1.4).
+\end{proof}
+
+\begin{theorem}\label{thm:whole_line_markov}
+\lean{FracLap.fracHeatConv_nonneg, FracLap.fracHeatConv_le_const}
+\uses{def:fractional_heat_kernel, lem:kernel_integral_sub_eq_one}
+\leanok
+Let $P_\alpha$ be a fractional heat kernel and $t > 0$. If $u_0 : \mathbb{R} \to \mathbb{R}$ satisfies $0 \le u_0(y) \le M$ for all $y \in \mathbb{R}$ and $y \mapsto P_\alpha(x - y, t) u_0(y)$ is integrable, then
+\[
+  0 \le (T(t) u_0)(x) \le M \qquad \text{for all } x \in \mathbb{R}.
+\]
+\end{theorem}
+
+\begin{proof}
+\uses{def:fractional_heat_kernel, lem:kernel_integral_sub_eq_one}
+\leanok
+Nonnegativity follows by integrating the pointwise nonnegative product $P_\alpha(x - y, t) u_0(y) \ge 0$. For the upper bound, pointwise monotonicity $P_\alpha(x - y, t) u_0(y) \le P_\alpha(x - y, t) M$ and Lemma~\ref{lem:kernel_integral_sub_eq_one} give
+\[
+  \int_{\mathbb{R}} P_\alpha(x - y, t) u_0(y)\, \mathrm{d}y \le M \int_{\mathbb{R}} P_\alpha(x - y, t)\, \mathrm{d}y = M.
+\]
+\end{proof}
+
+\begin{theorem}\label{thm:whole_line_form}
+\lean{FracLap.fourierFracLap_symm_nonneg, FracLap.symmetricAccretiveFormOfSqrt}
+\uses{def:symmetric_accretive_form}
+\leanok
+In frequency space, the multiplier $\lvert \xi \rvert^\alpha$ is symmetric and nonnegative: $\bigl(\lvert \xi \rvert^\alpha \widehat{u}(\xi)\bigr) \widehat{v}(\xi) = \widehat{u}(\xi) \bigl(\lvert \xi \rvert^\alpha \widehat{v}(\xi)\bigr)$ and $\lvert \xi \rvert^\alpha \widehat{u}(\xi)^2 \ge 0$. Furthermore, for any square-root operator $T : V \to H$ into a space $H$ equipped with a symmetric, nonnegative, Cauchy--Schwarz inner product $\langle \cdot, \cdot \rangle_H$, the bilinear form $B(u, v) = \langle Tu, Tv \rangle_H$ is a symmetric accretive form on $V$.
+\end{theorem}
+
+\begin{proof}
+\uses{def:symmetric_accretive_form}
+\leanok
+Symmetry and nonnegativity of the symbol follow from commutativity of real multiplication and $\lvert \xi \rvert^\alpha \ge 0$, $\widehat{u}(\xi)^2 \ge 0$. The form properties $B(u, v) = B(v, u)$, $B(u, u) \ge 0$, and $B(u, v)^2 \le B(u, u) B(v, v)$ are inherited directly from the inner product on $H$ evaluated on $Tu$ and $Tv$.
+\end{proof}

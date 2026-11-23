@@ -1,0 +1,70 @@
+\chapter{The Stroock--Varopoulos Inequality}
+
+This chapter mirrors \texttt{FracLap/Tools/StroockVaropoulos.lean}. For $q > 1$ let $\varphi(s) = \operatorname{sgn}(s) \lvert s \rvert^{q-1}$ and $\psi(s) = \operatorname{sgn}(s) \lvert s \rvert^{q/2}$ (signed powers). The two-point inequality
+\[
+  \frac{4(q-1)}{q^2} \bigl(\psi(a) - \psi(b)\bigr)^2 \le (a - b)\bigl(\varphi(a) - \varphi(b)\bigr)
+\]
+is the pointwise core of the Stroock--Varopoulos inequality used for $L^q$ estimates of fractional diffusions (Biler--Imbert--Karch; Liskevich--Semenov). Integrating it against a symmetric jump measure yields
+\[
+  \int \lvert u \rvert^{q-2} u\, (-\Delta)^{\alpha/2} u \ge \frac{4(q-1)}{q^2} \int \bigl\lvert (-\Delta)^{\alpha/4} \lvert u \rvert^{q/2} \bigr\rvert^2
+\]
+at the level of the Gagliardo energy. The constant $4(q-1)/q^2$ is sharp: at $q = 2$ the inequality is an equality.
+
+\begin{lemma}\label{lem:cauchy_schwarz_interval}
+\lean{FracLap.sq_integral_le, FracLap.integral_rpow_deriv}
+\uses{thm:std_ftc_interval}
+\leanok
+For continuous $f$ on $a \le s \le b$, $(\int_a^b f)^2 \le (b - a) \int_a^b f^2$. For $p \in \mathbb{R}$ and $0 < b \le a$, $\int_b^a p s^{p-1}\, \mathrm{d}s = a^p - b^p$.
+\end{lemma}
+
+\begin{proof}
+\uses{thm:std_ftc_interval}
+\leanok
+Let $m$ be the mean of $f$. Then $0 \le \int_a^b (f - m)^2 = \int_a^b f^2 - (\int_a^b f)^2 / (b - a)$. The second statement is Theorem~\ref{thm:std_ftc_interval} for $s \mapsto s^p$, which is smooth on $s \ge b > 0$.
+\end{proof}
+
+\begin{theorem}[Two-point Stroock--Varopoulos]\label{thm:sv_two_point}
+\lean{FracLap.sv_pos, FracLap.sv_nonneg, FracLap.sv_opposite, FracLap.sv_nn, FracLap.sv_two_point_of_le, FracLap.sv_two_point, FracLap.sv_two_point_abs, FracLap.spow, FracLap.spow_neg}
+\uses{lem:cauchy_schwarz_interval}
+\leanok
+For $q > 1$ and all real $a, b$, $\frac{4(q-1)}{q^2} (\psi(a) - \psi(b))^2 \le (a - b)(\varphi(a) - \varphi(b))$. The left side may be replaced by $\frac{4(q-1)}{q^2} (\lvert a \rvert^{q/2} - \lvert b \rvert^{q/2})^2$.
+\end{theorem}
+
+\begin{proof}
+\uses{lem:cauchy_schwarz_interval}
+\leanok
+By symmetry in $(a, b)$ and oddness of $\varphi, \psi$ it suffices to treat $b \le a$ with $0 \le b$, or $b < 0 \le a$. For $0 < b \le a$ write $\psi(a) - \psi(b) = \int_b^a \tfrac q2 s^{q/2 - 1}\, \mathrm{d}s$ and apply Lemma~\ref{lem:cauchy_schwarz_interval} together with $\int_b^a (\tfrac q2)^2 s^{q-2}\, \mathrm{d}s = \frac{q^2}{4(q-1)} (a^{q-1} - b^{q-1})$; the case $b = 0$ is a direct computation using $q^2 \ge 4(q-1)$. For $b < 0 \le a$ put $y = -b$; Cauchy--Schwarz in $\mathbb{R}^2$ gives $(a^{q/2} + y^{q/2})^2 \le (a + y)(a^{q-1} + y^{q-1})$, and $4(q-1)/q^2 \le 1$. The last statement follows from $\bigl\lvert \lvert x \rvert - \lvert y \rvert \bigr\rvert \le \lvert x - y \rvert$.
+\end{proof}
+
+\begin{theorem}[Stroock--Varopoulos for nonlocal energies]\label{thm:sv_energy}
+\lean{FracLap.sv_lintegral, FracLap.sv_integral}
+\uses{thm:sv_two_point, thm:symmetrization}
+\leanok
+For any measure $\nu$ and weight $w \ge 0$ on $X \times X$,
+\[
+  \frac{4(q-1)}{q^2} \iint w\, (\psi(u(x)) - \psi(u(y)))^2 \le \iint w\, (u(x) - u(y))(\varphi(u(x)) - \varphi(u(y))).
+\]
+If $\nu$ is swap invariant and the functions involved are integrable, then
+\[
+  \frac{2(q-1)}{q^2} \int (\psi(u(x)) - \psi(u(y)))^2\, \mathrm{d}\nu \le \int (u(x) - u(y))\, \varphi(u(x))\, \mathrm{d}\nu.
+\]
+\end{theorem}
+
+\begin{proof}
+\uses{thm:sv_two_point, thm:symmetrization}
+\leanok
+The first inequality integrates Theorem~\ref{thm:sv_two_point}. For the second, Theorem~\ref{thm:symmetrization} turns the right side into $\frac12 \int (u(x) - u(y))(\varphi(u(x)) - \varphi(u(y)))\, \mathrm{d}\nu$, to which the first inequality applies.
+\end{proof}
+
+\begin{theorem}[Generalized Stroock--Varopoulos]\label{thm:gen_sv}
+\lean{FracLap.gen_sv_two_point, FracLap.gen_sv_lintegral, FracLap.gen_sv_integral}
+\uses{lem:cauchy_schwarz_interval, thm:symmetrization}
+\leanok
+Let $\Psi, \psi$ be differentiable with $\psi' = (\Psi')^2$ and $\Psi'$ continuous. Then $(\Psi(a) - \Psi(b))^2 \le (a - b)(\psi(a) - \psi(b))$, and for a swap-invariant jump measure $\nu$ with the relevant integrability, $\int (\Psi(u(x)) - \Psi(u(y)))^2\, \mathrm{d}\nu \le 2 \int (u(x) - u(y)) \psi(u(x))\, \mathrm{d}\nu$.
+\end{theorem}
+
+\begin{proof}
+\uses{lem:cauchy_schwarz_interval, thm:symmetrization}
+\leanok
+For $a \ge b$, $\Psi(a) - \Psi(b) = \int_b^a \Psi'$ and Lemma~\ref{lem:cauchy_schwarz_interval} gives $(\Psi(a) - \Psi(b))^2 \le (a - b) \int_b^a (\Psi')^2 = (a - b)(\psi(a) - \psi(b))$. The integral form follows by Theorem~\ref{thm:symmetrization}.
+\end{proof}

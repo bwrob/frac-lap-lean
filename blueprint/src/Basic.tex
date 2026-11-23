@@ -1,0 +1,22 @@
+\chapter{Fractional Laplacian Order Preliminaries}
+
+We record the baseline fractional order parameter $s \in (0, 1)$, corresponding to \texttt{FracLap/Basic.lean}.
+
+\begin{definition}\label{def:fractional_order}
+\lean{FracLap.FractionalOrder}
+\leanok
+A real parameter $s \in \mathbb{R}$ is a \emph{fractional Laplacian order} if $0 < s < 1$.
+\end{definition}
+
+\begin{theorem}\label{thm:fractional_order_half}
+\lean{FracLap.fractionalOrder_half}
+\uses{def:fractional_order}
+\leanok
+The half-Laplacian parameter $s = \frac{1}{2}$ is a valid fractional order.
+\end{theorem}
+
+\begin{proof}
+\uses{def:fractional_order}
+\leanok
+Since $0 < \frac{1}{2}$ and $\frac{1}{2} < 1$, Definition~\ref{def:fractional_order} holds for $s = \frac{1}{2}$.
+\end{proof}

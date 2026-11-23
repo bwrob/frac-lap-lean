@@ -1,0 +1,117 @@
+name: CI
+
+# Light, fast gates on every push and pull request. Heavy kernel replay (leanchecker over every
+# module, multi-kernel and comparator audits) lives in paranoid.yml (weekly and on demand).
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+  workflow_dispatch:
+
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
+
+permissions:
+  contents: read
+
+jobs:
+  changes:
+    name: Detect changed areas
+    runs-on: ubuntu-latest
+    outputs:
+      lean: ${{ steps.filter.outputs.lean }}
+      python: ${{ steps.filter.outputs.python }}
+      tex: ${{ steps.filter.outputs.tex }}
+    steps:
+      - uses: actions/checkout@v7
+      - id: filter
+        uses: dorny/paths-filter@v3
+        with:
+          filters: |
+            lean:
+              - 'FracLap/**'
+              - 'FracLapTest/**'
+              - 'FracLap.lean'
+              - 'FracLapTest.lean'
+              - 'lakefile.toml'
+              - 'lake-manifest.json'
+              - 'lean-toolchain'
+              - 'scripts/*.lean'
+              - 'comparator.json'
+              - 'blueprint/**'
+              - '.github/workflows/ci.yml'
+            python:
+              - 'scripts/**'
+              - 'tests/**'
+              - '.agents/skills/**'
+              - 'pyproject.toml'
+              - 'uv.lock'
+              - 'docs/**'
+              - 'zensical.toml'
+              - '.github/workflows/ci.yml'
+            tex:
+              - 'blueprint/src/**'
+              - '.chktexrc'
+              - '.github/workflows/ci.yml'
+
+  lean:
+    name: Lean build, lint, axioms, audit, blueprint declarations
+    needs: changes
+    if: needs.changes.outputs.lean == 'true'
+    runs-on: ubuntu-latest
+    timeout-minutes: 45
+    steps:
+      - uses: actions/checkout@v7
+
+      - name: Setup Lean + Mathlib cache + build + lint
+        uses: leanprover/lean-action@v1
+        with:
+          build: true
+          lint: true
+
+      - name: Build tests, audit axioms and spec gaps
+        run: |
+          lake build FracLapTest
+          lake env lean --run scripts/check_axioms.lean
+          lake env lean --run scripts/audit_spec_gaps.lean --strict
+
+      - name: Blueprint declarations match Lean
+        run: |
+          sudo apt-get update && sudo apt-get install -y --no-install-recommends graphviz libgraphviz-dev
+          pipx install --include-deps leanblueprint
+          leanblueprint web
+          leanblueprint checkdecls
+
+  tex:
+    name: Blueprint LaTeX lint
+    needs: changes
+    if: needs.changes.outputs.tex == 'true'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+      - run: sudo apt-get update && sudo apt-get install -y --no-install-recommends chktex
+      - run: find blueprint/src -name '*.tex' | sort | xargs chktex -l .chktexrc -q -e all -n 1 -n 3 -n 8 -n 22 -n 24 -n 36 -n 46
+
+  python:
+    name: Python checks and docs generation
+    needs: changes
+    if: needs.changes.outputs.python == 'true'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+      - uses: astral-sh/setup-uv@v10.3.0
+        with:
+          python-version: "3.13"
+          enable-cache: true
+      - run: uv sync --python 3.13
+      - run: |
+          uv run python scripts/lean_style_check.py
+          uv run python scripts/check_imports.py
+          uv run python scripts/gen_docs.py --check
+          uv run ruff check scripts/ tests/ .agents/skills/
+          uv run ruff format --check scripts/ tests/ .agents/skills/
+          uv run pyrefly check
+          uv run complexipy
+          uv run pytest -q

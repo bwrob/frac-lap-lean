@@ -1,0 +1,45 @@
+\chapter{Derivative Estimates for Complete Bernstein Functions}
+
+This chapter mirrors \texttt{FracLap/Tools/CompleteBernstein.lean}. Let $a, b \ge 0$ and let $\sigma$ be a measure on $s \ge 0$ with $\int (1+s)^{-1}\, \mathrm{d}\sigma < \infty$. The complete Bernstein function is
+\[
+  f(z) = a + b z + \int \frac{z}{z + s}\, \mathrm{d}\sigma(s), \qquad z > 0.
+\]
+
+\begin{lemma}\label{lem:cbf_integrability}
+\lean{FracLap.integrable_of_le_inv, FracLap.inv_add_le_max, FracLap.ratio_le_max, FracLap.integrable_cbf_kernel, FracLap.integrable_cbf_kernel_deriv, FracLap.integrable_cbf_kernel_deriv2}
+\leanok
+For $z > 0$ the functions $s \mapsto z/(z+s)$, $s/(z+s)^2$ and $s/(z+s)^3$ are $\sigma$-integrable; each is bounded by a multiple of $(1+s)^{-1}$.
+\end{lemma}
+
+\begin{proof}
+\leanok
+For $c > 0$ and $s \ge 0$ one has $1/(c+s) \le \max(1, 1/c)/(1+s)$, and $z/(z+s) \le \max(1, z)/(1+s)$, $s/(z+s)^2 \le 1/(z+s)$, $s/(z+s)^3 \le 1/(\tfrac z2 (z+s))$.
+\end{proof}
+
+\begin{theorem}[Differentiation]\label{thm:cbf_derivatives}
+\lean{FracLap.cbf, FracLap.cbfDeriv, FracLap.cbfDeriv2, FracLap.hasDerivAt_integral_sigma, FracLap.hasDerivAt_cbf, FracLap.hasDerivAt_cbfDeriv}
+\uses{lem:cbf_integrability, thm:std_dominated_convergence}
+\leanok
+On $z > 0$, $f$ is differentiable with $f'(z) = b + \int s/(z+s)^2\, \mathrm{d}\sigma$, and $f'$ is differentiable with $f''(z) = -2\int s/(z+s)^3\, \mathrm{d}\sigma$.
+\end{theorem}
+
+\begin{proof}
+\uses{lem:cbf_integrability, thm:std_dominated_convergence}
+\leanok
+Differentiate under the integral sign (dominated convergence): for $z$ in $z > z_0/2$ the $z$-derivative of the integrand is dominated by a multiple of $(1+s)^{-1}$ by Lemma~\ref{lem:cbf_integrability}. The pointwise derivatives are $\partial_z \frac{z}{z+s} = \frac{s}{(z+s)^2}$ and $\partial_z \frac{s}{(z+s)^2} = -\frac{2s}{(z+s)^3}$.
+\end{proof}
+
+\begin{theorem}[Complete Bernstein estimates]\label{thm:cbf_estimates}
+\lean{FracLap.cbfDeriv_nonneg, FracLap.cbf_mul_deriv_le, FracLap.cbf_neg_mul_deriv2_le}
+\uses{lem:cbf_integrability}
+\leanok
+For $a, b \ge 0$ and $z > 0$: $0 \le f'(z)$, $z f'(z) \le f(z)$ and $0 \le -z f''(z) \le 2 f'(z)$.
+\end{theorem}
+
+\begin{proof}
+\uses{lem:cbf_integrability}
+\leanok
+Compare the integrands: $\frac{z s}{(z+s)^2} \le \frac{z}{z+s}$ because $s \le z + s$, and $\frac{z s}{(z+s)^3} \le \frac{s}{(z+s)^2}$ because $z \le z + s$. Integrate and add the terms $b z$, $a$ and $b$.
+\end{proof}
+
+The estimate $-z f''(z) \le 2 f'(z)$ is false for the (non-complete) Bernstein function $1 - e^{-z}$ at $z = 3$, which is why the Stieltjes structure is needed; this is checked in the test file.

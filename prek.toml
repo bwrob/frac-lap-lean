@@ -1,0 +1,59 @@
+#:schema https://www.schemastore.org/prek.json
+
+default_install_hook_types = ["pre-commit", "commit-msg", "pre-push"]
+default_stages             = ["pre-commit"]
+fail_fast                  = false
+
+[priorities]
+    checks                 = 7
+    end_of_file            = 2
+    independent_formatters = 4
+    line_endings           = 0
+    lockfile               = 3
+    python_format          = 6
+    source_fix             = 5
+    trailing_whitespace    = 1
+
+[[repos]]
+    hooks = [
+        { id = "check-case-conflict", name = "prek · Check for case conflicts", priority = "checks" },
+        { id = "check-merge-conflict", name = "prek · Check for merge conflicts", priority = "checks" },
+        { id = "check-yaml", name = "prek · Check YAML files", priority = "checks" },
+        { id = "check-json", name = "prek · Check JSON files", priority = "checks" },
+        { id = "check-toml", name = "prek · Check TOML files", priority = "checks" },
+        { id = "end-of-file-fixer", name = "prek · Fix end of file", priority = "end_of_file" },
+        { id = "mixed-line-ending", name = "prek · Check mixed line endings", priority = "line_endings" },
+        { id = "trailing-whitespace", name = "prek · Check trailing whitespace", priority = "trailing_whitespace" },
+        { id = "check-added-large-files", name = "prek · Check for large files", args = [
+            "--maxkb=2000",
+        ], priority = "checks" },
+    ]
+    repo = "https://github.com/pre-commit/pre-commit-hooks"
+    rev = "v6.0.0"
+
+[[repos]]
+    hooks = [
+        { id = "ruff-check", name = "ruff · Check Python code", entry = "uv run ruff check --fix", language = "system", files = '\.(py|pyi)$', priority = "source_fix" },
+        { id = "ruff-format", name = "ruff · Format Python code", entry = "uv run ruff format", language = "system", files = '\.(py|pyi)$', priority = "python_format" },
+        { id = "pyrefly", name = "pyrefly · Type check Python code", entry = "uv run pyrefly check", language = "system", pass_filenames = false, files = '(\.(py|pyi)$|(^|/)(pyproject\.toml|uv\.lock)$)', priority = "checks" },
+        { id = "complexipy", name = "complexipy · Cognitive complexity check", entry = "uv run complexipy", language = "system", pass_filenames = false, files = '(\.(py|pyi)$|(^|/)pyproject\.toml$)', priority = "checks" },
+        { id = "uv-lock", name = "uv · Verify uv.lock matches pyproject.toml", entry = "uv lock --check", language = "system", pass_filenames = false, files = '(^|/)(pyproject\.toml|uv\.lock)$', priority = "lockfile" },
+        { id = "docs-nav", name = "docs · Generated nav block of zensical.toml is current", entry = "uv run python scripts/gen_docs.py --check", language = "system", pass_filenames = false, files = '(^blueprint/src/.*\.tex$|^zensical\.toml$|^scripts/gen_docs\.py$)', priority = "checks" },
+        { id = "lint-tex", name = "chktex · Lint blueprint LaTeX", entry = "just lint-tex", language = "system", pass_filenames = false, files = '^blueprint/src/.*\.tex$', priority = "checks" },
+        { id = "lint-quick", name = "lean · Fast style pre-check", entry = "uv run python scripts/lean_style_check.py", language = "system", files = '^(FracLap|FracLapTest)/.*\.lean$', priority = "checks" },
+        { id = "lean-build", name = "lean · Build FracLap and FracLapTest", entry = "sh -c 'export PATH=\"$HOME/.elan/bin:$HOME/.local/bin:$PATH\" && just build && just test-lean'", language = "system", pass_filenames = false, files = '(^FracLap/|^FracLap\.lean$|^FracLapTest/|^FracLapTest\.lean$|^lakefile\.toml$)', priority = "checks" },
+        { id = "check-imports", name = "lean · Verify root FracLap.lean imports & 1-to-1 blueprint parity", entry = "just check-imports", language = "system", pass_filenames = false, files = '(^FracLap/|^FracLap\.lean$|^FracLapTest/|^FracLapTest\.lean$|^blueprint/src/)', priority = "checks" },
+        { id = "conventional-commit", name = "git · Validate Conventional Commit message", entry = "uv run python scripts/check_commit_msg.py", language = "system", stages = [
+            "commit-msg",
+        ] },
+        { id = "lean-verify", name = "lean · Fast incremental build, test, imports, axioms & gap audit", entry = "sh -c 'export PATH=\"$HOME/.elan/bin:$HOME/.local/bin:$PATH\" && just lint-quick && just build && just test-lean && just check-imports && just check-axioms && just audit-gaps --strict'", language = "system", pass_filenames = false, files = '(^FracLap/|^FracLap\.lean$|^FracLapTest/|^FracLapTest\.lean$|^lakefile\.toml$|^blueprint/src/)', priority = "checks", stages = [
+            "pre-push",
+        ] },
+        { id = "lean-verify-full", name = "lean · Full verification suite (verify-all)", entry = "sh -c 'export PATH=\"$HOME/.elan/bin:$HOME/.local/bin:$PATH\" && just verify-all'", language = "system", pass_filenames = false, always_run = true, priority = "checks", stages = [
+            "manual",
+        ] },
+        { id = "lean-verify-paranoid", name = "lean · Paranoid multi-kernel & comparator suite", entry = "sh -c 'export PATH=\"$HOME/.elan/bin:$HOME/.local/bin:$PATH\" && just check-paranoid && just check-comparator'", language = "system", pass_filenames = false, always_run = true, priority = "checks", stages = [
+            "manual",
+        ] },
+    ]
+    repo = "local"

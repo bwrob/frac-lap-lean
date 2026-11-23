@@ -1,0 +1,53 @@
+\chapter{Symmetric Alpha-Stable Heat Kernel}
+
+This chapter mirrors \texttt{FracLap/WholeLine/StableHeatKernel.lean}, assembling spatial continuity, integrability, exact Fourier inversion, and unit mass into a concrete fractional heat kernel instance for every $0 < \alpha < 2$ (following the Fourier-analytic convolution semigroup framework of Bogdan--Grzywny--Ryznar~\cite{bogdan_2014_density_tails_unimodal_semigroups} and Cygan--Grzywny--Trojan~\cite{cygan_2015_asymptotic_densities_unimodal_semigroups}).
+
+\begin{lemma}\label{lem:stable_kernel_continuous_integrable}
+\lean{FracLap.continuous_stableKernel, FracLap.integrable_one_add_abs_neg_rpow, FracLap.integrable_stableKernel}
+\uses{def:stable_kernel, lem:stable_symbol_integrable, thm:stable_kernel_positive_monotone, thm:stable_kernel_decay_all_alpha, thm:std_continuity_integral, thm:std_power_integrability, thm:std_half_line_scaling}
+\leanok
+For $0 < \alpha < 2$ and $t > 0$, the function $x \mapsto P_\alpha(x, t)$ is continuous and integrable on $\mathbb{R}$.
+\end{lemma}
+
+\begin{proof}
+\uses{lem:stable_symbol_integrable, thm:stable_kernel_positive_monotone, thm:stable_kernel_decay_all_alpha, thm:std_continuity_integral, thm:std_power_integrability, thm:std_half_line_scaling}
+\leanok
+Continuity follows by differentiation/continuity under the integral sign in the representation $P_\alpha(x, t) = (2\pi)^{-1} \int_{\mathbb{R}} \cos(x \omega) e^{-t \lvert \omega \rvert^\alpha} \mathrm{d}\omega$ dominated by $e^{-t \lvert \omega \rvert^\alpha} \in L^1(\mathbb{R})$. At $t = 1$, nonnegativity and Theorem~\ref{thm:stable_kernel_decay_all_alpha} dominate $P_\alpha(x, 1)$ by $C(\alpha)(1 + \lvert x \rvert)^{-1-\alpha}$, which is integrable on $[-1, 1]$ by continuity and on $\lvert x \rvert > 1$ because $-1 - \alpha < -1$. General $t > 0$ follows by self-similarity and linear scaling of Lebesgue measure.
+\end{proof}
+
+\begin{theorem}\label{thm:stable_kernel_fourier_faithfulness}
+\lean{FracLap.integrable_stableSymbol_twoPi, FracLap.fourier_stableSymbol_eq_stableKernel, FracLap.fourierInv_stableSymbol_eq_stableKernel, FracLap.fourier_stableKernel_eq, FracLap.integral_stableKernel_eq_one}
+\uses{lem:stable_kernel_continuous_integrable, thm:std_fourier_inversion, thm:std_half_line_scaling, thm:std_translation_invariance}
+\leanok
+For every $0 < \alpha < 2$ and $t > 0$, the $2\pi$-normalized Fourier transform of $P_\alpha(\cdot, t)$ recovers the stable semigroup symbol identically:
+\[
+  \mathcal{F}\bigl(P_\alpha(\cdot, t)\bigr)(\xi) = e^{-t \lvert 2\pi \xi \rvert^\alpha} \qquad \text{for all } \xi \in \mathbb{R}.
+\]
+Evaluating at $\xi = 0$ yields the unit total mass $\int_{\mathbb{R}} P_\alpha(x, t) \mathrm{d}x = 1$.
+\end{theorem}
+
+\begin{proof}
+\uses{lem:stable_kernel_continuous_integrable, thm:std_fourier_inversion, thm:std_half_line_scaling, thm:std_translation_invariance}
+\leanok
+Let $f(\xi) = e^{-t \lvert 2\pi \xi \rvert^\alpha}$. Substituting $\omega = 2\pi\xi$ splits $\mathcal{F}f(x)$ into its cosine real part $P_\alpha(x, t)$ and an odd sine imaginary part that integrates to zero; by evenness of $P_\alpha(\cdot, t)$, the inverse Fourier transform $\mathcal{F}^{-1}f$ equals $P_\alpha(\cdot, t)$ everywhere. Both $f$ and $\mathcal{F}f = P_\alpha(\cdot, t)$ lie in $L^1(\mathbb{R})$ by Lemma~\ref{lem:stable_kernel_continuous_integrable} with $f$ continuous, so Theorem~\ref{thm:std_fourier_inversion} gives $\mathcal{F}(P_\alpha(\cdot, t)) = \mathcal{F}(\mathcal{F}^{-1}f) = f$. Setting $\xi = 0$ yields $\int_{\mathbb{R}} P_\alpha(x, t) \mathrm{d}x = e^0 = 1$.
+\end{proof}
+
+\begin{definition}\label{def:stable_heat_kernel}
+\lean{FracLap.stableHeatKernel, FracLap.stableHeatKernel_one_eq_cauchy}
+\uses{def:fractional_heat_kernel, lem:stable_kernel_elementary, thm:stable_kernel_positive_monotone, thm:stable_kernel_decay_all_alpha, thm:stable_kernel_fourier_faithfulness, def:cauchy_heat_kernel, thm:fourier_inv_cauchy}
+\leanok
+For every fractional exponent $0 < \alpha < 2$, bundling $P_\alpha(x, t) = \mathrm{stableKernel}(\alpha, x, t)$ with its symmetry, self-similar scaling, positivity, radial monotonicity, algebraic tail decay, integrability, and unit mass yields a concrete $\mathrm{FractionalHeatKernel}(\alpha)$ instance. At $\alpha = 1$, this kernel agrees pointwise with the explicit Cauchy kernel.
+\end{definition}
+
+\begin{theorem}[Vanishing at spatial infinity]\label{thm:stable_kernel_c0}
+\lean{FracLap.tendsto_stableKernel_cocompact, FracLap.stableKernelC0Map}
+\uses{lem:stable_kernel_continuous_integrable, thm:stable_kernel_decay_all_alpha, lem:stable_kernel_elementary}
+\leanok
+For every fractional exponent $0 < \alpha < 2$ and every time $t > 0$, the spatial kernel $x \mapsto P_\alpha(x, t)$ belongs to $C_0(\mathbb{R})$, i.e., it is continuous and tends to $0$ along the cocompact filter $\lvert x \rvert \to \infty$.
+\end{theorem}
+
+\begin{proof}
+\uses{lem:stable_kernel_continuous_integrable, thm:stable_kernel_decay_all_alpha, lem:stable_kernel_elementary}
+\leanok
+By self-similarity and unit-time algebraic decay, $0 \le P_\alpha(x, t) \le t^{-1/\alpha} C(\alpha) (1 + \lvert x t^{-1/\alpha} \rvert)^{-1-\alpha}$ for all $x \in \mathbb{R}$. Since $\lvert x t^{-1/\alpha} \rvert \to \infty$ as $\lvert x \rvert \to \infty$ and $-1 - \alpha < 0$, squeezing gives $P_\alpha(x, t) \to 0$; pairing this with spatial continuity places $P_\alpha(\cdot, t)$ in $C_0(\mathbb{R})$.
+\end{proof}

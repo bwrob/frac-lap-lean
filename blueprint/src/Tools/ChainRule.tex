@@ -1,0 +1,33 @@
+\chapter{The Convex Chain Rule and the Córdoba--Córdoba Inequality}
+
+This chapter mirrors \texttt{FracLap/Tools/ChainRule.lean}. For a nonlocal operator $L v(x) = \int (v(x) - v(y))\, \mathrm{d}\mu(y)$ and a convex $\varphi$ (Garofalo, chain rule for $(-\Delta)^s$), $L(\varphi \circ u)(x) \le \varphi'(u(x))\, L u(x)$. For $\varphi(t) = t^2$ this is the Córdoba--Córdoba inequality $L(u^2) \le 2 u\, L u$.
+
+\begin{lemma}\label{lem:convex_tangent}
+\lean{FracLap.convex_tangent, FracLap.chain_rule_two_point}
+\uses{thm:std_convex_tangent}
+\leanok
+For convex differentiable $\varphi$ and all $a, b$: $\varphi(a) - \varphi(b) \le \varphi'(a)(a - b)$.
+\end{lemma}
+
+\begin{proof}
+\uses{thm:std_convex_tangent}
+\leanok
+This is Theorem~\ref{thm:std_convex_tangent} rearranged.
+\end{proof}
+
+\begin{theorem}\label{thm:chain_rule}
+\lean{FracLap.chain_rule_integral, FracLap.cordoba_two_point, FracLap.cordoba_integral}
+\uses{lem:convex_tangent}
+\leanok
+Let $\mu$ be any measure, $\varphi$ convex differentiable, $u$ a function and $x$ a point such that $y \mapsto \varphi(u(x)) - \varphi(u(y))$ and $y \mapsto u(x) - u(y)$ are $\mu$-integrable. Then
+\[
+  \int \bigl(\varphi(u(x)) - \varphi(u(y))\bigr)\, \mathrm{d}\mu(y) \le \varphi'(u(x)) \int \bigl(u(x) - u(y)\bigr)\, \mathrm{d}\mu(y).
+\]
+In particular $\int (u(x)^2 - u(y)^2)\, \mathrm{d}\mu \le 2 u(x) \int (u(x) - u(y))\, \mathrm{d}\mu$.
+\end{theorem}
+
+\begin{proof}
+\uses{lem:convex_tangent}
+\leanok
+Integrate the pointwise bound of Lemma~\ref{lem:convex_tangent} in $y$. For $\varphi(t) = t^2$ one has the identity $2a(a - b) - (a^2 - b^2) = (a - b)^2 \ge 0$.
+\end{proof}

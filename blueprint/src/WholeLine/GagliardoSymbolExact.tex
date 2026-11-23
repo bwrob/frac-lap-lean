@@ -1,0 +1,72 @@
+\chapter{The Exact Fourier Symbol of the Gagliardo Energy}
+
+This chapter mirrors \texttt{FracLap/WholeLine/GagliardoSymbolExact.lean}. It proves that, with the normalizing constant $C(\alpha) = \frac{2^{\alpha-1} \alpha \Gamma((1+\alpha)/2)}{\sqrt{\pi} \Gamma(1 - \alpha/2)}$, the Gagliardo energy has Fourier symbol exactly $\lvert 2\pi\xi \rvert^\alpha$:
+\[
+  \Lambda_\alpha(\xi) = \int \frac{C(\alpha)}{2 \lvert h \rvert^{1+\alpha}} \lvert e^{2\pi \mathrm{i} h \xi} - 1 \rvert^2\, \mathrm{d}h = \lvert 2\pi \xi \rvert^\alpha, \qquad 0 < \alpha < 2.
+\]
+This identifies the singular-integral energy with the Fourier multiplier of the fractional heat semigroup.
+
+\begin{lemma}\label{lem:inversion_gamma}
+\lean{FracLap.integral_rpow_exp_inv, FracLap.integrableOn_rpow_exp_inv}
+\uses{thm:std_gamma, thm:std_inversion}
+\leanok
+For $A > 0$ and $\beta > 0$, $s \mapsto s^{-3/2-\beta} e^{-A/s}$ is integrable on $s > 0$ and $\int_0^\infty s^{-3/2-\beta} e^{-A/s}\, \mathrm{d}s = A^{-(\beta + 1/2)}\, \Gamma(\beta + 1/2)$.
+\end{lemma}
+
+\begin{proof}
+\uses{thm:std_gamma, thm:std_inversion}
+\leanok
+Substitute $t = 1/s$ (Theorem~\ref{thm:std_inversion}): the integral becomes $\int_0^\infty t^{\beta - 1/2} e^{-A t}\, \mathrm{d}t$, which is a Gamma integral (Theorem~\ref{thm:std_gamma}) after scaling.
+\end{proof}
+
+\begin{lemma}\label{lem:subordinated_kernel}
+\lean{FracLap.gaussDensity, FracLap.levy_kernel_eq}
+\uses{lem:inversion_gamma, def:levy_measure}
+\leanok
+Let $g_s(h) = (4\pi s)^{-1/2} e^{-h^2/(4s)}$, $\beta = \alpha/2$ and $c_\beta = \beta/\Gamma(1 - \beta)$. For $h \ne 0$, $c_\beta \int_0^\infty s^{-1-\beta} g_s(h)\, \mathrm{d}s = C(\alpha) \lvert h \rvert^{-1-\alpha}$.
+\end{lemma}
+
+\begin{proof}
+\uses{lem:inversion_gamma, def:levy_measure}
+\leanok
+Since $s^{-1-\beta} (4\pi s)^{-1/2} = (4\pi)^{-1/2} s^{-3/2-\beta}$, Lemma~\ref{lem:inversion_gamma} with $A = h^2/4$ gives $c_\beta (4\pi)^{-1/2} (4/h^2)^{\beta + 1/2} \Gamma(\beta + 1/2) = C(\alpha) \lvert h \rvert^{-1-\alpha}$, by a direct computation with $\Gamma$ and powers of $2$.
+\end{proof}
+
+\begin{lemma}\label{lem:gauss_cos_integral}
+\lean{FracLap.integrable_gaussDensity_one_sub_cos, FracLap.integral_gaussDensity_one_sub_cos}
+\uses{lem:gaussian_cosine_integral}
+\leanok
+For $s > 0$ and real $x$, $h \mapsto g_s(h)(1 - \cos(xh))$ is integrable and $\int g_s(h)(1 - \cos(xh))\, \mathrm{d}h = 1 - e^{-s x^2}$.
+\end{lemma}
+
+\begin{proof}
+\uses{lem:gaussian_cosine_integral}
+\leanok
+Apply Lemma~\ref{lem:gaussian_cosine_integral} with $b = 1/(4s)$, once with frequency $x$ and once with frequency $0$.
+\end{proof}
+
+\begin{theorem}[Subordination identity]\label{thm:subordination_identity}
+\lean{FracLap.subIntegrand, FracLap.measurable_subIntegrand, FracLap.lintegral_kernel_one_sub_cos}
+\uses{lem:subordinated_kernel, lem:gauss_cos_integral, thm:levy_limit, lem:levy_scaled, thm:std_tonelli}
+\leanok
+For $0 < \alpha < 2$ and real $x$, $\int C(\alpha) \lvert h \rvert^{-1-\alpha} (1 - \cos(xh))\, \mathrm{d}h = \lvert x \rvert^\alpha$.
+\end{theorem}
+
+\begin{proof}
+\uses{lem:subordinated_kernel, lem:gauss_cos_integral, lem:levy_scaled, thm:std_tonelli}
+\leanok
+By Lemma~\ref{lem:subordinated_kernel}, the left side equals $\int \int_0^\infty c_\beta s^{-1-\beta} g_s(h)(1 - \cos(xh))\, \mathrm{d}s\, \mathrm{d}h$. All integrands are nonnegative, so Tonelli (Theorem~\ref{thm:std_tonelli}) exchanges the integrals, and Lemma~\ref{lem:gauss_cos_integral} evaluates the inner integral to $c_\beta s^{-1-\beta}(1 - e^{-s x^2})$. Finally $c_\beta \int_0^\infty (1 - e^{-x^2 s}) s^{-1-\beta}\, \mathrm{d}s = (x^2)^\beta = \lvert x \rvert^\alpha$ by Lemma~\ref{lem:levy_scaled}.
+\end{proof}
+
+\begin{theorem}[Exact symbol]\label{thm:exact_symbol}
+\lean{FracLap.norm_fourierChar_sub_one_sq_eq, FracLap.gagliardoSymbol_exact, FracLap.gagliardoEnergyC_eq_lintegral}
+\uses{thm:subordination_identity, thm:gagliardo_symbol_homogeneous}
+\leanok
+For $0 < \alpha < 2$, $\Lambda_\alpha(\xi) = \lvert 2\pi\xi \rvert^\alpha$, hence $E_\alpha(f) = \int \lvert 2\pi\xi \rvert^\alpha \lvert \mathcal{F} f(\xi) \rvert^2\, \mathrm{d}\xi$ for $f \in L^2$.
+\end{theorem}
+
+\begin{proof}
+\uses{thm:subordination_identity}
+\leanok
+Since $\lvert e^{2\pi \mathrm{i} h \xi} - 1 \rvert^2 = 2 - 2\cos(2\pi \xi h)$, the definition of $\Lambda_\alpha$ becomes $C(\alpha) \int \lvert h \rvert^{-1-\alpha}(1 - \cos(2\pi\xi h))\, \mathrm{d}h$, which equals $\lvert 2\pi\xi \rvert^\alpha$ by Theorem~\ref{thm:subordination_identity}. The energy formula follows from the Fourier representation of $E_\alpha$.
+\end{proof}

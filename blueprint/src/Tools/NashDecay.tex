@@ -1,0 +1,29 @@
+\chapter{Nash Inequality and Decay: the ODE Comparison Step}
+
+This chapter mirrors \texttt{FracLap/Tools/NashDecay.lean}. It is the abstract half of the Carlen--Kusuoka--Stroock argument: a differential inequality $u' \le -c\, u^{1+\alpha}$ forces $u(t) \lesssim t^{-1/\alpha}$, and the Nash inequality converts the energy dissipation $u' = -2E$ into such an inequality.
+
+\begin{theorem}[ODE comparison]\label{thm:ode_decay}
+\lean{FracLap.ode_decay}
+\leanok
+Let $c, \alpha > 0$ and let $u \ge 0$ be continuous on $t \ge 0$ and differentiable on $t > 0$ with $u'(t) \le -c\, u(t)^{1+\alpha}$. Then $u(t) \le (c \alpha t)^{-1/\alpha}$ for all $t > 0$.
+\end{theorem}
+
+\begin{proof}
+\leanok
+Since $u' \le 0$, $u$ is nonincreasing; if $u(t) = 0$ there is nothing to show, otherwise $u > 0$ on $0 \le s \le t$. Put $v = u^{-\alpha}$. Then $v' = -\alpha u^{-\alpha-1} u' \ge \alpha c$, so $v(s) - \alpha c s$ is nondecreasing on $0 \le s \le t$ and $v(t) \ge v(0) + \alpha c t \ge \alpha c t$. Raise to the power $-1/\alpha$.
+\end{proof}
+
+\begin{theorem}[Nash decay]\label{thm:nash_decay}
+\lean{FracLap.nash_decay}
+\uses{thm:ode_decay}
+\leanok
+Let $K, M, \alpha > 0$ and let $u \ge 0$ be continuous on $t \ge 0$ with $u' = -2E$ on $t > 0$, where $u^{1+\alpha} \le K E M^{2\alpha}$. Then $u(t) \le \bigl(K M^{2\alpha}/(2\alpha t)\bigr)^{1/\alpha}$ for $t > 0$.
+\end{theorem}
+
+\begin{proof}
+\uses{thm:ode_decay}
+\leanok
+The Nash-type inequality gives $E \ge u^{1+\alpha}/(K M^{2\alpha})$, hence $u' \le -c\, u^{1+\alpha}$ with $c = 2/(K M^{2\alpha})$. Apply Theorem~\ref{thm:ode_decay} and simplify the exponent.
+\end{proof}
+
+For $u(t) = \lVert T_t f\rVert_2^2$, $E$ the energy of $T_t f$, $K = 3^{1+\alpha}(2\pi)^{-\alpha}$ (Theorem~\ref{thm:nash_explicit}) and $M = \lVert f\rVert_1$ (an $L^1$ bound preserved by the Markov semigroup), this is the decay $\lVert T_t f\rVert_2 \lesssim t^{-1/(2\alpha)} \lVert f\rVert_1$.

@@ -1,0 +1,9 @@
+{
+  "recommendations": [
+    "leanprover.lean4",
+    "James-Yu.latex-workshop",
+    "tamasfe.even-better-toml",
+    "charliermarsh.ruff",
+    "ms-python.python"
+  ]
+}

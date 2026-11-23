@@ -1,0 +1,78 @@
+\chapter{The Real Beta Integral}
+
+This chapter mirrors \texttt{FracLap/Tools/BetaIntegral.lean}. It transfers the Beta--Gamma relation from the complex to the real setting and records the subtracted (regularized) form that appears in the half-line ground-state computation (Jakubowski--Kwa\'snicki).
+
+\begin{lemma}\label{lem:beta_real_integrable}
+\lean{FracLap.intervalIntegrable_beta_real}
+\uses{thm:std_beta_gamma}
+\leanok
+For $a, b > 0$ the function $x \mapsto x^{a-1}(1-x)^{b-1}$ is integrable on $0 < x < 1$.
+\end{lemma}
+
+\begin{proof}
+\leanok
+It is the real part of the complex Beta integrand, which is integrable for positive real parts.
+\end{proof}
+
+\begin{theorem}[Real Beta integral]\label{thm:beta_real}
+\lean{FracLap.beta_integral_real}
+\uses{thm:std_beta_gamma, lem:beta_real_integrable}
+\leanok
+For $a, b > 0$, $\int_0^1 x^{a-1} (1-x)^{b-1}\, \mathrm{d}x = \Gamma(a)\Gamma(b)/\Gamma(a+b)$.
+\end{theorem}
+
+\begin{proof}
+\uses{thm:std_beta_gamma}
+\leanok
+Apply Theorem~\ref{thm:std_beta_gamma} with $s = a$, $t = b$. For real arguments the complex integrand is the real integrand, and $\Gamma(a+b) > 0$, so one may divide.
+\end{proof}
+
+\begin{theorem}[Subtracted Beta integral]\label{thm:beta_subtracted}
+\lean{FracLap.beta_integral_subtracted}
+\uses{thm:beta_real, lem:beta_real_integrable}
+\leanok
+For $a, b > 0$, $\int_0^1 x^{a-1}\bigl((1-x)^{b-1} - 1\bigr)\, \mathrm{d}x = \Gamma(a)\Gamma(b)/\Gamma(a+b) - 1/a$.
+\end{theorem}
+
+\begin{proof}
+\uses{thm:beta_real, lem:beta_real_integrable}
+\leanok
+Split the integrand; both pieces are integrable (Lemma~\ref{lem:beta_real_integrable} and the integrability of $x^{a-1}$), $\int_0^1 x^{a-1} \mathrm{d}x = 1/a$, and Theorem~\ref{thm:beta_real} gives the first piece.
+\end{proof}
+
+\begin{lemma}[Linear bound near the origin]\label{lem:beta_lin_bound}
+\lean{FracLap.exists_abs_one_sub_rpow_le}
+\leanok
+For every real $c$ there is $M$ with $\lvert (1-y)^c - 1\rvert \le M y$ for $0 \le y \le 1/2$.
+\end{lemma}
+
+\begin{proof}
+\leanok
+The derivative of $y \mapsto (1-y)^c$ is continuous on the compact interval $0 \le y \le 1/2$, hence bounded by some $M$, and the mean value inequality gives the claim since the function equals $1$ at the origin.
+\end{proof}
+
+\begin{lemma}[Subtracted Beta integrand is integrable]\label{lem:beta_sub_integrable}
+\lean{FracLap.intervalIntegrable_beta_subtracted}
+\uses{lem:beta_lin_bound}
+\leanok
+For $a > -1$ and $b > 0$ the function $y \mapsto y^{a-1}\bigl((1-y)^{b-1} - 1\bigr)$ is integrable on $0 \le y \le 1$.
+\end{lemma}
+
+\begin{proof}
+\uses{lem:beta_lin_bound}
+\leanok
+On $0 < y \le 1/2$ it is dominated by a multiple of $y^{a}$ (Lemma~\ref{lem:beta_lin_bound}), which is integrable since $a > -1$. On $1/2 \le y < 1$ the factor $y^{a-1}$ is continuous and $(1-y)^{b-1} - 1$ is integrable because $b > 0$.
+\end{proof}
+
+\begin{theorem}[Subtracted Beta integral for $-1 < a < 0$]\label{thm:beta_subtracted_neg}
+\lean{FracLap.beta_integral_subtracted_neg}
+\uses{thm:beta_subtracted, lem:beta_sub_integrable, lem:beta_lin_bound}
+\leanok
+For $-1 < a < 0$ and $b > 0$, $\int_0^1 y^{a-1}\bigl((1-y)^{b-1} - 1\bigr)\, \mathrm{d}y = \Gamma(a)\Gamma(b)/\Gamma(a+b) - 1/a$, with the convention $1/\Gamma(0) = 0$ when $a + b = 0$.
+\end{theorem}
+
+\begin{proof}
+\uses{thm:beta_subtracted, lem:beta_sub_integrable, lem:beta_lin_bound}
+\leanok
+Write $h(y) = (1-y)^{b-1} - 1$ and $S(a) = \int_0^1 y^{a-1} h(y)\, \mathrm{d}y$. The function $F(y) = y^{a}\bigl((1-y)^{b} - 1\bigr) + \frac{a+b}{a+1} y^{a+1}$ is continuous on $0 \le y \le 1$ with $F(0) = 0$ (Lemma~\ref{lem:beta_lin_bound} controls the term $y^a$) and $F(1) = (b-1)/(a+1)$, and on $0 < y < 1$ its derivative is $a y^{a-1} h(y) - (a+b) y^{a} h(y)$. The fundamental theorem of calculus gives the recurrence $a S(a) - (a+b) S(a+1) = (b-1)/(a+1)$. Since $a + 1 > 0$, Theorem~\ref{thm:beta_subtracted} evaluates $S(a+1)$, and the functional equation of the Gamma function turns the recurrence into the stated formula; the degenerate case $a + b = 0$ is checked directly.
+\end{proof}

@@ -1,0 +1,21 @@
+\chapter{Topic Title}
+
+\begin{definition}\label{def:my_definition}
+\lean{FracLap.MyDefinition}
+\leanok
+Let $x \in \mathbb{R}$ satisfy $x > 0$.
+\end{definition}
+
+\begin{theorem}\label{thm:my_theorem}
+\lean{FracLap.my_theorem}
+\uses{def:my_definition}
+\leanok
+If $x$ satisfies Definition~\ref{def:my_definition}, then $x \ge 0$.
+\end{theorem}
+
+\begin{proof}
+\uses{def:my_definition}
+% Add \leanok here only once FracLap.my_theorem has zero `sorry`s!
+\leanok
+By Definition~\ref{def:my_definition}, $0 < x$, hence $0 \le x$.
+\end{proof}

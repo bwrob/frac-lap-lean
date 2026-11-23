@@ -1,0 +1,60 @@
+\chapter{Translation and the Fourier Transform on $L^2(\mathbb{R})$}
+
+This chapter mirrors \texttt{FracLap/WholeLine/TranslationFourier.lean}. It records the Fourier-side description of translations, which is the first ingredient in the Fourier characterization of the Gagliardo seminorm (Di Nezza--Palatucci--Valdinoci, Proposition~3.4): translation by $h$ becomes multiplication by the phase $\xi \mapsto \mathbf{e}(h \xi) = e^{2 \pi \mathrm{i} h \xi}$.
+
+\begin{lemma}\label{lem:fourier_translate_real}
+\lean{FracLap.fourier_comp_add_right_real}
+\uses{thm:std_translation_invariance}
+\leanok
+For every $f : \mathbb{R} \to \mathbb{C}$, $h \in \mathbb{R}$, and $\xi \in \mathbb{R}$, the Fourier transform of the translate $f(\cdot + h)$ is
+\[
+  \mathcal{F}\bigl(f(\cdot + h)\bigr)(\xi) = \mathbf{e}(h \xi)\, \mathcal{F} f(\xi).
+\]
+(For non-integrable $f$ both sides vanish under the convention that integrals of non-integrable functions are zero.)
+\end{lemma}
+
+\begin{proof}
+\uses{thm:std_translation_invariance}
+\leanok
+Substituting $u = v + h$ in $\int \mathbf{e}(-v \xi) f(v + h) \, \mathrm{d}v$ (Theorem~\ref{thm:std_translation_invariance}) gives $\int \mathbf{e}\bigl(-(u - h) \xi\bigr) f(u) \, \mathrm{d}u$. Since $\mathbf{e}$ is an additive character, $\mathbf{e}\bigl(-(u - h)\xi\bigr) = \mathbf{e}(h \xi)\, \mathbf{e}(-u \xi)$, and the constant factor $\mathbf{e}(h \xi)$ leaves the integral.
+\end{proof}
+
+\begin{definition}\label{def:translate_l2}
+\lean{FracLap.translateL2, FracLap.coeFn_translateL2, FracLap.translatePhase, FracLap.coeFn_translatePhase}
+\uses{def:fourier_multiplier_op, thm:std_translation_invariance}
+\leanok
+For $h \in \mathbb{R}$, the \emph{translation} $\tau_h : L^2(\mathbb{R}; \mathbb{C}) \to L^2(\mathbb{R}; \mathbb{C})$, $(\tau_h f)(x) = f(x + h)$, is a linear isometry because Lebesgue measure is translation invariant (Theorem~\ref{thm:std_translation_invariance}). The \emph{phase symbol} is the bounded function $\xi \mapsto \mathbf{e}(h \xi)$, of modulus $1$, regarded as an element of $L^\infty(\mathbb{R}; \mathbb{C})$.
+\end{definition}
+
+\begin{theorem}\label{thm:fourier_translate_l2}
+\lean{FracLap.fourier_translateL2}
+\uses{def:translate_l2, lem:fourier_translate_real, lem:fourier_multiplier_algebra, thm:std_fourier_L2}
+\leanok
+For every $h \in \mathbb{R}$ and $f \in L^2(\mathbb{R}; \mathbb{C})$, the Fourier transform intertwines translation with multiplication by the phase symbol:
+\[
+  \mathcal{F}(\tau_h f) = \mathbf{e}(h \,\cdot)\, \mathcal{F} f \quad \text{in } L^2(\mathbb{R}; \mathbb{C}).
+\]
+\end{theorem}
+
+\begin{proof}
+\uses{def:translate_l2, lem:fourier_translate_real, lem:fourier_multiplier_algebra, thm:std_fourier_L2}
+\leanok
+Both sides are continuous in $f \in L^2$: $\mathcal{F}$ and $\tau_h$ are isometries, and multiplication by a bounded function is a bounded operator. By density of Schwartz functions in $L^2$ (Theorem~\ref{thm:std_fourier_L2}) it suffices to take $f = \varphi \in \mathcal{S}(\mathbb{R}; \mathbb{C})$. Then $\tau_h \varphi = \varphi(\cdot + h)$ is again a Schwartz function, and Lemma~\ref{lem:fourier_translate_real} identifies its Fourier transform with the phase times $\mathcal{F}\varphi$ pointwise.
+\end{proof}
+
+\begin{theorem}\label{thm:translation_modulus_fourier}
+\lean{FracLap.lintegral_enorm_sq_eq, FracLap.lintegral_enorm_sq_translate_sub}
+\uses{thm:fourier_translate_l2, thm:plancherel_and_parseval}
+\leanok
+For every $h \in \mathbb{R}$ and $f \in L^2(\mathbb{R}; \mathbb{C})$,
+\[
+  \int_{\mathbb{R}} \bigl\lvert f(y + h) - f(y) \bigr\rvert^2 \, \mathrm{d}y
+  = \int_{\mathbb{R}} \bigl\lvert \mathbf{e}(h \xi) - 1 \bigr\rvert^2 \, \lvert \mathcal{F} f(\xi) \rvert^2 \, \mathrm{d}\xi.
+\]
+\end{theorem}
+
+\begin{proof}
+\uses{thm:fourier_translate_l2, thm:plancherel_and_parseval}
+\leanok
+The left side is $\lVert \tau_h f - f \rVert_{L^2}^2$. By Plancherel (Theorem~\ref{thm:plancherel_and_parseval}) this equals $\lVert \mathcal{F}(\tau_h f - f) \rVert_{L^2}^2$, and by Theorem~\ref{thm:fourier_translate_l2} and linearity $\mathcal{F}(\tau_h f - f) = (\mathbf{e}(h \,\cdot) - 1)\, \mathcal{F} f$.
+\end{proof}

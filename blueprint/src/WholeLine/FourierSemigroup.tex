@@ -1,0 +1,110 @@
+\chapter{Concrete $L^2(\mathbb{R})$ Fourier Multiplier Semigroup and Resolvent}
+
+This chapter mirrors \texttt{FracLap/WholeLine/FourierSemigroup.lean}, instantiating the abstract $C_0$-contraction semigroup and Hille--Yosida correspondence on the concrete Hilbert space $L^2(\mathbb{R}; \mathbb{C})$ via bounded Fourier multipliers (following Engel--Nagel~\cite{engel}, Paragraphs~I.4.12 and~II.2.9), specializing to the 1D fractional Laplacian symbol $\lvert 2\pi\xi \rvert^\alpha$, and bridging to $L^1$--$L^2$ spatial convolution.
+
+\begin{definition}\label{def:fourier_multiplier_op}
+\lean{FracLap.L2C, FracLap.toLpTop, FracLap.multOpCLM, FracLap.fourierCLEReal, FracLap.fourierInvCLEReal, FracLap.fourierMultiplier}
+\uses{def:c0_contraction_semigroup}
+\leanok
+Let $\mathrm{L2C} := L^2(\mathbb{R}; \mathbb{C})$ with Lebesgue measure. Any strongly measurable essentially bounded symbol $m \in L^\infty(\mathbb{R}; \mathbb{C})$ induces a bounded real-linear multiplication operator $\mathrm{multOpCLM}(m) : u \mapsto m \cdot u$ on $\mathrm{L2C}$ of operator norm at most $\lVert m \rVert_\infty$, and hence the Fourier multiplier operator
+\[
+  M_m^{\mathcal{F}} f := \mathcal{F}^{-1}\bigl(m \cdot \mathcal{F} f\bigr), \qquad f \in L^2(\mathbb{R}; \mathbb{C}).
+\]
+\end{definition}
+
+\begin{lemma}\label{lem:fourier_multiplier_algebra}
+\lean{FracLap.coeFn_toLpTop, FracLap.norm_toLpTop_le, FracLap.multOpCLM_apply, FracLap.opNorm_multOpCLM_le, FracLap.multOpCLM_one, FracLap.multOpCLM_comp, FracLap.multOpCLM_sub, FracLap.multOpCLM_smul, FracLap.fourierMultiplier_apply, FracLap.opNorm_fourierMultiplier_le, FracLap.fourierMultiplier_one, FracLap.fourierMultiplier_comp, FracLap.fourierMultiplier_sub, FracLap.fourierMultiplier_smul}
+\uses{def:fourier_multiplier_op, thm:plancherel_and_parseval}
+\leanok
+By Plancherel's theorem on $L^2(\mathbb{R}; \mathbb{C})$, the Fourier multiplier assignment $m \mapsto M_m^{\mathcal{F}}$ satisfies:
+\begin{enumerate}
+  \item $\lVert M_m^{\mathcal{F}} \rVert \le \lVert m \rVert_\infty$;
+  \item $M_1^{\mathcal{F}} = \mathrm{Id}$;
+  \item $M_{m_1}^{\mathcal{F}} \circ M_{m_2}^{\mathcal{F}} = M_{m_1 m_2}^{\mathcal{F}}$, $M_{m_1}^{\mathcal{F}} - M_{m_2}^{\mathcal{F}} = M_{m_1 - m_2}^{\mathcal{F}}$, and $c M_m^{\mathcal{F}} = M_{c m}^{\mathcal{F}}$ for $c \in \mathbb{R}$.
+\end{enumerate}
+\end{lemma}
+
+\begin{proof}
+\uses{def:fourier_multiplier_op, thm:plancherel_and_parseval}
+\leanok
+Each identity follows by conjugating the corresponding pointwise symbol law for $\mathrm{multOpCLM}$ by the isometric equivalence $\mathcal{F} : L^2(\mathbb{R}; \mathbb{C}) \xrightarrow{\sim} L^2(\mathbb{R}; \mathbb{C})$ and using $\mathcal{F}\mathcal{F}^{-1} = \mathrm{Id}$ together with Hölder's inequality for $L^\infty \times L^2 \to L^2$.
+\end{proof}
+
+\begin{theorem}\label{thm:fourier_multiplier_semigroup_resolvent}
+\lean{FracLap.expSymbol_aestronglyMeasurable, FracLap.norm_expSymbol_le_one, FracLap.expMultiplierSymbol, FracLap.continuous_orbit_expMultiplier, FracLap.fourierMultiplierSemigroup, FracLap.fourierMultiplierSemigroup_apply, FracLap.resSymbol_aestronglyMeasurable, FracLap.norm_resSymbol_le_inv, FracLap.resMultiplierSymbol, FracLap.denseRange_resMultiplier, FracLap.fourierMultiplierResolvent}
+\uses{def:fourier_multiplier_op, lem:fourier_multiplier_algebra, def:c0_contraction_semigroup, def:contractive_resolvent}
+\leanok
+Let $\psi : \mathbb{R} \to \mathbb{R}$ be measurable and nonnegative ($\psi(\xi) \ge 0$). Then:
+\begin{enumerate}
+  \item For $t \ge 0$, $S_\psi(t) := M_{e^{-t \psi}}^{\mathcal{F}}$ defines a strongly continuous contraction semigroup on $L^2(\mathbb{R}; \mathbb{C})$; strong continuity follows by dominated convergence on $\int_{\mathbb{R}} \lvert e^{-t\psi(\xi)} - e^{-t_0 \psi(\xi)} \rvert^2 \lvert (\mathcal{F}f)(\xi) \rvert^2 \, \mathrm{d}\xi$.
+  \item For $\mu > 0$, $R_{\psi, \mu} := M_{(\mu + \psi)^{-1}}^{\mathcal{F}}$ defines a contractive resolvent family on $L^2(\mathbb{R}; \mathbb{C})$, with dense range witnessed by the spectral cutoffs $\mathbf{1}_{\{\psi \le N\}} (\mu + \psi) \mathcal{F} g$.
+\end{enumerate}
+\end{theorem}
+
+\begin{proof}
+\uses{lem:fourier_multiplier_algebra, def:c0_contraction_semigroup, def:contractive_resolvent}
+\leanok
+Contractivity and the semigroup/resolvent algebraic identities follow from Lemma~\ref{lem:fourier_multiplier_algebra} and $e^{-(s+t)\psi} = e^{-s\psi} e^{-t\psi}$, $(\alpha + \psi)^{-1} - (\beta + \psi)^{-1} = (\beta - \alpha)(\alpha + \psi)^{-1}(\beta + \psi)^{-1}$. Orbit continuity and dense range follow from dominated convergence using the $L^1$ integrability of $\lvert \mathcal{F}f \rvert^2$.
+\end{proof}
+
+\begin{theorem}\label{thm:fourier_multiplier_hy_identification}
+\lean{FracLap.fourierMultiplierSemigroup_resolvent_eq, FracLap.fourierMultiplierResolvent_generatedSemigroup_eq}
+\uses{thm:fourier_multiplier_semigroup_resolvent, thm:hille_yosida_bijection, thm:plancherel_and_parseval}
+\leanok
+For every measurable $\psi \ge 0$ and shift $\mu > 0$, the Laplace-transform resolvent of $S_\psi$ coincides with $R_{\psi, \mu}$:
+\[
+  \int_0^\infty e^{-\mu t} S_\psi(t) f \, \mathrm{d}t = R_{\psi, \mu} f \qquad \text{for all } f \in L^2(\mathbb{R}; \mathbb{C}).
+\]
+Consequently, the $C_0$-semigroup generated by $R_{\psi, \mu}$ via Yosida approximations equals $S_\psi$ identically.
+\end{theorem}
+
+\begin{proof}
+\uses{thm:fourier_multiplier_semigroup_resolvent, thm:hille_yosida_bijection, thm:plancherel_and_parseval}
+\leanok
+Pairing both sides with an arbitrary test vector $g \in L^2(\mathbb{R}; \mathbb{C})$, applying Parseval's identity, and swapping the $(0, \infty) \times \mathbb{R}$ integrals by Fubini--Tonelli reduces the inner product to $\int_{\mathbb{R}} \bigl(\int_0^\infty e^{-(\mu + \psi(\xi)) t} \, \mathrm{d}t\bigr) \overline{(\mathcal{F}g)(\xi)} (\mathcal{F}f)(\xi) \, \mathrm{d}\xi = \langle g, R_{\psi, \mu} f \rangle$. Uniqueness in Theorem~\ref{thm:hille_yosida_bijection} then yields $R_\psi.\mathrm{generatedSemigroup} = S_\psi$.
+\end{proof}
+
+\begin{theorem}\label{thm:concrete_frac_lap_semigroup}
+\lean{FracLap.fracLapSymbol, FracLap.measurable_fracLapSymbol, FracLap.fracLapSymbol_nonneg, FracLap.fracLapSemigroup, FracLap.fracLapResolvent, FracLap.fracLapResolvent_generatedSemigroup_eq}
+\uses{thm:fourier_multiplier_hy_identification}
+\leanok
+Setting $\psi_\alpha(\xi) = \lvert 2\pi\xi \rvert^\alpha$ for any $\alpha \in \mathbb{R}$ yields the concrete fractional Laplacian $C_0$-contraction semigroup $\mathrm{fracLapSemigroup}(\alpha)$ and contractive resolvent $\mathrm{fracLapResolvent}(\alpha)$ on $L^2(\mathbb{R}; \mathbb{C})$, satisfying
+\[
+  (\mathrm{fracLapResolvent}(\alpha)).\mathrm{generatedSemigroup} = \mathrm{fracLapSemigroup}(\alpha).
+\]
+\end{theorem}
+
+\begin{proof}
+\uses{thm:fourier_multiplier_hy_identification}
+\leanok
+Directly specialize Theorem~\ref{thm:fourier_multiplier_hy_identification} to the measurable nonnegative symbol $\psi_\alpha(\xi) = \lvert 2\pi\xi \rvert^\alpha$.
+\end{proof}
+
+\begin{theorem}\label{thm:fourier_multiplier_eq_conv}
+\lean{FracLap.coeFn_fourier_toLp_ae_eq_of_integrable, FracLap.fourierMultiplier_eq_conv_toLp}
+\uses{def:fourier_multiplier_op, thm:plancherel_and_parseval}
+\leanok
+If $f \in L^1(\mathbb{R}; \mathbb{C}) \cap L^2(\mathbb{R}; \mathbb{C})$, then its $L^2$ Fourier transform agrees almost everywhere with the $L^1$ Fourier integral $\mathcal{F} f$. Consequently, whenever $K \in L^1(\mathbb{R}; \mathbb{C})$ has $L^\infty$ Fourier transform $m = \mathcal{F} K$ a.e.\ and $u \in \mathcal{S}(\mathbb{R}, \mathbb{C})$ satisfies $K * u \in L^2(\mathbb{R}; \mathbb{C})$, the $L^2$ Fourier multiplier coincides with spatial convolution:
+\[
+  M_m^{\mathcal{F}} u = K * u \qquad \text{in } L^2(\mathbb{R}; \mathbb{C}).
+\]
+\end{theorem}
+
+\begin{proof}
+\uses{def:fourier_multiplier_op, thm:plancherel_and_parseval}
+\leanok
+Testing against smooth compactly supported Schwartz functions $\varphi$ and using tempered-distribution Fourier duality on $L^2$ together with the $L^1$ Fourier adjoint identity gives $\int \varphi \cdot (\mathcal{F}_{L^2} f - \mathcal{F}_{L^1} f) = 0$, hence a.e.\ equality. Applying this to $K * u \in L^1 \cap L^2$ and invoking the $L^1$ Fourier convolution theorem $\mathcal{F}(K * u) = (\mathcal{F} K)(\mathcal{F} u)$ shows both sides have the same $L^2$ Fourier transform, whence they coincide by Plancherel injectivity.
+\end{proof}
+
+\begin{theorem}[Generator domain and action of Fourier multiplier semigroups]\label{thm:fourier_multiplier_generator}
+\lean{FracLap.fourierMultiplierSemigroup_mem_generatorDomain_iff, FracLap.generator_fourierMultiplierSemigroup_of_memLp, FracLap.fracLapSemigroup_mem_generatorDomain_iff, FracLap.generator_fracLapSemigroup_of_memLp, FracLap.coeFn_fourierInv_ae_eq_fourier_neg, FracLap.coeFn_fourierInv_toLp_ae_eq_of_integrable}
+\uses{thm:fourier_multiplier_hy_identification, thm:concrete_frac_lap_semigroup, thm:fourier_multiplier_eq_conv}
+\leanok
+For any measurable nonnegative symbol $\psi \ge 0$, a vector $f \in L^2(\mathbb{R}; \mathbb{C})$ belongs to the generator domain $\mathcal{D}(L_\psi)$ of $\mathrm{fourierMultiplierSemigroup}(\psi)$ if and only if $\xi \mapsto \psi(\xi)\mathcal{F}f(\xi) \in L^2(\mathbb{R}; \mathbb{C})$, in which case $L_\psi f = -\mathcal{F}^{-1}(\psi \cdot \mathcal{F}f)$. In particular, for the fractional Laplacian semigroup, $f \in \mathcal{D}(-(-\Delta)^{\alpha/2})$ iff $\lvert 2\pi\xi \rvert^\alpha \mathcal{F}f(\xi) \in L^2(\mathbb{R}; \mathbb{C})$, and the $L^2$ inverse Fourier transform of an $L^1 \cap L^2$ function agrees almost everywhere with the $L^1$ inverse Fourier integral.
+\end{theorem}
+
+\begin{proof}
+\uses{thm:fourier_multiplier_hy_identification, thm:fourier_multiplier_eq_conv}
+\leanok
+Since $\mathcal{D}(L_\psi) = \operatorname{ran}(R_{\psi, 1})$ by Theorem~\ref{thm:hille_yosida_bijection}, if $f = R_{\psi, 1} g$ then $\mathcal{F}f = (1 + \psi)^{-1} \mathcal{F}g$ almost everywhere, so $\psi \mathcal{F}f = \mathcal{F}g - \mathcal{F}f \in L^2$. Conversely, if $\psi \mathcal{F}f \in L^2$, taking $g = f + \mathcal{F}^{-1}(\psi \mathcal{F}f)$ yields $R_{\psi, 1} g = f$ and hence $L_\psi f = f - g = -\mathcal{F}^{-1}(\psi \mathcal{F}f)$. The $L^1 \cap L^2$ inverse Fourier consistency follows from $\mathcal{F}^{-1} = \mathrm{reflect} \circ \mathcal{F}$ on $L^2$.
+\end{proof}

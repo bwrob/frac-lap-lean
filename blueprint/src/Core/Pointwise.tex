@@ -1,0 +1,204 @@
+\chapter{Core Pointwise Fractional Laplacian Operators}
+
+This chapter mirrors \texttt{FracLap/Core/Pointwise.lean}, establishing the exponent range $\alpha \in (0, 2)$, the one-dimensional normalizing constant $C(\alpha)$, the weighted second-difference representation of $(-\Delta)^{\alpha/2}$, antisymmetric extensions $\widetilde{u}$, and the reflected half-line singular kernel $K_\alpha(x, y)$.
+
+\begin{definition}\label{def:fractional_exponent}
+\lean{FracLap.FractionalExponent}
+\leanok
+A real parameter $\alpha \in \mathbb{R}$ is a \emph{fractional Laplacian exponent} for $(-\Delta)^{\alpha/2}$ if $0 < \alpha < 2$.
+\end{definition}
+
+\begin{theorem}\label{thm:fractional_exponent_one}
+\lean{FracLap.fractionalExponent_one}
+\uses{def:fractional_exponent}
+\leanok
+The square-root Laplacian exponent $\alpha = 1$ satisfies $0 < \alpha < 2$.
+\end{theorem}
+
+\begin{proof}
+\uses{def:fractional_exponent}
+\leanok
+By direct numerical verification, $0 < 1$ and $1 < 2$.
+\end{proof}
+
+\begin{lemma}\label{lem:half_one_add_pos}
+\lean{FracLap.half_one_add_pos}
+\uses{def:fractional_exponent}
+\leanok
+If $\alpha \in (0, 2)$ satisfies Definition~\ref{def:fractional_exponent}, then $\frac{1 + \alpha}{2} > 0$.
+\end{lemma}
+
+\begin{proof}
+\uses{def:fractional_exponent}
+\leanok
+Since $\alpha > 0$, we have $1 + \alpha > 1 > 0$, and division by $2$ preserves positivity.
+\end{proof}
+
+\begin{lemma}\label{lem:one_sub_half_pos}
+\lean{FracLap.one_sub_half_pos}
+\uses{def:fractional_exponent}
+\leanok
+If $\alpha \in (0, 2)$ satisfies Definition~\ref{def:fractional_exponent}, then $1 - \frac{\alpha}{2} > 0$.
+\end{lemma}
+
+\begin{proof}
+\uses{def:fractional_exponent}
+\leanok
+Since $\alpha < 2$, dividing by $2$ yields $\frac{\alpha}{2} < 1$, whence $1 - \frac{\alpha}{2} > 0$.
+\end{proof}
+
+\begin{definition}\label{def:frac_lap_constant}
+\lean{FracLap.fracLapConstant}
+\leanok
+For $\alpha \in \mathbb{R}$, the one-dimensional fractional Laplacian normalizing constant is given by
+\[
+  C(\alpha) = \frac{2^{\alpha - 1} \alpha \Gamma\bigl(\frac{1 + \alpha}{2}\bigr)}{\sqrt{\pi}\, \Gamma\bigl(1 - \frac{\alpha}{2}\bigr)}.
+\]
+\end{definition}
+
+\begin{theorem}\label{thm:frac_lap_constant_pos}
+\lean{FracLap.fracLapConstant_pos}
+\uses{def:fractional_exponent, def:frac_lap_constant, lem:half_one_add_pos, lem:one_sub_half_pos}
+\leanok
+For every $\alpha \in (0, 2)$, the normalizing constant $C(\alpha)$ is strictly positive.
+\end{theorem}
+
+\begin{proof}
+\uses{def:fractional_exponent, def:frac_lap_constant, lem:half_one_add_pos, lem:one_sub_half_pos}
+\leanok
+By Lemmas~\ref{lem:half_one_add_pos} and~\ref{lem:one_sub_half_pos}, both arguments $\frac{1+\alpha}{2}$ and $1 - \frac{\alpha}{2}$ of the Euler Gamma function are strictly positive, so $\Gamma\bigl(\frac{1+\alpha}{2}\bigr) > 0$ and $\Gamma\bigl(1 - \frac{\alpha}{2}\bigr) > 0$. Since $2^{\alpha-1} > 0$, $\alpha > 0$, and $\sqrt{\pi} > 0$, the quotient $C(\alpha)$ is strictly positive.
+\end{proof}
+
+\begin{theorem}[Endpoint limits of the normalizing constant]\label{thm:frac_lap_constant_limits}
+\lean{FracLap.tendsto_gamma_one_sub_half_two, FracLap.tendsto_fracLapConstant_zero, FracLap.tendsto_fracLapConstant_two}
+\uses{def:frac_lap_constant}
+\leanok
+As $\alpha \to 2^-$, $\Gamma\bigl(1 - \frac{\alpha}{2}\bigr) \to +\infty$, and the normalizing constant vanishes at both endpoints of $0 < \alpha < 2$:
+\[
+  \lim_{\alpha \to 0^+} C(\alpha) = 0 \qquad \text{and} \qquad \lim_{\alpha \to 2^-} C(\alpha) = 0.
+\]
+\end{theorem}
+
+\begin{proof}
+\uses{def:frac_lap_constant}
+\leanok
+For $0 < \alpha < 2$, the Gamma functional identity gives $\Gamma\bigl(1 - \frac{\alpha}{2}\bigr) = \Gamma\bigl(2 - \frac{\alpha}{2}\bigr) / \bigl(1 - \frac{\alpha}{2}\bigr)$. As $\alpha \to 2^-$, $2 - \frac{\alpha}{2} \to 1$ with $\Gamma(1) = 1$ while $1 - \frac{\alpha}{2} \to 0^+$, so $\Gamma\bigl(1 - \frac{\alpha}{2}\bigr) \to +\infty$. Substituting this identity into $C(\alpha)$ produces a factor $1 - \frac{\alpha}{2}$ in the numerator with nonzero denominator $\sqrt{\pi}\,\Gamma\bigl(2 - \frac{\alpha}{2}\bigr) \to \sqrt{\pi}$, giving $\lim_{\alpha \to 2^-} C(\alpha) = 0$. At the lower endpoint $\alpha \to 0^+$, the factor $\alpha$ tends to $0$ while $\Gamma\bigl(\frac{1+\alpha}{2}\bigr) \to \Gamma\bigl(\frac{1}{2}\bigr)$ and $\Gamma\bigl(1 - \frac{\alpha}{2}\bigr) \to 1$, so $\lim_{\alpha \to 0^+} C(\alpha) = 0$.
+\end{proof}
+
+\begin{definition}\label{def:second_diff}
+\lean{FracLap.secondDiff}
+\leanok
+For a function $u : \mathbb{R} \to \mathbb{R}$ and points $x, y \in \mathbb{R}$, the symmetric second-order difference is defined by
+\[
+  \delta_2 u(x, y) = u(x + y) + u(x - y) - 2 u(x).
+\]
+\end{definition}
+
+\begin{lemma}\label{lem:second_diff_nonpos}
+\lean{FracLap.secondDiff_nonpos_of_isMax}
+\uses{def:second_diff}
+\leanok
+If $x_0 \in \mathbb{R}$ is a global maximum point of $u : \mathbb{R} \to \mathbb{R}$, meaning that $u(z) \le u(x_0)$ for all $z \in \mathbb{R}$, then $\delta_2 u(x_0, y) \le 0$ for all $y \in \mathbb{R}$.
+\end{lemma}
+
+\begin{proof}
+\uses{def:second_diff}
+\leanok
+Evaluating the global maximum inequality at $z = x_0 + y$ and $z = x_0 - y$ gives $u(x_0 + y) \le u(x_0)$ and $u(x_0 - y) \le u(x_0)$. Summing both inequalities and subtracting $2 u(x_0)$ yields $\delta_2 u(x_0, y) \le 0$.
+\end{proof}
+
+\begin{definition}\label{def:frac_lap_second_diff}
+\lean{FracLap.fracLapSecondDiff}
+\uses{def:frac_lap_constant, def:second_diff}
+\leanok
+For $\alpha \in (0, 2)$ and $u : \mathbb{R} \to \mathbb{R}$, the pointwise weighted second-difference fractional Laplacian at $x \in \mathbb{R}$ is defined by
+\[
+  (-\Delta)^{\alpha/2} u(x) = -\frac{C(\alpha)}{2} \int_{\mathbb{R}} \frac{u(x + y) + u(x - y) - 2 u(x)}{\lvert y \rvert^{1 + \alpha}}\, \mathrm{d}y.
+\]
+\end{definition}
+
+\begin{definition}\label{def:is_odd_even_func}
+\lean{FracLap.IsOddFunc, FracLap.IsEvenFunc}
+\leanok
+A function $f : \mathbb{R} \to \mathbb{R}$ is \emph{odd} if $f(-x) = -f(x)$ for all $x \in \mathbb{R}$, and \emph{even} if $f(-x) = f(x)$ for all $x \in \mathbb{R}$.
+\end{definition}
+
+\begin{lemma}\label{lem:odd_func_map_zero}
+\lean{FracLap.IsOddFunc.map_zero}
+\uses{def:is_odd_even_func}
+\leanok
+Every odd function $f : \mathbb{R} \to \mathbb{R}$ satisfies $f(0) = 0$.
+\end{lemma}
+
+\begin{proof}
+\uses{def:is_odd_even_func}
+\leanok
+Setting $x = 0$ in $f(-x) = -f(x)$ gives $f(0) = -f(0)$, whence $f(0) = 0$.
+\end{proof}
+
+\begin{definition}\label{def:odd_ext}
+\lean{FracLap.oddExt}
+\leanok
+Given $u : \mathbb{R} \to \mathbb{R}$ representing a profile on the half-line $(0, \infty)$, its antisymmetric (odd) extension $\widetilde{u} : \mathbb{R} \to \mathbb{R}$ is defined by
+\[
+  \widetilde{u}(x) =
+  \begin{cases}
+    u(x), & x > 0, \\
+    0, & x = 0, \\
+    -u(-x), & x < 0.
+  \end{cases}
+\]
+\end{definition}
+
+\begin{lemma}\label{lem:odd_ext_basic}
+\lean{FracLap.oddExt_zero, FracLap.oddExt_of_pos, FracLap.oddExt_of_neg, FracLap.isOddFunc_oddExt}
+\uses{def:is_odd_even_func, def:odd_ext}
+\leanok
+For every function $u : \mathbb{R} \to \mathbb{R}$, its antisymmetric extension $\widetilde{u}$ satisfies $\widetilde{u}(0) = 0$, agrees with $u(x)$ for $x > 0$, equals $-u(-x)$ for $x < 0$, and is an odd function on $\mathbb{R}$.
+\end{lemma}
+
+\begin{proof}
+\uses{def:is_odd_even_func, def:odd_ext}
+\leanok
+Each identity follows directly by case analysis on the sign of $x \in \mathbb{R}$ in Definition~\ref{def:odd_ext}.
+\end{proof}
+
+\begin{lemma}\label{lem:odd_ext_max}
+\lean{FracLap.oddExt_le_of_nonneg_of_isMaxOn_Ioi}
+\uses{def:odd_ext, lem:odd_ext_basic}
+\leanok
+Suppose $u : \mathbb{R} \to \mathbb{R}$ satisfies $u(x) \ge 0$ for all $x > 0$, and let $x_0 > 0$ be a global maximum of $u$ on $(0, \infty)$, so that $u(x) \le u(x_0)$ for all $x > 0$. Then $\widetilde{u}(z) \le \widetilde{u}(x_0)$ for every $z \in \mathbb{R}$.
+\end{lemma}
+
+\begin{proof}
+\uses{def:odd_ext, lem:odd_ext_basic}
+\leanok
+Since $x_0 > 0$, we have $\widetilde{u}(x_0) = u(x_0) \ge 0$. For $z > 0$, $\widetilde{u}(z) = u(z) \le u(x_0)$ by hypothesis. For $z = 0$, $\widetilde{u}(0) = 0 \le u(x_0)$. For $z < 0$, $-z > 0$ implies $u(-z) \ge 0$, so $\widetilde{u}(z) = -u(-z) \le 0 \le u(x_0)$.
+\end{proof}
+
+\begin{definition}\label{def:reflected_frac_lap}
+\lean{FracLap.reflectedFracLapSecondDiff, FracLap.reflectedKernel}
+\uses{def:frac_lap_second_diff, def:odd_ext}
+\leanok
+For $\alpha \in (0, 2)$ and $u : \mathbb{R} \to \mathbb{R}$, the reflected half-line fractional Laplacian at $x > 0$ is defined by
+\[
+  (-\widetilde{\Delta})^{\alpha/2} u(x) = (-\Delta)^{\alpha/2} \widetilde{u}(x),
+\]
+and the associated reflected singular interaction kernel is defined for $x, y > 0$ by
+\[
+  K_\alpha(x, y) = \frac{1}{\lvert x - y \rvert^{1 + \alpha}} - \frac{1}{\lvert x + y \rvert^{1 + \alpha}}.
+\]
+\end{definition}
+
+\begin{theorem}\label{thm:reflected_kernel_pos}
+\lean{FracLap.reflectedKernel_pos}
+\uses{def:fractional_exponent, def:reflected_frac_lap}
+\leanok
+For every $\alpha \in (0, 2)$ and all $x, y > 0$ with $x \neq y$, the reflected singular kernel is strictly positive: $K_\alpha(x, y) > 0$.
+\end{theorem}
+
+\begin{proof}
+\uses{def:fractional_exponent, def:reflected_frac_lap}
+\leanok
+When $x, y > 0$ and $x \neq y$, we have $0 < \lvert x - y \rvert < x + y = \lvert x + y \rvert$. Because $1 + \alpha > 0$, the power function $r \mapsto r^{1 + \alpha}$ is strictly increasing for $r \ge 0$, yielding $0 < \lvert x - y \rvert^{1 + \alpha} < \lvert x + y \rvert^{1 + \alpha}$. Taking reciprocals reverses the strict inequality and proves $K_\alpha(x, y) > 0$.
+\end{proof}

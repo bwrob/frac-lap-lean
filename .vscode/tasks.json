@@ -1,0 +1,89 @@
+{
+  "version": "2.0.0",
+  "tasks": [
+    {
+      "label": "Verify All",
+      "type": "shell",
+      "command": "just verify-all",
+      "problemMatcher": []
+    },
+    {
+      "label": "Lake: Get Mathlib Cache",
+      "type": "shell",
+      "command": "just cache",
+      "problemMatcher": []
+    },
+    {
+      "label": "Lake: Build",
+      "type": "shell",
+      "command": "just build",
+      "group": {
+        "kind": "build",
+        "isDefault": true
+      },
+      "problemMatcher": []
+    },
+    {
+      "label": "Lean: Lint",
+      "type": "shell",
+      "command": "just lint-lean",
+      "problemMatcher": []
+    },
+    {
+      "label": "Lean: Test Anti-Vacuity",
+      "type": "shell",
+      "command": "just test-lean",
+      "problemMatcher": []
+    },
+    {
+      "label": "Lean: Check Axioms",
+      "type": "shell",
+      "command": "just check-axioms",
+      "problemMatcher": []
+    },
+    {
+      "label": "Lean: Check Kernel",
+      "type": "shell",
+      "command": "just check-kernel",
+      "problemMatcher": []
+    },
+    {
+      "label": "Blueprint: Build All",
+      "type": "shell",
+      "command": "just blueprint",
+      "problemMatcher": []
+    },
+    {
+      "label": "Blueprint: Check Decls",
+      "type": "shell",
+      "command": "just blueprint-web && just blueprint-check",
+      "problemMatcher": []
+    },
+    {
+      "label": "Blueprint: Serve",
+      "type": "shell",
+      "command": "just blueprint-serve",
+      "isBackground": true,
+      "problemMatcher": []
+    },
+    {
+      "label": "LaTeX: Lint Blueprint",
+      "type": "shell",
+      "command": "just lint-tex",
+      "problemMatcher": []
+    },
+    {
+      "label": "Status Dashboard",
+      "type": "shell",
+      "command": "just status",
+      "problemMatcher": []
+    },
+    {
+      "label": "Python: Run Tests",
+      "type": "shell",
+      "command": "just test",
+      "group": "test",
+      "problemMatcher": []
+    }
+  ]
+}

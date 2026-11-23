@@ -1,0 +1,29 @@
+\chapter{The Tools on the Gagliardo Measure}
+
+This chapter mirrors \texttt{FracLap/Tools/GagliardoTools.lean}. It specializes the nonlocal tools to the jump measure $\mathrm{d}\mu_\alpha = \frac{C(\alpha)}{2 \lvert x - y \rvert^{1+\alpha}} \mathrm{d}x\, \mathrm{d}y$ of the fractional Laplacian.
+
+\begin{theorem}\label{thm:gagliardo_swap}
+\lean{FracLap.gagliardoWeight_swap, FracLap.gagliardoMeasure_swap}
+\uses{thm:std_product_swap, thm:std_withdensity}
+\leanok
+The Gagliardo measure is invariant under $(x, y) \mapsto (y, x)$.
+\end{theorem}
+
+\begin{proof}
+\uses{thm:std_product_swap, thm:std_withdensity}
+\leanok
+The density $C(\alpha) / (2 \lvert x - y \rvert^{1+\alpha})$ is symmetric, and the swap preserves Lebesgue measure on the plane (Theorem~\ref{thm:std_product_swap}); apply Theorem~\ref{thm:std_withdensity}.
+\end{proof}
+
+\begin{theorem}\label{thm:gagliardo_tools}
+\lean{FracLap.gagliardo_sv_lintegral, FracLap.gagliardo_sv_integral, FracLap.gagliardo_dissipation_nonneg}
+\uses{thm:gagliardo_swap, thm:sv_energy, thm:monotone_dissipation}
+\leanok
+For $q > 1$, the Stroock--Varopoulos inequality of Theorem~\ref{thm:sv_energy} holds for the Gagliardo energy, and for every nondecreasing $\varphi$, $\int (u(x) - u(y)) \varphi(u(x))\, \mathrm{d}\mu_\alpha \ge 0$ (under integrability).
+\end{theorem}
+
+\begin{proof}
+\uses{thm:gagliardo_swap, thm:sv_energy, thm:monotone_dissipation}
+\leanok
+Apply Theorems~\ref{thm:sv_energy} and~\ref{thm:monotone_dissipation} with $\nu = \mu_\alpha$, which is swap invariant by Theorem~\ref{thm:gagliardo_swap}.
+\end{proof}

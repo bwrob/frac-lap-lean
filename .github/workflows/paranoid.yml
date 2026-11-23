@@ -1,0 +1,37 @@
+name: Paranoid Kernel & Comparator Audit
+
+on:
+  workflow_dispatch:
+  schedule:
+    - cron: "0 3 * * 0"
+
+jobs:
+  paranoid_verify:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v7
+
+      - name: Setup Lean + Mathlib cache + Build
+        uses: leanprover/lean-action@v1
+        with:
+          build: true
+          lint: false
+
+      - name: Replay every module with leanchecker
+        run: |
+          for f in $(find FracLap -name '*.lean' | sort); do
+            mod=$(echo "${f%.lean}" | tr '/' '.')
+            lake env leanchecker "$mod"
+          done
+
+      - name: Install bubblewrap sandbox
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y --no-install-recommends bubblewrap
+
+      - name: Run Multi-Kernel Paranoid Check (con-leche, nanoda, lean4lean, con-ron)
+        run: lake check --paranoid
+
+      - name: Run Comparator Statement & Axiom Audit
+        run: lake comparator --config comparator.json

@@ -1,0 +1,46 @@
+\chapter{Core Semigroup and Dirichlet Form Interfaces}
+
+This chapter mirrors \texttt{FracLap/Core/Semigroups.lean}, packaging classical functional-analytic prerequisites (Hille--Yosida contraction semigroups, Ouhabaz's symmetric accretive forms, and the Beurling--Deny Markov Dirichlet form criteria) as bundled Lean structures alongside the pointwise normal-contraction inequalities.
+
+\begin{definition}\label{def:contraction_semigroup}
+\lean{FracLap.ContractionSemigroup}
+\leanok
+A \emph{contraction semigroup} on a type $E$ equipped with a nonnegative norm functional $\lVert \cdot \rVert_E : E \to \mathbb{R}$ consists of a family of operators $T(t) : E \to E$ for $t \ge 0$ satisfying $T(0)u = u$, the semigroup law $T(s)\bigl(T(t)u\bigr) = T(s + t)u$ for all $s, t \ge 0$, and the contraction estimate $\lVert T(t)u \rVert_E \le \lVert u \rVert_E$ for all $t \ge 0$.
+\end{definition}
+
+\begin{definition}\label{def:odd_subspace_conjugation}
+\lean{FracLap.OddSubspaceConjugation}
+\leanok
+An \emph{odd subspace conjugation} between a whole-line space $(E, \lVert \cdot \rVert_E)$ and a half-line space $(H, \lVert \cdot \rVert_H)$ consists of an oddness predicate $\mathrm{IsOdd} : E \to \mathrm{Prop}$, an extension map $E_{\mathrm{op}} : H \to E$, and a restriction map $R_{\mathrm{op}} : E \to H$ such that $E_{\mathrm{op}} u$ is odd, $R_{\mathrm{op}}(E_{\mathrm{op}} u) = u$, $E_{\mathrm{op}}(R_{\mathrm{op}} f) = f$ for all odd $f \in E$, and the scaled isometry relations $\lVert E_{\mathrm{op}} u \rVert_E = \sqrt{2}\, \lVert u \rVert_H$ and $\sqrt{2}\, \lVert R_{\mathrm{op}} f \rVert_H = \lVert f \rVert_E$ hold for all $u \in H$ and odd $f \in E$.
+\end{definition}
+
+\begin{definition}\label{def:symmetric_accretive_form}
+\lean{FracLap.SymmetricAccretiveForm, FracLap.IsMarkovDirichletForm}
+\leanok
+A \emph{symmetric accretive form} on a form domain $V$ is a map $B : V \times V \to \mathbb{R}$ satisfying symmetry $B(u, v) = B(v, u)$, accretiveness $B(u, u) \ge 0$, and the Cauchy--Schwarz continuity inequality $B(u, v)^2 \le B(u, u)\, B(v, v)$. Given lattice truncation operators $\mathrm{absOp}, \mathrm{capOneOp} : V \to V$ (representing $u \mapsto \lvert u \rvert$ and $u \mapsto u \wedge 1$), the form $B$ is a \emph{Markov Dirichlet form} if it satisfies the two Beurling--Deny conditions
+\[
+  B\bigl(\mathrm{absOp}(u), \mathrm{absOp}(u)\bigr) \le B(u, u)
+  \qquad \text{and} \qquad
+  B\bigl(\mathrm{capOneOp}(u), \mathrm{capOneOp}(u)\bigr) \le B(u, u)
+\]
+for all $u \in V$.
+\end{definition}
+
+\begin{lemma}\label{lem:normal_contraction_inequalities}
+\lean{FracLap.abs_sub_abs_le_abs_sub, FracLap.sq_abs_sub_abs_le_sq_sub, FracLap.abs_min_one_sub_min_one_le, FracLap.sq_min_one_sub_min_one_le}
+\leanok
+For all $a, b \in \mathbb{R}$, the modulus and unit-truncation maps are normal contractions:
+\[
+  \bigl\lvert \lvert a \rvert - \lvert b \rvert \bigr\rvert \le \lvert a - b \rvert, \qquad
+  \bigl(\lvert a \rvert - \lvert b \rvert\bigr)^2 \le (a - b)^2,
+\]
+\[
+  \bigl\lvert \min(a, 1) - \min(b, 1) \bigr\rvert \le \lvert a - b \rvert, \qquad
+  \bigl(\min(a, 1) - \min(b, 1)\bigr)^2 \le (a - b)^2.
+\]
+\end{lemma}
+
+\begin{proof}
+\leanok
+The modulus inequality is the reverse triangle inequality; squaring both nonnegative sides yields $\bigl(\lvert a \rvert - \lvert b \rvert\bigr)^2 \le (a - b)^2$. For unit truncation, case analysis on the four order configurations $a \le 1$ versus $a \ge 1$ and $b \le 1$ versus $b \ge 1$ shows in each case that $\bigl\lvert \min(a, 1) - \min(b, 1) \bigr\rvert \le \lvert a - b \rvert$, and squaring both sides completes the proof.
+\end{proof}

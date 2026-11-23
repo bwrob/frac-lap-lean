@@ -1,0 +1,42 @@
+\chapter{Energy Dissipation for the Fractional Heat Semigroup}
+
+This chapter mirrors \texttt{FracLap/WholeLine/SemigroupDissipation.lean}. With $g = \mathcal{F} f$ and $\lambda(\xi) = \lvert 2\pi\xi\rvert^{\alpha}$, the semigroup acts on the Fourier side by multiplication with $e^{-t\lambda}$. This gives the squared norm $\lVert T_t f\rVert^2 = \int e^{-2t\lambda}\lvert g\rvert^2$ and, by the exact symbol, the energy $E_\alpha(T_t f) = \int \lambda e^{-2t\lambda}\lvert g\rvert^2$.
+
+\begin{theorem}[Fourier side of the semigroup]\label{thm:semigroup_fourier_side}
+\lean{FracLap.fourier_fracLapSemigroup_ae, FracLap.enorm_real_mul_sq, FracLap.lintegral_norm_sq_semigroup, FracLap.energy_semigroup, FracLap.norm_sq_semigroup, FracLap.energy_semigroup_toReal}
+\uses{thm:concrete_frac_lap_semigroup, thm:exact_symbol, lem:plancherel_lintegral}
+\leanok
+For $f \in L^2(\mathbb{R}; \mathbb{C})$ and $t \ge 0$: $\mathcal{F}(T_t f) = e^{-t\lambda}\mathcal{F} f$ almost everywhere, $\lVert T_t f\rVert_2^2 = \int e^{-2t\lambda}\lvert\mathcal{F} f\rvert^2$ and, for $t > 0$ and $0 < \alpha < 2$, $E_\alpha(T_t f) = \int \lambda e^{-2t\lambda}\lvert\mathcal{F} f\rvert^2 < \infty$.
+\end{theorem}
+
+\begin{proof}
+\uses{thm:concrete_frac_lap_semigroup, thm:exact_symbol, lem:plancherel_lintegral}
+\leanok
+The first claim is the definition of the Fourier multiplier semigroup together with the inversion formula. The second follows by Plancherel (Lemma~\ref{lem:plancherel_lintegral}), and the third by Theorem~\ref{thm:exact_symbol}. Finiteness for $t > 0$ uses $\lambda e^{-2t\lambda} \le 1/(2t)$.
+\end{proof}
+
+\begin{theorem}[Differentiation of the spectral mass]\label{thm:spectral_mass_derivative}
+\lean{FracLap.spectralMass, FracLap.spectralEnergy, FracLap.integrable_mass, FracLap.integrable_energy, FracLap.mul_exp_le, FracLap.continuousOn_spectralMass, FracLap.hasDerivAt_spectralMass}
+\uses{thm:semigroup_fourier_side, thm:std_dominated_convergence}
+\leanok
+The function $m(t) = \int e^{-2t\lambda}\lvert g\rvert^2$ is continuous on $t \ge 0$, differentiable on $t > 0$, and $m'(t) = -2\int \lambda e^{-2t\lambda}\lvert g\rvert^2$.
+\end{theorem}
+
+\begin{proof}
+\uses{thm:std_dominated_convergence}
+\leanok
+Differentiate under the integral sign. For $s > t/2$ the derivative of the integrand is bounded by $\frac{2}{t}\lvert g\rvert^2$ since $x e^{-2sx} \le 1/(2s)$. Continuity on $t \ge 0$ follows by dominated convergence with the bound $\lvert g\rvert^2$.
+\end{proof}
+
+\begin{theorem}[Hardy--Stein identity for $p = 2$]\label{thm:hardy_stein_l2}
+\lean{FracLap.spectralMass_zero, FracLap.hardy_stein_l2}
+\uses{thm:spectral_mass_derivative, thm:semigroup_fourier_side}
+\leanok
+For $f \in L^2$ and $t \ge 0$, $\lVert f\rVert^2 - \lVert T_t f\rVert^2 = 2\int_0^t \int \lambda e^{-2s\lambda}\lvert\mathcal{F} f\rvert^2 \mathrm{d}\xi \mathrm{d}s$, where the inner integral is $E_\alpha(T_s f)$ for $s > 0$.
+\end{theorem}
+
+\begin{proof}
+\uses{thm:spectral_mass_derivative}
+\leanok
+The function $-m$ is continuous on $0 \le s \le t$, differentiable on $0 < s < t$ with nonnegative derivative $2\int \lambda e^{-2s\lambda}\lvert g\rvert^2$, which is therefore integrable; apply the fundamental theorem of calculus and use $m(0) = \lVert f\rVert^2$.
+\end{proof}

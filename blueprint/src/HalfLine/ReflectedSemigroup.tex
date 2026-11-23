@@ -1,0 +1,149 @@
+\chapter{Half-Line Reflected Fractional Semigroup}
+
+This chapter mirrors \texttt{FracLap/HalfLine/ReflectedSemigroup.lean}, formalizing the odd-parity preservation of whole-line fractional heat convolution, the reflected Dirichlet heat kernel $P_\alpha^D(x, y, t) = P_\alpha(x - y, t) - P_\alpha(x + y, t)$, and the isometric reflection semigroup conjugation $\widetilde{S}(t) = R_{\mathrm{op}} S(t) E_{\mathrm{op}}$.
+
+\begin{theorem}\label{thm:conv_preserves_odd}
+\lean{FracLap.fracHeatConv_isOdd_of_isOdd}
+\uses{def:is_odd_even_func, def:fractional_heat_kernel}
+\leanok
+For every fractional heat kernel $P_\alpha$, time $t > 0$, and odd function $f : \mathbb{R} \to \mathbb{R}$, the convolution $T(t)f$ is an odd function on $\mathbb{R}$:
+\[
+  (T(t)f)(-x) = -(T(t)f)(x) \qquad \text{for all } x \in \mathbb{R}.
+\]
+\end{theorem}
+
+\begin{proof}
+\uses{def:is_odd_even_func, def:fractional_heat_kernel}
+\leanok
+Substituting $y \mapsto -y$ via reflection invariance of Lebesgue measure and using evenness $P_\alpha(-x - (-y), t) = P_\alpha(-(x - y), t) = P_\alpha(x - y, t)$ together with oddness $f(-y) = -f(y)$ gives
+\[
+  (T(t)f)(-x) = \int_{\mathbb{R}} P_\alpha(-x + y, t) f(-y)\, \mathrm{d}y = -\int_{\mathbb{R}} P_\alpha(x - y, t) f(y)\, \mathrm{d}y = -(T(t)f)(x).
+\]
+\end{proof}
+
+\begin{definition}\label{def:reflected_heat_kernel}
+\lean{FracLap.reflectedHeatKernel}
+\uses{def:fractional_heat_kernel}
+\leanok
+Given a fractional heat kernel $P_\alpha$, the reflected Dirichlet fractional heat kernel on $(0, \infty) \times (0, \infty)$ is defined by
+\[
+  P_\alpha^D(x, y, t) = P_\alpha(x - y, t) - P_\alpha(x + y, t).
+\]
+\end{definition}
+
+\begin{theorem}\label{thm:reflected_heat_kernel_bounds}
+\lean{FracLap.reflectedHeatKernel_bounds}
+\uses{def:fractional_heat_kernel, def:reflected_heat_kernel}
+\leanok
+For all $x, y > 0$ and $t > 0$, the reflected fractional heat kernel satisfies the sub-Markov bounds
+\[
+  0 \le P_\alpha^D(x, y, t) \le P_\alpha(x - y, t).
+\]
+\end{theorem}
+
+\begin{proof}
+\uses{def:fractional_heat_kernel, def:reflected_heat_kernel}
+\leanok
+Since $x, y > 0$, we have $\lvert x - y \rvert \le x + y = \lvert x + y \rvert$. By radial monotonicity of $P_\alpha(\cdot, t)$, it follows that $P_\alpha(x + y, t) \le P_\alpha(x - y, t)$, whence $P_\alpha^D(x, y, t) \ge 0$. Nonnegativity $P_\alpha(x + y, t) \ge 0$ yields the upper bound $P_\alpha^D(x, y, t) \le P_\alpha(x - y, t)$.
+\end{proof}
+
+\begin{theorem}\label{thm:reflected_contraction_semigroup}
+\lean{FracLap.reflectedContractionSemigroup}
+\uses{def:contraction_semigroup, def:odd_subspace_conjugation}
+\leanok
+Let $S$ be a contraction semigroup on $(E, \lVert \cdot \rVert_E)$ and let $(E_{\mathrm{op}}, R_{\mathrm{op}})$ be an odd subspace conjugation between $E$ and a half-line space $(H, \lVert \cdot \rVert_H)$ such that $S(t)$ leaves the odd subspace invariant for all $t \ge 0$. Then the conjugated operator family
+\[
+  \widetilde{S}(t) u = R_{\mathrm{op}}\bigl(S(t)(E_{\mathrm{op}} u)\bigr), \qquad t \ge 0,
+\]
+forms a contraction semigroup on $(H, \lVert \cdot \rVert_H)$.
+\end{theorem}
+
+\begin{proof}
+\uses{def:contraction_semigroup, def:odd_subspace_conjugation}
+\leanok
+At $t = 0$, $\widetilde{S}(0)u = R_{\mathrm{op}}\bigl(S(0)(E_{\mathrm{op}} u)\bigr) = R_{\mathrm{op}}(E_{\mathrm{op}} u) = u$. For $s, t \ge 0$, because $S(t)(E_{\mathrm{op}} u)$ is odd, we have $E_{\mathrm{op}}\bigl(R_{\mathrm{op}}(S(t) E_{\mathrm{op}} u)\bigr) = S(t) E_{\mathrm{op}} u$, so
+\[
+  \widetilde{S}(s)\bigl(\widetilde{S}(t) u\bigr) = R_{\mathrm{op}}\bigl(S(s) S(t) E_{\mathrm{op}} u\bigr) = R_{\mathrm{op}}\bigl(S(s + t) E_{\mathrm{op}} u\bigr) = \widetilde{S}(s + t) u.
+\]
+Finally, by the scaled isometry relations and contractivity of $S(t)$,
+\[
+  \sqrt{2}\, \lVert \widetilde{S}(t) u \rVert_H = \lVert S(t) E_{\mathrm{op}} u \rVert_E \le \lVert E_{\mathrm{op}} u \rVert_E = \sqrt{2}\, \lVert u \rVert_H,
+\]
+and dividing by $\sqrt{2} > 0$ proves $\lVert \widetilde{S}(t) u \rVert_H \le \lVert u \rVert_H$.
+\end{proof}
+
+\begin{definition}\label{def:half_line_l2_reflection}
+\lean{FracLap.L2IoiC, FracLap.reflectL2, FracLap.coeFn_reflectL2, FracLap.reflectL2_reflectL2, FracLap.IsOddL2, FracLap.isOddL2_iff_ae}
+\uses{def:fourier_multiplier_op}
+\leanok
+Let $\mathrm{L2IoiC} := L^2((0, \infty); \mathbb{C})$ with restricted Lebesgue measure, and let $\mathrm{reflectL2} : L^2(\mathbb{R}; \mathbb{C}) \to L^2(\mathbb{R}; \mathbb{C})$ be the involutive linear isometry $f \mapsto (x \mapsto f(-x))$ induced by reflection invariance of Lebesgue measure. The closed odd subspace $\mathrm{IsOddL2}$ consists of all $f \in L^2(\mathbb{R}; \mathbb{C})$ satisfying $\mathrm{reflectL2}(f) = -f$, equivalently $f(-x) = -f(x)$ almost everywhere.
+\end{definition}
+
+\begin{definition}\label{def:concrete_odd_ext_rest}
+\lean{FracLap.memLp_indicator_IoiC, FracLap.extendByZeroIoiC, FracLap.coeFn_extendByZeroIoiC, FracLap.oddExtL2, FracLap.oddExtL2_apply, FracLap.restIoiL2, FracLap.coeFn_restIoiL2}
+\uses{def:half_line_l2_reflection, def:lp_extend_by_zero}
+\leanok
+For $u \in L^2((0, \infty); \mathbb{C})$, let $E_0 u \in L^2(\mathbb{R}; \mathbb{C})$ be its zero extension by $\mathbf{1}_{(0, \infty)} u$. The antisymmetric odd extension and half-line restriction operators are the bounded $\mathbb{R}$-linear maps
+\[
+  E_{\mathrm{odd}} u := E_0 u - \mathrm{reflectL2}(E_0 u), \qquad R_{(0, \infty)} f := f|_{(0, \infty)}.
+\]
+\end{definition}
+
+\begin{theorem}\label{thm:concrete_half_line_odd_conjugation}
+\lean{FracLap.oddExtL2_isOddL2, FracLap.inner_extendByZeroIoiC_reflectL2, FracLap.norm_oddExtL2, FracLap.restIoiL2_oddExtL2, FracLap.oddExtL2_restIoiL2_of_isOddL2, FracLap.norm_restIoiL2_of_isOddL2, FracLap.halfLineOddConjugation}
+\uses{def:odd_subspace_conjugation, def:concrete_odd_ext_rest}
+\leanok
+The pair $(E_{\mathrm{odd}}, R_{(0, \infty)})$ forms a concrete odd-subspace conjugation between $L^2(\mathbb{R}; \mathbb{C})$ and $L^2((0, \infty); \mathbb{C})$: for all $u \in L^2((0, \infty); \mathbb{C})$ and odd $f \in L^2_{\mathrm{odd}}(\mathbb{R}; \mathbb{C})$, we have $E_{\mathrm{odd}} u \in L^2_{\mathrm{odd}}(\mathbb{R}; \mathbb{C})$, $R_{(0, \infty)}(E_{\mathrm{odd}} u) = u$, $E_{\mathrm{odd}}(R_{(0, \infty)} f) = f$, $\lVert E_{\mathrm{odd}} u \rVert_2 = \sqrt{2}\,\lVert u \rVert_2$, and $\sqrt{2}\,\lVert R_{(0, \infty)} f \rVert_2 = \lVert f \rVert_2$.
+\end{theorem}
+
+\begin{proof}
+\uses{def:concrete_odd_ext_rest}
+\leanok
+Because $E_0 u$ and $\mathrm{reflectL2}(E_0 u)$ have disjoint supports $(0, \infty)$ and $(-\infty, 0)$, they are orthogonal in $L^2(\mathbb{R}; \mathbb{C})$, yielding $\lVert E_{\mathrm{odd}} u \rVert_2^2 = \lVert E_0 u \rVert_2^2 + \lVert \mathrm{reflectL2}(E_0 u) \rVert_2^2 = 2 \lVert u \rVert_2^2$. The inversion identities follow almost everywhere on $(0, \infty)$ and $(-\infty, 0)$ since $\{0\}$ has Lebesgue measure zero.
+\end{proof}
+
+\begin{theorem}\label{thm:fourier_reflect_and_even_multipliers}
+\lean{FracLap.fourier_reflectL2, FracLap.fourierInv_reflectL2, FracLap.reflectL2_fourierMultiplier_of_even, FracLap.fourierMultiplier_isOddL2_of_even, FracLap.fourierMultiplierSemigroup_reflectL2, FracLap.fourierMultiplierSemigroup_isOddL2, FracLap.fourierMultiplierResolvent_reflectL2, FracLap.fracLapSymbol_even, FracLap.fracLapSemigroup_isOddL2, FracLap.fracLapResolvent_reflectL2}
+\uses{def:half_line_l2_reflection, thm:plancherel_and_parseval, thm:fourier_multiplier_semigroup_resolvent, thm:concrete_frac_lap_semigroup}
+\leanok
+The $L^2$ Fourier transform and inverse Fourier transform commute with reflection: $\mathcal{F}(\mathrm{reflectL2}\, f) = \mathrm{reflectL2}(\mathcal{F} f)$ and $\mathcal{F}^{-1}(\mathrm{reflectL2}\, f) = \mathrm{reflectL2}(\mathcal{F}^{-1} f)$. Consequently, every Fourier multiplier with an even symbol $m(-\xi) = m(\xi)$ a.e.\ commutes with $\mathrm{reflectL2}$ and preserves $\mathrm{IsOddL2}$. In particular, since $\lvert 2\pi(-\xi) \rvert^\alpha = \lvert 2\pi\xi \rvert^\alpha$, both $\mathrm{fracLapSemigroup}(\alpha)$ and $\mathrm{fracLapResolvent}(\alpha)$ preserve oddness and commute with reflection.
+\end{theorem}
+
+\begin{proof}
+\uses{def:half_line_l2_reflection, thm:plancherel_and_parseval}
+\leanok
+By density of Schwartz functions $\mathcal{S}(\mathbb{R}, \mathbb{C})$ in $L^2(\mathbb{R}; \mathbb{C})$ and continuity of both $\mathcal{F}$ and $\mathrm{reflectL2}$, it suffices to verify $\mathcal{F}(\varphi \circ (-\mathrm{id}))(\xi) = (\mathcal{F}\varphi)(-\xi)$ for Schwartz functions $\varphi$, which holds by substituting $y \mapsto -y$ in the Fourier integral. Even symbols then factor through $\mathcal{F}^{-1} \circ M_m \circ \mathcal{F}$.
+\end{proof}
+
+\begin{theorem}\label{thm:concrete_reflected_frac_lap_hy}
+\lean{FracLap.reflectedC0Semigroup, FracLap.reflectedC0Semigroup_apply, FracLap.reflectedContractiveResolvent, FracLap.reflectedC0Semigroup_resolvent_eq, FracLap.reflectedFracLapSemigroup, FracLap.reflectedFracLapResolvent, FracLap.reflectedFracLapResolvent_generatedSemigroup_eq, FracLap.fracLapContractionSemigroup, FracLap.reflectedFracLapContractionSemigroup}
+\uses{thm:concrete_half_line_odd_conjugation, thm:fourier_reflect_and_even_multipliers, thm:fourier_multiplier_hy_identification, thm:concrete_frac_lap_semigroup, thm:reflected_contraction_semigroup}
+\leanok
+Conjugating an odd-invariant $C_0$-contraction semigroup $S$ on $L^2(\mathbb{R}; \mathbb{C})$ or a reflection-commuting contractive resolvent $R$ produces a concrete $C_0$-contraction semigroup $\widetilde{S}(t) = R_{(0, \infty)} S(t) E_{\mathrm{odd}}$ and contractive resolvent $\widetilde{R}_\mu = R_{(0, \infty)} R_\mu E_{\mathrm{odd}}$ on $L^2((0, \infty); \mathbb{C})$, with Laplace-transform resolvent equal to the conjugation of $S$'s resolvent. Specializing to $\psi_\alpha(\xi) = \lvert 2\pi\xi \rvert^\alpha$ gives the concrete reflected fractional Laplacian semigroup $\mathrm{reflectedFracLapSemigroup}(\alpha)$ and resolvent $\mathrm{reflectedFracLapResolvent}(\alpha)$ satisfying
+\[
+  (\mathrm{reflectedFracLapResolvent}(\alpha)).\mathrm{generatedSemigroup} = \mathrm{reflectedFracLapSemigroup}(\alpha).
+\]
+\end{theorem}
+
+\begin{proof}
+\uses{thm:concrete_half_line_odd_conjugation, thm:fourier_reflect_and_even_multipliers, thm:fourier_multiplier_hy_identification}
+\leanok
+The semigroup law, contractivity, and resolvent identity follow from the odd-subspace conjugation identities of Theorem~\ref{thm:concrete_half_line_odd_conjugation}. Orbit continuity follows from continuity of $R_{(0, \infty)}$ composed with $S$-orbits. Dense range of $\widetilde{R}_\mu$ follows by projecting an approximation $x \in L^2(\mathbb{R}; \mathbb{C})$ of $E_{\mathrm{odd}} g$ onto its odd part $x_{\mathrm{odd}} = \frac{1}{2}(x - \mathrm{reflectL2}\,x)$ and restricting to $(0, \infty)$. Commuting the bounded linear restriction $R_{(0, \infty)}$ with the Bochner Laplace integral identifies the resolvent of $\widetilde{S}$ with $\widetilde{R}$, so Theorem~\ref{thm:hille_yosida_bijection} yields exact equality of the generated semigroup.
+\end{proof}
+
+\begin{theorem}[Generator, method-of-images kernel, and sub-Markov property of $\widetilde{S}_\alpha$]\label{thm:reflected_generator_kernel_markov}
+\lean{FracLap.mem_generatorDomain_reflectedC0Semigroup_iff, FracLap.generator_reflectedC0Semigroup, FracLap.reflectedFracLapSemigroup_mem_generatorDomain_iff, FracLap.generator_reflectedFracLapSemigroup, FracLap.reflectedFracLapSemigroup_apply_ae_eq_reflectedHeatKernel, FracLap.reflectedFracLapSemigroup_re_nonneg, FracLap.reflectedFracLapSemigroup_re_le}
+\uses{thm:concrete_reflected_frac_lap_hy, thm:reflected_heat_kernel_bounds, thm:stable_semigroup_L2_markov}
+\leanok
+An element $u \in L^2((0, \infty); \mathbb{C})$ lies in the generator domain $\mathcal{D}(\widetilde{A}_\alpha)$ of $\mathrm{reflectedFracLapSemigroup}(\alpha)$ if and only if $E_{\mathrm{odd}} u \in \mathcal{D}(A_\alpha)$, in which case $\widetilde{A}_\alpha u = R_{(0,\infty)} (A_\alpha E_{\mathrm{odd}} u)$. Furthermore, for every $0 < \alpha < 2$ and $t > 0$, the semigroup acts almost everywhere on $\{x > 0\}$ as integration against the reflected Dirichlet heat kernel $P_\alpha^D(x, y, t) = P_\alpha(x - y, t) - P_\alpha(x + y, t)$:
+\[
+  \bigl(\widetilde{S}_\alpha(t) u\bigr)(x) = \int_0^\infty P_\alpha^D(x, y, t)\, u(y)\, \mathrm{d}y,
+\]
+and $\widetilde{S}_\alpha(t)$ preserves real-valuedness, nonnegativity, and bounds $0 \le u \le M$ almost everywhere on $\{x > 0\}$.
+\end{theorem}
+
+\begin{proof}
+\uses{thm:concrete_reflected_frac_lap_hy, thm:reflected_heat_kernel_bounds, thm:stable_semigroup_L2_markov}
+\leanok
+Because $E_{\mathrm{odd}}$ and $R_{(0,\infty)}$ are bounded linear maps with $R_{(0,\infty)} E_{\mathrm{odd}} = I$ and $E_{\mathrm{odd}} R_{(0,\infty)} = I$ on $L^2_{\mathrm{odd}}(\mathbb{R})$, continuity of both maps preserves convergence of the semigroup difference quotients, establishing both the generator domain equivalence and $\widetilde{A}_\alpha u = R_{(0,\infty)}(A_\alpha E_{\mathrm{odd}} u)$. Applying Theorem~\ref{thm:stable_semigroup_L2_markov} to $E_{\mathrm{odd}} u$ and changing variables $y \mapsto -y$ on $\{y < 0\}$ produces the method-of-images integral formula. Nonnegativity follows from $P_\alpha^D \ge 0$ (Theorem~\ref{thm:reflected_heat_kernel_bounds}), and for $0 \le u \le M$ we have $E_{\mathrm{odd}} u \le M$ everywhere on $\mathbb{R}$, so the whole-line Markov bound yields $\widetilde{S}_\alpha(t) u \le M$ on $\{x > 0\}$.
+\end{proof}

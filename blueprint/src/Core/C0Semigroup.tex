@@ -1,0 +1,115 @@
+\chapter{Strongly Continuous Contraction Semigroups and Generators}
+
+This chapter mirrors \texttt{FracLap/Core/C0Semigroup.lean}, onboarding the Banach-space theory of strongly continuous contraction semigroups ($C_0$-contraction semigroups) and their infinitesimal generators from \texttt{scottnarmstrong/MarkovProcess} and verifying it in Lean.
+
+\begin{definition}\label{def:c0_contraction_semigroup}
+\lean{FracLap.StronglyContinuousContractionSemigroup, FracLap.StronglyContinuousContractionSemigroup.ofTendstoZero}
+\leanok
+A \emph{strongly continuous contraction semigroup} on a real normed space $E$ is a family of continuous linear operators $S(t) : E \to E$ indexed by $t \in \mathbb{R}_{\ge 0}$ satisfying $S(0) = I$, the semigroup composition law $S(s + t) = S(s) \circ S(t)$ for all $s, t \ge 0$, the contraction bound $\lVert S(t) \rVert \le 1$ for all $t \ge 0$, and strong orbit continuity $t \mapsto S(t)x$ on $\mathbb{R}_{\ge 0}$ for every $x \in E$.
+\end{definition}
+
+\begin{theorem}\label{thm:c0_orbit_continuity_from_zero}
+\lean{FracLap.tendsto_apply_of_opNorm_le_one, FracLap.continuous_orbit_of_tendsto_zero, FracLap.StronglyContinuousContractionSemigroup.continuous_operator_apply}
+\uses{def:c0_contraction_semigroup}
+\leanok
+If $T : \mathbb{R}_{\ge 0} \to \mathcal{B}(E)$ satisfies $T(s + t) = T(s) \circ T(t)$, $\lVert T(t) \rVert \le 1$ for all $t \ge 0$, and $\lim_{t \to 0^+} T(t)x = x$ for every $x \in E$, then every orbit $t \mapsto T(t)x$ is continuous on all of $\mathbb{R}_{\ge 0}$, and the evolution map $(t, x) \mapsto S(t)x$ is jointly continuous.
+\end{theorem}
+
+\begin{proof}
+\uses{def:c0_contraction_semigroup}
+\leanok
+For any $s, t \ge 0$, assuming without loss of generality that $t \le s$, the semigroup law and contractivity yield $\lVert T(s)x - T(t)x \rVert = \lVert T(t)\bigl(T(s - t)x - x\bigr) \rVert \le \lVert T(s - t)x - x \rVert \to 0$ as $s \to t$. Joint continuity follows from the triangle inequality $\lVert S(t_i)x_i - S(t)x \rVert \le \lVert x_i - x \rVert + \lVert S(t_i)x - S(t)x \rVert$.
+\end{proof}
+
+\begin{lemma}\label{lem:c0_basic_ops}
+\lean{FracLap.StronglyContinuousContractionSemigroup.ext, FracLap.StronglyContinuousContractionSemigroup.zero, FracLap.StronglyContinuousContractionSemigroup.zero_apply, FracLap.StronglyContinuousContractionSemigroup.add, FracLap.StronglyContinuousContractionSemigroup.add_apply, FracLap.StronglyContinuousContractionSemigroup.norm_operator_le_one, FracLap.StronglyContinuousContractionSemigroup.norm_apply_le, FracLap.StronglyContinuousContractionSemigroup.dist_apply_le, FracLap.StronglyContinuousContractionSemigroup.continuous, FracLap.StronglyContinuousContractionSemigroup.continuousAt, FracLap.StronglyContinuousContractionSemigroup.tendsto, FracLap.StronglyContinuousContractionSemigroup.commute, FracLap.StronglyContinuousContractionSemigroup.commute_apply}
+\uses{def:c0_contraction_semigroup}
+\leanok
+Every strongly continuous contraction semigroup $S$ on $E$ satisfies $\lVert S(t)x \rVert \le \lVert x \rVert$, $\operatorname{dist}\bigl(S(t)x, S(t)y\bigr) \le \operatorname{dist}(x, y)$, and $S(s)\bigl(S(t)x\bigr) = S(t)\bigl(S(s)x\bigr)$ for all $s, t \ge 0$ and $x, y \in E$.
+\end{lemma}
+
+\begin{proof}
+\uses{def:c0_contraction_semigroup}
+\leanok
+Pointwise contractivity follows from $\lVert S(t)x \rVert \le \lVert S(t) \rVert \lVert x \rVert \le \lVert x \rVert$, and commutativity follows from $S(s) S(t) = S(s + t) = S(t + s) = S(t) S(s)$.
+\end{proof}
+
+\begin{definition}\label{def:c0_generator}
+\lean{FracLap.StronglyContinuousContractionSemigroup.differenceQuotient, FracLap.StronglyContinuousContractionSemigroup.generatorDomain, FracLap.StronglyContinuousContractionSemigroup.generatorFun, FracLap.StronglyContinuousContractionSemigroup.generator}
+\uses{def:c0_contraction_semigroup, lem:c0_basic_ops}
+\leanok
+For $S$ a strongly continuous contraction semigroup on $E$, the difference quotient at $t > 0$ is $D_t f = t^{-1}\bigl(S(t)f - f\bigr)$. The \emph{generator domain} $\mathcal{D}(L) \subseteq E$ is the linear subspace of vectors $f \in E$ for which $\lim_{t \to 0^+} D_t f$ exists in $E$, and the \emph{infinitesimal generator} $L : \mathcal{D}(L) \to E$ is the linear map $Lf = \lim_{t \to 0^+} t^{-1}\bigl(S(t)f - f\bigr)$.
+\end{definition}
+
+\begin{lemma}\label{lem:c0_generator_invariance}
+\lean{FracLap.StronglyContinuousContractionSemigroup.differenceQuotient_apply, FracLap.StronglyContinuousContractionSemigroup.differenceQuotient_add, FracLap.StronglyContinuousContractionSemigroup.differenceQuotient_smul, FracLap.StronglyContinuousContractionSemigroup.differenceQuotient_zero, FracLap.StronglyContinuousContractionSemigroup.differenceQuotient_operator, FracLap.StronglyContinuousContractionSemigroup.mem_generatorDomain_iff, FracLap.StronglyContinuousContractionSemigroup.mem_generatorDomain_of_tendsto, FracLap.StronglyContinuousContractionSemigroup.tendsto_generator, FracLap.StronglyContinuousContractionSemigroup.generator_eq_of_tendsto, FracLap.StronglyContinuousContractionSemigroup.operator_mem_generatorDomain, FracLap.StronglyContinuousContractionSemigroup.generator_operator, FracLap.StronglyContinuousContractionSemigroup.tendsto_differenceQuotient_add}
+\uses{def:c0_generator}
+\leanok
+For every $f \in \mathcal{D}(L)$ and $t \ge 0$, the evolved vector $S(t)f$ belongs to $\mathcal{D}(L)$ and commutes with the generator:
+\[
+  L\bigl(S(t)f\bigr) = S(t)(Lf).
+\]
+\end{lemma}
+
+\begin{proof}
+\uses{def:c0_generator}
+\leanok
+Because $S(t)$ is a continuous linear map commuting with $S(h)$, we have $D_h\bigl(S(t)f\bigr) = S(t)(D_h f) \to S(t)(Lf)$ as $h \to 0^+$.
+\end{proof}
+
+\begin{theorem}\label{thm:c0_orbit_deriv_and_ftc}
+\lean{FracLap.StronglyContinuousContractionSemigroup.tendsto_toNNReal_sub, FracLap.StronglyContinuousContractionSemigroup.tendsto_toNNReal_const_sub, FracLap.StronglyContinuousContractionSemigroup.continuous_operator_toNNReal, FracLap.StronglyContinuousContractionSemigroup.hasDerivWithinAt_Ioi, FracLap.StronglyContinuousContractionSemigroup.hasDerivWithinAt_Ici, FracLap.StronglyContinuousContractionSemigroup.hasDerivWithinAt_Iic, FracLap.StronglyContinuousContractionSemigroup.hasDerivAt_operator_toNNReal, FracLap.StronglyContinuousContractionSemigroup.operator_sub_eq_integral}
+\uses{def:c0_generator, lem:c0_generator_invariance}
+\leanok
+Let $S$ be a strongly continuous contraction semigroup on $E$ and let $f \in \mathcal{D}(L)$. Then the orbit $t \mapsto S(t)f$ has right derivative $S(t)(Lf)$ at every $t \ge 0$, two-sided derivative $\frac{\mathrm{d}}{\mathrm{d}t} S(t)f = S(t)(Lf)$ at every $t > 0$, and when $E$ is complete (a Banach space), satisfies the fundamental integral identity
+\[
+  S(t)f - f = \int_0^t S(s)(Lf)\, \mathrm{d}s \qquad \text{for all } t \ge 0.
+\]
+\end{theorem}
+
+\begin{proof}
+\uses{def:c0_generator, lem:c0_generator_invariance}
+\leanok
+Right differentiability at $t \ge 0$ follows directly from Lemma~\ref{lem:c0_generator_invariance}. For $t > 0$ and $0 < y < t$, writing $S(t)f - S(y)f = S(y)\bigl(S(t - y)f - f\bigr)$ and using joint continuity of $(y, v) \mapsto S(y)v$ gives the left derivative $S(t)(Lf)$. Integrating the continuous right derivative over $[0, t]$ via the fundamental theorem of calculus for Bochner interval integrals yields $S(t)f - f = \int_0^t S(s)(Lf)\, \mathrm{d}s$.
+\end{proof}
+
+\begin{definition}\label{def:c0_orbit_integral}
+\lean{FracLap.StronglyContinuousContractionSemigroup.orbitIntegral}
+\uses{def:c0_contraction_semigroup}
+\leanok
+For $f \in E$ and $u \in \mathbb{R}$, the \emph{orbit integral} is defined by
+\[
+  I_u(f) = \int_0^u S\bigl(\max(s, 0)\bigr)f\, \mathrm{d}s.
+\]
+\end{definition}
+
+\begin{theorem}\label{thm:c0_generator_dense_and_closed}
+\lean{FracLap.StronglyContinuousContractionSemigroup.orbitIntegral_apply, FracLap.StronglyContinuousContractionSemigroup.orbitIntegral_zero, FracLap.StronglyContinuousContractionSemigroup.orbitIntegral_sub, FracLap.StronglyContinuousContractionSemigroup.norm_orbitIntegral_le, FracLap.StronglyContinuousContractionSemigroup.tendsto_orbitIntegral, FracLap.StronglyContinuousContractionSemigroup.hasDerivAt_orbitIntegral, FracLap.StronglyContinuousContractionSemigroup.operator_orbitIntegral, FracLap.StronglyContinuousContractionSemigroup.tendsto_differenceQuotient_orbitIntegral, FracLap.StronglyContinuousContractionSemigroup.orbitIntegral_mem_generatorDomain, FracLap.StronglyContinuousContractionSemigroup.generator_orbitIntegral, FracLap.StronglyContinuousContractionSemigroup.tendsto_inv_smul_orbitIntegral, FracLap.StronglyContinuousContractionSemigroup.dense_generatorDomain, FracLap.StronglyContinuousContractionSemigroup.operator_sub_eq_orbitIntegral_of_tendsto_generator, FracLap.StronglyContinuousContractionSemigroup.mem_generatorDomain_of_tendsto_generator, FracLap.StronglyContinuousContractionSemigroup.generator_eq_of_tendsto_generator}
+\uses{thm:c0_orbit_deriv_and_ftc, def:c0_orbit_integral}
+\leanok
+Let $S$ be a strongly continuous contraction semigroup on a real Banach space $E$. Then:
+\begin{enumerate}
+  \item for every $f \in E$ and $t \ge 0$, the orbit integral $I_t(f) = \int_0^t S(s)f\, \mathrm{d}s$ belongs to $\mathcal{D}(L)$ with $L\bigl(I_t(f)\bigr) = S(t)f - f$, and $\lim_{t \to 0^+} t^{-1} I_t(f) = f$;
+  \item the generator domain $\mathcal{D}(L)$ is dense in $E$; and
+  \item the generator $L : \mathcal{D}(L) \to E$ is a closed linear operator: if $u_i \in \mathcal{D}(L)$ satisfies $u_i \to f$ and $L u_i \to g$ in $E$, then $f \in \mathcal{D}(L)$ and $Lf = g$.
+\end{enumerate}
+\end{theorem}
+
+\begin{proof}
+\uses{thm:c0_orbit_deriv_and_ftc, def:c0_orbit_integral}
+\leanok
+Shifting the integration window gives $S(h) I_t(f) - I_t(f) = I_{t+h}(f) - I_t(f) - I_h(f)$. Dividing by $h > 0$ and letting $h \to 0^+$ yields $L\bigl(I_t(f)\bigr) = S(t)f - f$, while $t^{-1} I_t(f) \to S(0)f = f$ proves that $\mathcal{D}(L)$ is dense in $E$. For closedness, passing to the limit in $S(t)u_i - u_i = I_t(L u_i)$ gives $S(t)f - f = I_t(g)$, and dividing by $t \to 0^+$ yields $f \in \mathcal{D}(L)$ with $Lf = g$.
+\end{proof}
+
+\begin{theorem}\label{thm:c0_generator_uniqueness}
+\lean{FracLap.StronglyContinuousContractionSemigroup.ext_of_generator}
+\uses{thm:c0_orbit_deriv_and_ftc, thm:c0_generator_dense_and_closed}
+\leanok
+Let $S$ and $T$ be two strongly continuous contraction semigroups on a real Banach space $E$. If $\mathcal{D}(L_S) = \mathcal{D}(L_T)$ and $L_S f = L_T f$ for all $f \in \mathcal{D}(L_S)$, then $S(t) = T(t)$ for all $t \ge 0$. This is the statement that the generator determines the semigroup uniquely, see Engel--Nagel~\cite{engel}, Theorem~II.1.4.
+\end{theorem}
+
+\begin{proof}
+\uses{thm:c0_orbit_deriv_and_ftc, thm:c0_generator_dense_and_closed}
+\leanok
+For $f \in \mathcal{D}(L_S)$ and $t > 0$, the interpolation curve $s \mapsto S(t - s)\bigl(T(s)f\bigr)$ on $[0, t]$ is continuous and has right derivative $S(t - s)\bigl(L_T T(s)f - L_S T(s)f\bigr) = 0$ for $0 \le s < t$. By Gr\"onwall's inequality, the curve is constant on $[0, t]$, so $S(t)f = T(t)f$ on the dense subspace $\mathcal{D}(L_S)$ and hence on all of $E$ by continuity.
+\end{proof}

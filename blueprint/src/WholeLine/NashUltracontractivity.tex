@@ -1,0 +1,57 @@
+\chapter{Nash Inequality and $L^1 \to L^2$ Decay of the Fractional Heat Semigroup}
+
+This chapter mirrors \texttt{FracLap/WholeLine/NashUltracontractivity.lean}. It runs the Carlen--Kusuoka--Stroock argument for the stable semigroup on Schwartz data: Nash's inequality with the exact constant of Theorem~\ref{thm:nash_explicit}, the energy dissipation of Theorem~\ref{thm:spectral_mass_derivative} and $L^1$ contractivity give $\lVert T_t u\rVert_2 \lesssim t^{-1/(2\alpha)} \lVert u\rVert_1$ by the ODE comparison of Theorem~\ref{thm:nash_decay}.
+
+\begin{lemma}[Young's inequality in $L^1$]\label{lem:young_l1}
+\lean{FracLap.lintegral_enorm_convolution_le}
+\uses{thm:std_tonelli, thm:std_translation_invariance}
+\leanok
+For measurable $K, f$, $\int \lvert K \star f\rvert \le (\int \lvert K\rvert)(\int \lvert f\rvert)$ in $[0, \infty]$.
+\end{lemma}
+
+\begin{proof}
+\uses{thm:std_tonelli, thm:std_translation_invariance}
+\leanok
+Bound $\lvert (K \star f)(x)\rvert \le \int \lvert K(y)\rvert\lvert f(x-y)\rvert \mathrm{d}y$, exchange the order of integration (Tonelli) and use translation invariance of Lebesgue measure.
+\end{proof}
+
+\begin{lemma}[$L^1$ contractivity]\label{lem:semigroup_l1_contractive}
+\lean{FracLap.lintegral_enorm_stableKernel, FracLap.lintegral_norm_semigroup_le, FracLap.integrable_norm_semigroup}
+\uses{lem:young_l1, thm:stable_semigroup_convolution}
+\leanok
+For Schwartz $u$ and $t > 0$, $T_t u$ is integrable and $\lVert T_t u\rVert_1 \le \lVert u\rVert_1$.
+\end{lemma}
+
+\begin{proof}
+\uses{lem:young_l1, thm:stable_semigroup_convolution}
+\leanok
+By Theorem~\ref{thm:stable_semigroup_convolution}, $T_t u = P_\alpha(\cdot, t) \star u$; the stable kernel is nonnegative with unit mass, so its $L^1$ norm is $1$, and Lemma~\ref{lem:young_l1} applies.
+\end{proof}
+
+\begin{theorem}[Nash $\Rightarrow$ $L^1 \to L^2$ decay]\label{thm:nash_l1_l2}
+\lean{FracLap.nash_l1_l2_decay}
+\uses{thm:nash_decay, thm:nash_explicit, thm:spectral_mass_derivative, thm:semigroup_fourier_side, lem:semigroup_l1_contractive}
+\leanok
+Let $0 < \alpha < 2$, $u$ Schwartz with $M = \lVert u\rVert_1 > 0$ and $t > 0$. Then
+\[
+  \lVert T_t u\rVert_2^2 \le \Bigl(\frac{3^{1+\alpha}(2\pi)^{-\alpha} M^{2\alpha}}{2\alpha t}\Bigr)^{1/\alpha}.
+\]
+\end{theorem}
+
+\begin{proof}
+\uses{thm:nash_decay, thm:nash_explicit, thm:spectral_mass_derivative, thm:semigroup_fourier_side, lem:semigroup_l1_contractive}
+\leanok
+Put $m(s) = \lVert T_s u\rVert_2^2$ and $E(s) = E_\alpha(T_s u)$. By Theorem~\ref{thm:spectral_mass_derivative}, $m' = -2E$ and $m$ is continuous on $s \ge 0$. By Theorem~\ref{thm:nash_explicit} applied to $T_s u$, which is integrable with $\lVert T_s u\rVert_1 \le M$ (Lemma~\ref{lem:semigroup_l1_contractive}), $m^{1+\alpha} \le K E M^{2\alpha}$ with $K = 3^{1+\alpha}(2\pi)^{-\alpha}$. Apply Theorem~\ref{thm:nash_decay}.
+\end{proof}
+
+\begin{lemma}[Sup bound and $L^1 \to L^\infty$ bound]\label{lem:l1_linf}
+\lean{FracLap.FractionalHeatKernel.le_sup, FracLap.stable_conv_sup_le}
+\uses{thm:stable_semigroup_convolution}
+\leanok
+For any fractional heat kernel, $P_\alpha(x, t) \le t^{-1/\alpha} P_\alpha(0, 1)$. Consequently, for Schwartz $u$, $\lvert (P_\alpha(\cdot, t) \star u)(x)\rvert \le t^{-1/\alpha} P_\alpha(0, 1) \lVert u\rVert_1$ for all $x$.
+\end{lemma}
+
+\begin{proof}
+\leanok
+Self-similarity gives $P_\alpha(x, t) = t^{-1/\alpha} P_\alpha(x t^{-1/\alpha}, 1)$ and radial monotonicity gives $P_\alpha(y, 1) \le P_\alpha(0, 1)$. For the convolution bound estimate the integrand pointwise by $t^{-1/\alpha}P_\alpha(0, 1)\lvert u(x - y)\rvert$.
+\end{proof}

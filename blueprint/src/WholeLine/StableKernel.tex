@@ -1,0 +1,35 @@
+\chapter{The Symmetric Stable Heat Kernel}
+
+This chapter mirrors \texttt{FracLap/WholeLine/StableKernel.lean}. It constructs the symmetric $\alpha$-stable heat kernel $P_\alpha(x, t)$ analytically, by Fourier inversion of the symbol $e^{-t \lvert \omega \rvert^\alpha}$ in angular frequency $\omega$, without any probabilistic input. This is the kernel of the semigroup with multiplier $e^{-t \lvert 2\pi\xi \rvert^\alpha}$ from the Fourier semigroup chapter.
+
+\begin{definition}\label{def:stable_kernel}
+\lean{FracLap.stableKernel}
+\leanok
+For $\alpha, t \in \mathbb{R}$ and $x \in \mathbb{R}$ put
+\[
+  P_\alpha(x, t) = \frac{1}{\pi} \int_{0}^{\infty} e^{-t \omega^\alpha} \cos(x \omega)\, \mathrm{d}\omega.
+\]
+For $\alpha > 0$ and $t > 0$ the integrand is absolutely integrable by Theorem~\ref{thm:std_stretched_exponential}.
+\end{definition}
+
+\begin{lemma}\label{lem:stable_kernel_elementary}
+\lean{FracLap.integrableOn_stableSymbol, FracLap.stableKernel_neg, FracLap.stableKernel_self_similar, FracLap.abs_stableKernel_le}
+\uses{def:stable_kernel, thm:std_half_line_scaling, thm:std_stretched_exponential}
+\leanok
+Let $\alpha > 0$. Then for all $x \in \mathbb{R}$ and $t > 0$:
+\begin{enumerate}
+  \item $P_\alpha(-x, t) = P_\alpha(x, t)$;
+  \item $P_\alpha(x, t) = t^{-1/\alpha} P_\alpha\bigl(x t^{-1/\alpha}, 1\bigr)$; and
+  \item $\lvert P_\alpha(x, t) \rvert \le \frac{1}{\pi} \int_0^\infty e^{-t \omega^\alpha}\, \mathrm{d}\omega$.
+\end{enumerate}
+\end{lemma}
+
+\begin{proof}
+\uses{def:stable_kernel, thm:std_half_line_scaling, thm:std_stretched_exponential}
+\leanok
+Evenness holds because the cosine is even. For the scaling, put $b = t^{1/\alpha}$, so that $b^\alpha = t$. Applying Theorem~\ref{thm:std_half_line_scaling} to $g(u) = e^{-u^\alpha} \cos(x b^{-1} u)$ gives
+\[
+  \int_0^\infty e^{-t \omega^\alpha} \cos(x \omega)\, \mathrm{d}\omega = b^{-1} \int_0^\infty e^{-u^\alpha} \cos\bigl(x b^{-1} u\bigr)\, \mathrm{d}u,
+\]
+which is the claim since $b^{-1} = t^{-1/\alpha}$. The bound follows from $\lvert \cos \rvert \le 1$ and positivity of the exponential.
+\end{proof}

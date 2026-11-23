@@ -1,0 +1,16 @@
+\chapter{Young's Convolution Inequality}
+
+This chapter mirrors \texttt{FracLap/Tools/Young.lean}.
+
+\begin{theorem}[Young's inequality]\label{thm:young}
+\lean{FracLap.lintegral_rpow_convolution_le, FracLap.lintegral_rpow_convolution_le'}
+\uses{lem:young_l1, thm:std_holder, thm:std_tonelli}
+\leanok
+For $1 \le p < \infty$ and $K \in L^1$, measurable $f$: $\int \lvert K \star f\rvert^p \le (\int \lvert K\rvert)^p \int \lvert f\rvert^p$ in $[0, \infty]$.
+\end{theorem}
+
+\begin{proof}
+\uses{lem:young_l1, thm:std_holder, thm:std_tonelli}
+\leanok
+The case $p = 1$ is Lemma~\ref{lem:young_l1}. For $p > 1$ let $q$ be the conjugate exponent and $A = \int\lvert K\rvert$. By Theorem~\ref{thm:std_holder} applied to $\lvert f(x - y)\rvert \lvert K(y)\rvert^{1/p}$ and $\lvert K(y)\rvert^{1/q}$, $\lvert (K \star f)(x)\rvert \le A^{1/q}(\int \lvert K(y)\rvert \lvert f(x-y)\rvert^p \mathrm{d}y)^{1/p}$. Raise to the power $p$, integrate in $x$ and use Tonelli (Theorem~\ref{thm:std_tonelli}) with translation invariance: the right side becomes $A^{p/q} \cdot A \int \lvert f\rvert^p = A^p \int \lvert f\rvert^p$ since $p/q + 1 = p$.
+\end{proof}

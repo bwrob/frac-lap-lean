@@ -1,0 +1,105 @@
+\chapter{Fourier Side of the Gagliardo Energy and Density of Schwartz Functions}
+
+This chapter mirrors \texttt{FracLap/WholeLine/GagliardoFourier.lean}. Following Di Nezza--Palatucci--Valdinoci (Proposition~3.4), the Gagliardo energy of $f \in L^2(\mathbb{R}; \mathbb{C})$ is computed on the Fourier side. In contrast to the guide we never need the closed form $\lvert \xi \rvert^\alpha$ of the symbol: it suffices that the symbol is measurable and bounded by $C(1 + \xi^2)$. This is enough to place the problem in a weighted $L^2$ space of temperate growth, where Schwartz functions are dense.
+
+\begin{lemma}\label{lem:gagliardo_energy_translation_complex}
+\lean{FracLap.lintegral_gagliardo_energy_eq_complex}
+\uses{lem:gagliardo_energy_translation, def:gagliardo_measure}
+\leanok
+For every measurable $g : \mathbb{R} \to \mathbb{C}$ and every $\alpha \in \mathbb{R}$, as an identity in $[0, \infty]$,
+\[
+  \iint \lvert g(x) - g(y) \rvert^2 \, \mathrm{d}\mu_\alpha(x, y)
+  = \int_{\mathbb{R}} \frac{C(\alpha)}{2 \lvert h \rvert^{1 + \alpha}} \Bigl( \int_{\mathbb{R}} \lvert g(y + h) - g(y) \rvert^2 \, \mathrm{d}y \Bigr) \mathrm{d}h.
+\]
+\end{lemma}
+
+\begin{proof}
+\uses{lem:gagliardo_energy_translation}
+\leanok
+This is the proof of Lemma~\ref{lem:gagliardo_energy_translation} with the absolute value of a real number replaced by the modulus of a complex number.
+\end{proof}
+
+\begin{definition}\label{def:gagliardo_symbol}
+\lean{FracLap.gagliardoSymbol, FracLap.measurable_gagliardoSymbol}
+\uses{def:gagliardo_measure}
+\leanok
+The \emph{Fourier-side weight} of the Gagliardo energy is
+\[
+  \Lambda_\alpha(\xi) = \int_{\mathbb{R}} \frac{C(\alpha)}{2 \lvert h \rvert^{1 + \alpha}} \,\bigl\lvert \mathbf{e}(h \xi) - 1 \bigr\rvert^2 \, \mathrm{d}h \in [0, \infty].
+\]
+It is a measurable function of $\xi$.
+\end{definition}
+
+\begin{lemma}\label{lem:gagliardo_symbol_bound}
+\lean{FracLap.enorm_rpow_two_eq_ofReal, FracLap.norm_fourierChar_sub_one_sq_le, FracLap.gagliardoWeight_mul_ofReal, FracLap.gagliardoSymbol_le, FracLap.gagliardoSymbolConst, FracLap.one_le_gagliardoSymbolConst, FracLap.one_add_gagliardoSymbol_le}
+\uses{def:gagliardo_symbol, lem:gagliardo_kernel_integrable, thm:std_exp_chord}
+\leanok
+For $\alpha \in (0, 2)$ there is a constant $C_\alpha \ge 1$ such that $1 + \Lambda_\alpha(\xi) \le C_\alpha (1 + \xi^2)$ for all $\xi \in \mathbb{R}$.
+\end{lemma}
+
+\begin{proof}
+\uses{def:gagliardo_symbol, lem:gagliardo_kernel_integrable, thm:std_exp_chord}
+\leanok
+By Theorem~\ref{thm:std_exp_chord}, $\lvert \mathbf{e}(h \xi) - 1 \rvert \le 2\pi \lvert h \xi \rvert$, and trivially $\lvert \mathbf{e}(h \xi) - 1 \rvert \le 2$. Hence $\lvert \mathbf{e}(h \xi) - 1 \rvert^2 \le 4\pi^2 (1 + \xi^2) \min(h^2, 1)$. Integrating against the weight gives $\Lambda_\alpha(\xi) \le 4\pi^2 (1 + \xi^2) \int k_\alpha$ with $\int k_\alpha < \infty$ by Lemma~\ref{lem:gagliardo_kernel_integrable}; take $C_\alpha = 1 + 4\pi^2 \int k_\alpha$.
+\end{proof}
+
+\begin{theorem}\label{thm:gagliardo_energy_fourier}
+\lean{FracLap.lintegral_gagliardo_energy_fourier}
+\uses{lem:gagliardo_energy_translation_complex, def:gagliardo_symbol, thm:translation_modulus_fourier, thm:std_tonelli}
+\leanok
+For every $f \in L^2(\mathbb{R}; \mathbb{C})$ and $\alpha \in \mathbb{R}$, in $[0, \infty]$,
+\[
+  \iint \lvert f(x) - f(y) \rvert^2 \, \mathrm{d}\mu_\alpha(x, y) = \int_{\mathbb{R}} \Lambda_\alpha(\xi)\, \lvert \mathcal{F} f(\xi) \rvert^2 \, \mathrm{d}\xi.
+\]
+\end{theorem}
+
+\begin{proof}
+\uses{lem:gagliardo_energy_translation_complex, def:gagliardo_symbol, thm:translation_modulus_fourier, thm:std_tonelli}
+\leanok
+By Lemma~\ref{lem:gagliardo_energy_translation_complex} the left side is $\int \frac{C(\alpha)}{2\lvert h \rvert^{1+\alpha}} \lVert \tau_h f - f \rVert_{L^2}^2 \, \mathrm{d}h$. Theorem~\ref{thm:translation_modulus_fourier} rewrites the inner norm as $\int \lvert \mathbf{e}(h\xi) - 1 \rvert^2 \lvert \mathcal{F}f(\xi) \rvert^2 \, \mathrm{d}\xi$, and Tonelli's theorem (Theorem~\ref{thm:std_tonelli}) exchanges the two integrals, producing $\Lambda_\alpha(\xi)$ by definition.
+\end{proof}
+
+\begin{definition}\label{def:gagliardo_spectral_measure}
+\lean{FracLap.gagliardoSpectralMeasure, FracLap.one_add_sq_mul_rpow_le, FracLap.gagliardoSpectralMeasure_hasTemperateGrowth, FracLap.gagliardoSpectralMeasure_isFiniteMeasureOnCompacts}
+\uses{lem:gagliardo_symbol_bound, thm:std_japanese_bracket, thm:std_withdensity}
+\leanok
+The \emph{spectral measure} is $\mathrm{d}\nu_\alpha(\xi) = \bigl(1 + \Lambda_\alpha(\xi)\bigr)\, \mathrm{d}\xi$. For $\alpha \in (0, 2)$ it is finite on compact sets and has temperate growth: $(1 + \lvert \xi \rvert)^{-4}$ is $\nu_\alpha$-integrable.
+\end{definition}
+
+\begin{proof}
+\uses{lem:gagliardo_symbol_bound, thm:std_japanese_bracket, thm:std_withdensity}
+\leanok
+By Lemma~\ref{lem:gagliardo_symbol_bound} the density is at most $C_\alpha (1 + \xi^2)$, hence on a ball of radius $R$ the measure is at most $C_\alpha (1 + R^2)$ times Lebesgue measure. For temperate growth, $(1 + \xi^2)(1 + \lvert \xi \rvert)^{-4} \le (1 + \lvert \xi \rvert)^{-2}$, which is Lebesgue integrable by Theorem~\ref{thm:std_japanese_bracket}; Theorem~\ref{thm:std_withdensity} transfers integrals to $\nu_\alpha$.
+\end{proof}
+
+\begin{theorem}\label{thm:norm_energy_fourier}
+\lean{FracLap.lintegral_enorm_sq_eq_measure, FracLap.gagliardoEnergyC, FracLap.norm_sq_add_energy_eq}
+\uses{thm:gagliardo_energy_fourier, def:gagliardo_spectral_measure, thm:plancherel_and_parseval, thm:std_withdensity}
+\leanok
+For every $f \in L^2(\mathbb{R}; \mathbb{C})$, writing $E_\alpha(f) = \iint \lvert f(x) - f(y) \rvert^2 \, \mathrm{d}\mu_\alpha$,
+\[
+  \lVert f \rVert_{L^2}^2 + E_\alpha(f) = \int_{\mathbb{R}} \lvert \mathcal{F} f(\xi) \rvert^2 \, \mathrm{d}\nu_\alpha(\xi).
+\]
+\end{theorem}
+
+\begin{proof}
+\uses{thm:gagliardo_energy_fourier, def:gagliardo_spectral_measure, thm:plancherel_and_parseval, thm:std_withdensity}
+\leanok
+Writing $\mathrm{d}\nu_\alpha = (1 + \Lambda_\alpha)\, \mathrm{d}\xi$ (Theorem~\ref{thm:std_withdensity}), the integral splits as $\int \lvert \mathcal{F}f \rvert^2 \, \mathrm{d}\xi + \int \Lambda_\alpha \lvert \mathcal{F}f \rvert^2 \, \mathrm{d}\xi$. The first term equals $\lVert f \rVert^2$ by Plancherel (Theorem~\ref{thm:plancherel_and_parseval}) and the second equals $E_\alpha(f)$ by Theorem~\ref{thm:gagliardo_energy_fourier}.
+\end{proof}
+
+\begin{theorem}\label{thm:schwartz_density_complex}
+\lean{FracLap.exists_schwartz_close_complex}
+\uses{thm:norm_energy_fourier, def:gagliardo_spectral_measure, thm:std_schwartz_dense_Lp, thm:plancherel_and_parseval}
+\leanok
+Let $\alpha \in (0, 2)$, let $f \in L^2(\mathbb{R}; \mathbb{C})$ have $E_\alpha(f) < \infty$, and let $\varepsilon > 0$. Then there is a Schwartz function $\varphi \in \mathcal{S}(\mathbb{R}; \mathbb{C})$ with
+\[
+  \lVert \varphi - f \rVert_{L^2}^2 + E_\alpha(\varphi - f) < \varepsilon.
+\]
+\end{theorem}
+
+\begin{proof}
+\uses{thm:norm_energy_fourier, def:gagliardo_spectral_measure, thm:std_schwartz_dense_Lp, thm:plancherel_and_parseval}
+\leanok
+By Theorem~\ref{thm:norm_energy_fourier}, $\psi = \mathcal{F} f$ lies in $L^2(\nu_\alpha)$. The measure $\nu_\alpha$ has temperate growth and is finite on compact sets (Definition~\ref{def:gagliardo_spectral_measure}), so by Theorem~\ref{thm:std_schwartz_dense_Lp} there is a Schwartz function $\chi$ with $\lVert \chi - \psi \rVert_{L^2(\nu_\alpha)}^2 < \varepsilon$. Put $\varphi = \mathcal{F}^{-1}\chi$, again Schwartz. By Plancherel (Theorem~\ref{thm:plancherel_and_parseval}), $\mathcal{F}(\varphi - f) = \chi - \psi$ almost everywhere, and Theorem~\ref{thm:norm_energy_fourier} applied to $\varphi - f$ gives $\lVert \varphi - f \rVert^2 + E_\alpha(\varphi - f) = \lVert \chi - \psi \rVert_{L^2(\nu_\alpha)}^2 < \varepsilon$.
+\end{proof}

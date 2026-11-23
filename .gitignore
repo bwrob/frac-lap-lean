@@ -1,0 +1,39 @@
+# Lean & Lake artifacts
+.lake/
+build/
+
+# leanblueprint generated outputs
+blueprint/web/
+blueprint/print/
+blueprint/lean_decls
+
+# Generated documentation
+site/
+docs/knowledge/
+
+# LaTeX build artifacts
+*.aux
+*.paux
+*.log
+*.out
+*.toc
+*.bbl
+*.blg
+*.fls
+*.fdb_latexmk
+*.synctex.gz
+
+# Python and tooling
+.venv/
+.venv*/
+__pycache__/
+*.py[cod]
+.pytest_cache/
+.ruff_cache/
+.pyrefly/
+.complexipy_cache/
+.logs/
+.cache/
+.DS_Store
+.temp/
+.verify_logs/

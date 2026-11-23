@@ -1,0 +1,228 @@
+\chapter{Standard Results from Analysis}
+
+This appendix states, once and in words, the classical facts from measure theory and analysis that the formalized chapters rely on. They are available in the underlying library and are not reproved here. Proofs elsewhere in the blueprint refer to these nodes through \verb|\uses| and \verb|\ref|, so no chapter needs to cite library lemma names.
+
+\begin{theorem}[Tonelli]\label{thm:std_tonelli}
+\mathlibok
+Let $\mu$ and $\nu$ be $\sigma$-finite measures and let $f : X \times Y \to [0, \infty]$ be measurable. Then the iterated integrals of $f$ exist in either order, and both equal the integral of $f$ against the product measure $\mu \otimes \nu$. In particular, the two orders of integration agree.
+\end{theorem}
+
+\begin{theorem}[Translation and reflection invariance of Lebesgue measure]\label{thm:std_translation_invariance}
+\mathlibok
+Lebesgue measure on $\mathbb{R}$ is invariant under translations $x \mapsto x + c$ and under the reflection $x \mapsto -x$. Consequently, for every measurable $f : \mathbb{R} \to [0, \infty]$ and every $c \in \mathbb{R}$,
+\[
+  \int_{\mathbb{R}} f(x - c) \, \mathrm{d}x = \int_{\mathbb{R}} f(c - x) \, \mathrm{d}x = \int_{\mathbb{R}} f(x) \, \mathrm{d}x.
+\]
+\end{theorem}
+
+\begin{theorem}[Integrability of power functions]\label{thm:std_power_integrability}
+\mathlibok
+For every real $r > -1$, the function $x \mapsto x^r$ is integrable on the set $\{0 < x \le 1\}$. For every real $r < -1$, it is integrable on the set $\{x > 1\}$.
+\end{theorem}
+
+\begin{theorem}[Open sets carry positive measure]\label{thm:std_open_positive}
+\mathlibok
+Every nonempty open subset of $\mathbb{R}$ or of $\mathbb{R} \times \mathbb{R}$ has positive Lebesgue measure. Consequently, a continuous function that vanishes almost everywhere vanishes identically.
+\end{theorem}
+
+\begin{theorem}[Compactly supported continuous functions are square integrable]\label{thm:std_compact_support_L2}
+\mathlibok
+Every continuous function $\mathbb{R} \to \mathbb{R}$ with compact support belongs to $L^2(\mathbb{R})$.
+\end{theorem}
+
+\begin{theorem}[Square-integrability criterion]\label{thm:std_L2_sq_integrable}
+\mathlibok
+A measurable function $f : X \to \mathbb{R}$ belongs to $L^2(\mu)$ if and only if $f^2$ is integrable with respect to $\mu$.
+\end{theorem}
+
+\begin{theorem}[Subsequences of $L^2$-convergent sequences]\label{thm:std_L2_subsequence}
+\mathlibok
+If $u_n \to u$ in $L^2(\mu)$, then some subsequence converges to $u$ $\mu$-almost everywhere.
+\end{theorem}
+
+\begin{theorem}[Measures with density]\label{thm:std_withdensity}
+\mathlibok
+Let $w : X \to [0, \infty]$ be measurable and let $\mu_w$ be the measure $\mathrm{d}\mu_w = w \, \mathrm{d}\mu$. Then $\mu_w$ is absolutely continuous with respect to $\mu$, and $\int g \, \mathrm{d}\mu_w = \int w\, g \, \mathrm{d}\mu$ for every measurable $g : X \to [0, \infty]$. Moreover, a property holds $\mu_w$-almost everywhere if and only if it holds $\mu$-almost everywhere on the set $\{w \ne 0\}$.
+\end{theorem}
+
+\begin{theorem}[Lipschitz maps preserve $L^2$]\label{thm:std_lipschitz_L2}
+\mathlibok
+Let $\varphi : \mathbb{R} \to \mathbb{R}$ be $L$-Lipschitz with $\varphi(0) = 0$. If $u \in L^2(\mu)$, then $\varphi \circ u \in L^2(\mu)$ and $\lVert \varphi \circ u \rVert_{L^2} \le L \lVert u \rVert_{L^2}$.
+\end{theorem}
+
+\begin{theorem}[Seminorm of an indicator]\label{thm:std_indicator_Lp}
+\mathlibok
+Let $s$ be a measurable set, $p \ge 1$, and $f \in L^p(\mu|_s)$. Then the zero extension $\mathbf{1}_s f$ belongs to $L^p(\mu)$ and $\lVert \mathbf{1}_s f \rVert_{L^p(\mu)} = \lVert f \rVert_{L^p(\mu|_s)}$.
+\end{theorem}
+
+\begin{theorem}[Plancherel]\label{thm:std_fourier_L2}
+\mathlibok
+On a finite-dimensional real inner-product space $E$ and a complex Hilbert space $F$, the Fourier transform preserves the $L^2$ norm on Schwartz functions $\mathcal{S}(E, F)$. Since $\mathcal{S}(E, F)$ is dense in $L^2(E, F)$, it extends uniquely to an isometric linear equivalence of $L^2(E, F)$.
+\end{theorem}
+
+\begin{theorem}[Bessel-potential Sobolev spaces]\label{thm:std_bessel_sobolev}
+\mathlibok
+Let $J^s$ be the Bessel potential of order $s \in \mathbb{R}$ acting on tempered distributions, and $H^s = \{u \in \mathcal{S}' : J^s u \in L^2\}$. Then every Schwartz function lies in $H^s$ for all $s \in \mathbb{R}$, the potentials compose by adding orders, $J^{s'} (J^s u) = J^{s + s'} u$, and $H^s \subseteq H^{s'}$ whenever $s' \le s$.
+\end{theorem}
+
+\begin{theorem}[Lax--Milgram]\label{thm:std_lax_milgram}
+\mathlibok
+Let $V$ be a real Hilbert space and $B$ a bounded, coercive bilinear form on $V$. Then the operator $A : V \to V$ determined by $\langle A u, v \rangle = B(u, v)$ is a continuous linear equivalence of $V$.
+\end{theorem}
+
+\begin{theorem}[Gaussian Fourier integral]\label{thm:std_gaussian_fourier}
+\mathlibok
+For every $t > 0$ and $x \in \mathbb{R}$,
+\[
+  \int_{\mathbb{R}} e^{\mathrm{i} x \xi}\, e^{-t \xi^2}\, \mathrm{d}\xi = \sqrt{\frac{\pi}{t}}\, \exp\Bigl(-\frac{x^2}{4t}\Bigr).
+\]
+\end{theorem}
+
+\begin{theorem}[Schwartz functions are dense in weighted $L^p$]\label{thm:std_schwartz_dense_Lp}
+\mathlibok
+Let $\nu$ be a measure on $\mathbb{R}$ that is finite on compact sets and has temperate growth, meaning that $x \mapsto (1 + \lvert x \rvert)^{-n}$ is $\nu$-integrable for some $n \in \mathbb{N}$. Then Schwartz functions belong to $L^p(\nu)$ for every $1 \le p < \infty$ and are dense in it.
+\end{theorem}
+
+\begin{theorem}[Integrability of the Japanese bracket]\label{thm:std_japanese_bracket}
+\mathlibok
+For every real $r > 1$, the function $x \mapsto (1 + \lvert x \rvert)^{-r}$ is integrable on $\mathbb{R}$ with respect to Lebesgue measure.
+\end{theorem}
+
+\begin{theorem}[Chord bound on the unit circle]\label{thm:std_exp_chord}
+\mathlibok
+For every $\theta \in \mathbb{R}$, $\lvert e^{\mathrm{i}\theta} - 1 \rvert \le \lvert \theta \rvert$.
+\end{theorem}
+
+\begin{theorem}[Dominated convergence]\label{thm:std_dominated_convergence}
+\mathlibok
+Let $F_h : X \to [0, \infty]$ be measurable for $h$ in a neighbourhood of $h_0 \in \mathbb{R}$, and suppose $F_h \le b$ almost everywhere with $\int b \, \mathrm{d}\mu < \infty$ and $F_h(x) \to F(x)$ as $h \to h_0$ for almost every $x$. Then $\int F_h \, \mathrm{d}\mu \to \int F \, \mathrm{d}\mu$ as $h \to h_0$.
+\end{theorem}
+
+\begin{theorem}[Linear change of variables on a half-line]\label{thm:std_half_line_scaling}
+\mathlibok
+For every integrable $g : \mathbb{R} \to \mathbb{R}$ and every $b > 0$,
+\[
+  \int_{0}^{\infty} g(b\omega)\, \mathrm{d}\omega = b^{-1} \int_{0}^{\infty} g(u)\, \mathrm{d}u.
+\]
+\end{theorem}
+
+\begin{theorem}[Stretched-exponential integral]\label{thm:std_stretched_exponential}
+\mathlibok
+For $p > 0$ and $b > 0$, the function $\omega \mapsto e^{-b \omega^p}$ is integrable on $\{\omega > 0\}$ and
+\[
+  \int_{0}^{\infty} e^{-b \omega^p}\, \mathrm{d}\omega = b^{-1/p}\, \Gamma\bigl(1 + \tfrac{1}{p}\bigr).
+\]
+\end{theorem}
+
+\begin{theorem}[Integration by parts on a half-line]\label{thm:std_ibp_half_line}
+\mathlibok
+Let $u, v$ be differentiable on $\{\omega > 0\}$ with $u v' $ and $u' v$ integrable there. If $u(\omega) v(\omega)$ has limits $a'$ as $\omega \to 0^+$ and $b'$ as $\omega \to \infty$, then
+\[
+  \int_0^\infty u v'\, \mathrm{d}\omega = b' - a' - \int_0^\infty u' v\, \mathrm{d}\omega.
+\]
+\end{theorem}
+
+\begin{theorem}[Fundamental theorem of calculus on a bounded interval]\label{thm:std_ftc_interval}
+\mathlibok
+If $F$ is continuous on $0 \le \omega \le \delta$, differentiable on $0 < \omega < \delta$, and $F'$ is integrable there, then $\int_0^\delta F'(\omega)\, \mathrm{d}\omega = F(\delta) - F(0)$.
+\end{theorem}
+
+\begin{theorem}[Fubini]\label{thm:std_fubini}
+\mathlibok
+Let $\mu$ and $\nu$ be $\sigma$-finite measures and let $f : X \times Y \to \mathbb{R}$ be integrable with respect to $\mu \otimes \nu$. Then the iterated integrals of $f$ exist in either order and agree with the integral against $\mu \otimes \nu$. In particular the order of integration may be exchanged.
+\end{theorem}
+
+\begin{theorem}[Gamma integral]\label{thm:std_gamma}
+\mathlibok
+For every $s > 0$ the function $x \mapsto e^{-x} x^{s-1}$ is integrable on $\{x > 0\}$, its integral is $\Gamma(s)$, and $\Gamma(s) > 0$.
+\end{theorem}
+
+\begin{theorem}[Image measures]\label{thm:std_image_measure}
+\mathlibok
+If $\Phi : X \to Y$ is measurable and $\Phi_* \mu$ is the image measure, then $\int g \, \mathrm{d}(\Phi_* \mu) = \int g \circ \Phi \, \mathrm{d}\mu$ for every bounded continuous $g$. The image of a finite measure is finite.
+\end{theorem}
+
+\begin{theorem}[Exponential as a limit of powers]\label{thm:std_exp_limit}
+\mathlibok
+For every real $x$, $(1 + x/n)^n \to e^x$ as $n \to \infty$. Moreover $(1 + x/n)^n \le e^x$ whenever $1 + x/n \ge 0$.
+\end{theorem}
+
+\begin{theorem}[Continuity of parameter integrals]\label{thm:std_continuity_integral}
+\mathlibok
+Let $f(\xi, s)$ be continuous in $\xi$ for every $s$ and dominated by a function integrable against a finite measure. Then $\xi \mapsto \int f(\xi, s)\, \mathrm{d}m(s)$ is continuous.
+\end{theorem}
+
+\begin{theorem}[Monotone exhaustion of the integration domain]\label{thm:std_exhaustion}
+\mathlibok
+If $f$ is integrable on $\bigcup_n A_n$ for an increasing sequence of measurable sets $A_n$, then $\int_{A_n} f \to \int_{\bigcup_n A_n} f$.
+\end{theorem}
+
+\begin{theorem}[Fourier inversion formula]\label{thm:std_fourier_inversion}
+\mathlibok
+If $f : \mathbb{R} \to \mathbb{C}$ is continuous and integrable and its Fourier transform $\mathcal{F} f$ is also integrable, then $\mathcal{F}(\mathcal{F}^{-1} f) = f$ pointwise on $\mathbb{R}$.
+\end{theorem}
+
+\begin{theorem}[Distributional vanishing on an open set]\label{thm:std_du_bois_reymond}
+\mathlibok
+Let $U \subseteq \mathbb{R}$ be open and let $f : \mathbb{R} \to \mathbb{R}$ be locally integrable on $U$. If $\int_{\mathbb{R}} \varphi(x) f(x) \, \mathrm{d}x = 0$ for every smooth compactly supported function $\varphi$ whose closed support is contained in $U$, then $f = 0$ almost everywhere on $U$.
+\end{theorem}
+
+\begin{theorem}[Exchange of the two factors of a product measure]\label{thm:std_product_swap}
+\mathlibok
+If $\mu$ is $\sigma$-finite, the map $(x, y) \mapsto (y, x)$ preserves $\mu \otimes \mu$. Consequently, for every integrable $h$ on the product, $\iint h(y, x) \mathrm{d}\mu \mathrm{d}\mu = \iint h(x, y) \mathrm{d}\mu \mathrm{d}\mu$, and the same holds for any measure with a symmetric density with respect to $\mu \otimes \mu$.
+\end{theorem}
+
+\begin{theorem}[Intermediate value theorem]\label{thm:std_ivt}
+\mathlibok
+If $g$ is continuous on the closed interval between $a$ and $b$, then every value between $g(a)$ and $g(b)$ is attained by $g$ at some point of that interval.
+\end{theorem}
+
+\begin{theorem}[Fourier transform of an integrable function]\label{thm:std_fourier_L1}
+\mathlibok
+If $f \in L^1(\mathbb{R}; \mathbb{C})$ then $\mathcal{F} f$ is continuous and $\lvert \mathcal{F} f(\xi) \rvert \le \lVert f \rVert_{L^1}$ for all $\xi$. If moreover $f \in L^2$, the pointwise transform agrees almost everywhere with the $L^2$ Fourier transform.
+\end{theorem}
+
+\begin{theorem}[Linear change of variables on the line]\label{thm:std_line_scaling}
+\mathlibok
+For $a \ne 0$ and measurable $F : \mathbb{R} \to [0, \infty]$, $\int F(a h)\, \mathrm{d}h = \lvert a \rvert^{-1} \int F(s)\, \mathrm{d}s$.
+\end{theorem}
+
+\begin{theorem}[Tangent-line inequality for convex functions]\label{thm:std_convex_tangent}
+\mathlibok
+If $\varphi : \mathbb{R} \to \mathbb{R}$ is convex and differentiable, then $\varphi(b) \ge \varphi(a) + \varphi'(a)(b - a)$ for all $a, b$.
+\end{theorem}
+
+\begin{theorem}[Banach contraction principle]\label{thm:std_banach}
+\mathlibok
+A contraction of a nonempty complete metric space into itself has exactly one fixed point; this applies to a contraction mapping a closed subset of a complete space into itself.
+\end{theorem}
+
+\begin{theorem}[H\"older inequality]\label{thm:std_holder}
+\mathlibok
+For conjugate exponents $1 < p, q < \infty$ and nonnegative measurable $f, g$, $\int f g \le (\int f^p)^{1/p} (\int g^q)^{1/q}$.
+\end{theorem}
+
+\begin{theorem}[Inversion substitution on the half-line]\label{thm:std_inversion}
+\mathlibok
+For integrable $g$ on $\{t > 0\}$, $\int_0^\infty g(1/s)\, s^{-2}\, \mathrm{d}s = \int_0^\infty g(t)\, \mathrm{d}t$.
+\end{theorem}
+
+\begin{theorem}[Beta--Gamma relation]\label{thm:std_beta_gamma}
+\mathlibok
+For complex $s, t$ with positive real parts, $\Gamma(s)\Gamma(t) = \Gamma(s+t) \int_0^1 x^{s-1} (1-x)^{t-1}\, \mathrm{d}x$.
+\end{theorem}
+
+\begin{theorem}[Vitali covering lemma]\label{thm:std_vitali}
+\mathlibok
+For a family of closed balls with bounded radii in a metric space there is a pairwise disjoint subfamily such that every ball of the family lies in the $5$-fold enlargement of some ball of the subfamily.
+\end{theorem}
+
+\begin{theorem}[Layer-cake formula]\label{thm:std_layer_cake}
+\mathlibok
+For a nonnegative measurable $f$ and $p > 0$, $\int f^p = p \int_0^\infty t^{p-1} \mu(\{f > t\})\, \mathrm{d}t$ in $[0, \infty]$.
+\end{theorem}
+
+\begin{theorem}[Jensen's inequality]\label{thm:std_jensen}
+\mathlibok
+If $\Psi \colon \mathbb{R} \to \mathbb{R}$ is convex and continuous, $\mu$ is a probability measure and $g$ and $\Psi \circ g$ are $\mu$-integrable, then $\Psi(\int g\, \mathrm{d}\mu) \le \int \Psi(g)\, \mathrm{d}\mu$.
+\end{theorem}

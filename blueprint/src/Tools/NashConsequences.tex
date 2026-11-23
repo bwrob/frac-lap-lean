@@ -1,0 +1,45 @@
+\chapter{Consequences of the Exact Symbol: Explicit Nash Constant and Poincaré Inequality}
+
+This chapter mirrors \texttt{FracLap/Tools/NashConsequences.lean}.
+
+\begin{theorem}\label{thm:nash_explicit}
+\lean{FracLap.gagliardoSymbol_one_eq, FracLap.fractional_nash_explicit}
+\uses{thm:exact_symbol, thm:fractional_nash}
+\leanok
+For $0 < \alpha < 2$, $\Lambda_\alpha(1) = (2\pi)^\alpha$, and for $f \in L^1 \cap L^2$ with finite energy,
+\[
+  \bigl(\lVert f \rVert_2^2\bigr)^{1+\alpha} \le \frac{3^{1+\alpha}}{(2\pi)^\alpha}\, E_\alpha(f)\, \bigl(\lVert f \rVert_1^2\bigr)^\alpha.
+\]
+\end{theorem}
+
+\begin{proof}
+\uses{thm:exact_symbol, thm:fractional_nash}
+\leanok
+Insert $\Lambda_\alpha(1) = (2\pi)^\alpha$ from Theorem~\ref{thm:exact_symbol} into Theorem~\ref{thm:fractional_nash}.
+\end{proof}
+
+\begin{lemma}\label{lem:cs_lintegral}
+\lean{FracLap.lintegral_rpow_two_le}
+\uses{thm:std_holder}
+\leanok
+For nonnegative measurable $g$, $(\int g\, \mathrm{d}\mu)^2 \le \mu(X) \int g^2\, \mathrm{d}\mu$.
+\end{lemma}
+
+\begin{proof}
+\uses{thm:std_holder}
+\leanok
+Apply Theorem~\ref{thm:std_holder} with $p = q = 2$ to $g$ and $1$.
+\end{proof}
+
+\begin{theorem}[Fractional Friedrichs--Poincaré inequality]\label{thm:poincare_friedrichs}
+\lean{FracLap.poincare_friedrichs}
+\uses{lem:nash_cut, thm:exact_symbol, lem:cs_lintegral}
+\leanok
+Let $0 < \alpha < 2$ and let $f \in L^2(\mathbb{R}; \mathbb{C})$ vanish almost everywhere outside a measurable set $\Omega$ of finite measure. Then $\lVert f \rVert_2^2 \le 2 (2 \lvert \Omega \rvert / \pi)^\alpha E_\alpha(f)$.
+\end{theorem}
+
+\begin{proof}
+\uses{lem:nash_cut, thm:exact_symbol, lem:cs_lintegral}
+\leanok
+By Lemma~\ref{lem:cs_lintegral}, $\lVert f \rVert_1^2 \le \lvert \Omega \rvert \lVert f \rVert_2^2$, so $f \in L^1$. Take $R = 1/(4\lvert \Omega \rvert)$ in Lemma~\ref{lem:nash_cut}: the low-frequency term is at most $2R\lvert \Omega \rvert \lVert f \rVert_2^2 = \frac12 \lVert f \rVert_2^2$ and can be absorbed, leaving $\lVert f \rVert_2^2 \le 2 (R^\alpha (2\pi)^\alpha)^{-1} E_\alpha(f) = 2(2\lvert \Omega \rvert/\pi)^\alpha E_\alpha(f)$.
+\end{proof}

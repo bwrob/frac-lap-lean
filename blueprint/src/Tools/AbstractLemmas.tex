@@ -1,0 +1,40 @@
+\chapter{Small Abstract Lemmas}
+
+This chapter mirrors \texttt{FracLap/Tools/AbstractLemmas.lean}.
+
+\begin{theorem}[Small solutions of bilinear problems]\label{thm:bilinear_fixed_point}
+\lean{FracLap.bilinear_fixed_point}
+\uses{thm:std_banach}
+\leanok
+Let $X$ be a Banach space, $B : X \times X \to X$ bilinear with $\lVert B(u, v) \rVert \le \eta \lVert u \rVert \lVert v \rVert$, and let $0 < \varepsilon < 1/(4\eta)$ and $\lVert y \rVert < \varepsilon$. Then $u = y + B(u, u)$ has a solution with $\lVert u \rVert \le 2\varepsilon$, and it is the only solution in the closed ball of radius $2\varepsilon$.
+\end{theorem}
+
+\begin{proof}
+\uses{thm:std_banach}
+\leanok
+The map $T u = y + B(u, u)$ sends the closed ball of radius $2\varepsilon$ into itself because $\lVert T u \rVert \le \varepsilon + 4\eta\varepsilon^2 \le 2\varepsilon$. Since $T u - T v = B(u - v, u) + B(v, u - v)$, it is a contraction with constant $4\eta\varepsilon < 1$ there. Apply Theorem~\ref{thm:std_banach}.
+\end{proof}
+
+\begin{theorem}[Scaling of Bernstein-type functions]\label{thm:bernstein_scaling}
+\lean{FracLap.scaling_le_max, FracLap.min_le_scaling}
+\leanok
+Let $\varphi$ be nondecreasing and concave on $t \ge 0$ with $\varphi(0) \ge 0$. Then for $t, \lambda > 0$, $\min(1, \lambda)\, \varphi(t) \le \varphi(\lambda t) \le \max(1, \lambda)\, \varphi(t)$.
+\end{theorem}
+
+\begin{proof}
+\leanok
+For $\lambda \le 1$ monotonicity gives $\varphi(\lambda t) \le \varphi(t)$. For $\lambda \ge 1$ concavity between $0$ and $\lambda t$ gives $\lambda^{-1} \varphi(\lambda t) + (1 - \lambda^{-1}) \varphi(0) \le \varphi(t)$, hence $\varphi(\lambda t) \le \lambda \varphi(t)$. The lower bound is the upper bound applied to $\lambda^{-1}$ and $\lambda t$.
+\end{proof}
+
+\begin{theorem}[Derivative bounds for Bernstein-type functions]\label{thm:bernstein_derivative}
+\lean{FracLap.mul_deriv_le}
+\uses{thm:std_convex_tangent}
+\leanok
+Let $\varphi$ be nondecreasing and concave on $t \ge 0$ with $\varphi(0) \ge 0$, and differentiable at $z > 0$. Then $0 \le \varphi'(z)$ and $z \varphi'(z) \le \varphi(z)$.
+\end{theorem}
+
+\begin{proof}
+\uses{thm:std_convex_tangent}
+\leanok
+Monotonicity gives $\varphi'(z) \ge 0$. Applying Theorem~\ref{thm:std_convex_tangent} to the convex function $-\varphi$ at the points $z$ and $0$ gives $\varphi(0) \le \varphi(z) - z \varphi'(z)$, hence $z \varphi'(z) \le \varphi(z) - \varphi(0) \le \varphi(z)$. The companion estimate $-z\varphi''(z) \le 2\varphi'(z)$ is not covered: it fails for $\varphi(z) = 1 - e^{-z}$ at $z = 3$ and needs the complete-Bernstein structure.
+\end{proof}

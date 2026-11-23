@@ -1,0 +1,75 @@
+\chapter{The Hille--Yosida Correspondence}
+
+This chapter mirrors \texttt{FracLap/Core/HilleYosidaCorrespondence.lean}, establishing the full two-way bijection between strongly continuous contraction semigroups and contractive resolvents on a real Banach space $E$: Laplace-transform resolvents, Gr\"onwall injectivity of $\mu - L$, identification of the generator of the Yosida-generated semigroup, and both round-trip inverse identities.
+
+\begin{theorem}\label{thm:generator_injectivity}
+\lean{FracLap.StronglyContinuousContractionSemigroup.operator_eq_exp_smul_of_generator_eq_smul, FracLap.StronglyContinuousContractionSemigroup.eq_zero_of_generator_eq_smul, FracLap.StronglyContinuousContractionSemigroup.eq_of_smul_sub_generator_eq}
+\uses{thm:c0_orbit_deriv_and_ftc}
+\leanok
+Let $S$ be a strongly continuous contraction semigroup on a real normed space $E$ with generator $(L, \mathcal{D}(L))$. If $f \in \mathcal{D}(L)$ satisfies $L f = \mu f$ for some $\mu \in \mathbb{R}$, then $S(t)f = e^{\mu t} f$ for all $t \ge 0$. Consequently, for every $\mu > 0$, $\ker(\mu - L) = \{0\}$, i.e., $\mu - L : \mathcal{D}(L) \to E$ is injective.
+\end{theorem}
+
+\begin{proof}
+\uses{thm:c0_orbit_deriv_and_ftc}
+\leanok
+The defect $w(t) = S(t)f - e^{\mu t} f$ satisfies $w(0) = 0$ and right derivative $w_+'(t) = \mu w(t)$ for $t \ge 0$, so Gr\"onwall's inequality forces $w \equiv 0$. If $\mu > 0$, contractivity at $t = 1$ gives $e^\mu \lVert f \rVert = \lVert S(1)f \rVert \le \lVert f \rVert$ with $e^\mu > 1$, forcing $f = 0$. Applying this to $f - g$ gives injectivity of $\mu - L$.
+\end{proof}
+
+\begin{definition}\label{def:semigroup_laplace_resolvent}
+\lean{FracLap.StronglyContinuousContractionSemigroup.laplaceIntegrand, FracLap.StronglyContinuousContractionSemigroup.laplaceIntegrand_apply, FracLap.StronglyContinuousContractionSemigroup.continuous_laplaceIntegrand, FracLap.StronglyContinuousContractionSemigroup.norm_laplaceIntegrand_le, FracLap.StronglyContinuousContractionSemigroup.integrableOn_laplaceIntegrand, FracLap.StronglyContinuousContractionSemigroup.laplaceIntegrand_add, FracLap.StronglyContinuousContractionSemigroup.laplaceIntegrand_smul, FracLap.StronglyContinuousContractionSemigroup.laplaceIntegrand_operator, FracLap.StronglyContinuousContractionSemigroup.tendsto_laplaceIntegrand_atTop, FracLap.StronglyContinuousContractionSemigroup.integral_exp_neg_mul_Ioi_zero, FracLap.StronglyContinuousContractionSemigroup.norm_integral_laplaceIntegrand_le, FracLap.StronglyContinuousContractionSemigroup.resolvent, FracLap.StronglyContinuousContractionSemigroup.resolvent_apply, FracLap.StronglyContinuousContractionSemigroup.opNorm_resolvent_le, FracLap.StronglyContinuousContractionSemigroup.operator_resolvent}
+\uses{def:c0_contraction_semigroup, def:positive_shift}
+\leanok
+For a strongly continuous contraction semigroup $S$ on a real Banach space $E$ and $\mu > 0$, the \emph{resolvent} $R_\mu \in \mathcal{B}(E)$ is the Bochner Laplace transform
+\[
+  R_\mu x = \int_0^\infty e^{-\mu t} S(t)x\, \mathrm{d}t,
+\]
+which satisfies $\lVert R_\mu \rVert \le \mu^{-1}$ and commutes with every $S(h)$.
+\end{definition}
+
+\begin{theorem}\label{thm:semigroup_resolvent_inverts}
+\lean{FracLap.StronglyContinuousContractionSemigroup.resolvent_smul_sub_generator, FracLap.StronglyContinuousContractionSemigroup.tendsto_differenceQuotient_resolvent_of_mem, FracLap.StronglyContinuousContractionSemigroup.resolvent_mem_generatorDomain_of_mem, FracLap.StronglyContinuousContractionSemigroup.generator_resolvent_of_mem, FracLap.StronglyContinuousContractionSemigroup.exists_seq_tendsto_resolvent, FracLap.StronglyContinuousContractionSemigroup.resolvent_mem_generatorDomain, FracLap.StronglyContinuousContractionSemigroup.generator_resolvent, FracLap.StronglyContinuousContractionSemigroup.generator_eq_of_resolvent_eq, FracLap.StronglyContinuousContractionSemigroup.generatorDomain_eq_range_resolvent, FracLap.StronglyContinuousContractionSemigroup.resolvent_sub_resolvent, FracLap.StronglyContinuousContractionSemigroup.denseRange_resolvent, FracLap.StronglyContinuousContractionSemigroup.toContractiveResolvent, FracLap.StronglyContinuousContractionSemigroup.toContractiveResolvent_operator}
+\uses{def:semigroup_laplace_resolvent, thm:c0_orbit_deriv_and_ftc, thm:c0_generator_dense_and_closed, def:contractive_resolvent}
+\leanok
+For every $\mu > 0$:
+\begin{enumerate}
+  \item $R_\mu(\mu f - L f) = f$ for all $f \in \mathcal{D}(L)$;
+  \item $R_\mu x \in \mathcal{D}(L)$ and $(\mu - L) R_\mu x = x$ for every $x \in E$, so $\mathcal{D}(L) = \operatorname{ran}(R_\mu)$; and
+  \item $(R_\mu)_{\mu > 0}$ satisfies the resolvent identity and has dense range, hence forms a contractive resolvent on $E$.
+\end{enumerate}
+\end{theorem}
+
+\begin{proof}
+\uses{def:semigroup_laplace_resolvent, thm:c0_orbit_deriv_and_ftc, thm:c0_generator_dense_and_closed, def:contractive_resolvent}
+\leanok
+Integrating $\frac{\mathrm{d}}{\mathrm{d}t}\bigl(e^{-\mu t} S(t)f\bigr) = e^{-\mu t} S(t)(L f - \mu f)$ over $(0, \infty)$ yields $R_\mu(\mu f - L f) = f$ on $\mathcal{D}(L)$. Commutation of $R_\mu$ with $S(t)$ shows $R_\mu f \in \mathcal{D}(L)$ with $L(R_\mu f) = R_\mu(L f) = \mu R_\mu f - f$ for $f \in \mathcal{D}(L)$. Extending to arbitrary $x \in E$ using density of $\mathcal{D}(L)$ and closedness of $L$ (Theorem~\ref{thm:c0_generator_dense_and_closed}) yields $R_\mu x \in \mathcal{D}(L)$ and $L(R_\mu x) = \mu R_\mu x - x$. The resolvent identity and dense range follow immediately.
+\end{proof}
+
+\begin{theorem}\label{thm:generated_semigroup_generator_ident}
+\lean{FracLap.ContractiveResolvent.yosidaOperator_apply_sub_eq_integral, FracLap.ContractiveResolvent.generatedSemigroup_apply_sub_eq_orbitIntegral, FracLap.ContractiveResolvent.operator_mem_generatorDomain, FracLap.ContractiveResolvent.generator_operator_apply, FracLap.ContractiveResolvent.generator_apply_of_operator_eq, FracLap.ContractiveResolvent.operator_smul_sub_generator, FracLap.ContractiveResolvent.generatorDomain_eq_range}
+\uses{thm:yosida_strong_limit_and_generation, thm:generator_injectivity, thm:c0_generator_dense_and_closed}
+\leanok
+Let $R = (R_\mu)_{\mu > 0}$ be a contractive resolvent on a real Banach space $E$, and let $S$ be its generated contraction semigroup with generator $(L, \mathcal{D}(L))$. Then for every $\mu > 0$, $\mathcal{D}(L) = \operatorname{ran}(R_\mu)$, $L(R_\mu y) = \mu R_\mu y - y$ for every $y \in E$, and $R_\mu(\mu f - L f) = f$ for every $f \in \mathcal{D}(L)$.
+\end{theorem}
+
+\begin{proof}
+\uses{thm:yosida_strong_limit_and_generation, thm:generator_injectivity, thm:c0_generator_dense_and_closed}
+\leanok
+For each bounded Yosida approximant, $S_{\alpha_n}(t)(R_\mu y) - R_\mu y = \int_0^t S_{\alpha_n}(s) G_{\alpha_n}(R_\mu y)\, \mathrm{d}s$. Since $G_{\alpha_n}(R_\mu y) \to \mu R_\mu y - y$ is uniformly bounded and $S_{\alpha_n}(s) \to S(s)$ strongly as contractions, dominated convergence passes the integral to $S(t)(R_\mu y) - R_\mu y = \int_0^t S(s)(\mu R_\mu y - y)\, \mathrm{d}s$. Dividing by $t$ and letting $t \to 0^+$ places $R_\mu y \in \mathcal{D}(L)$ with $L(R_\mu y) = \mu R_\mu y - y$. Applying $(\mu - L)$ to both sides of the identity and using injectivity of $\mu - L$ (Theorem~\ref{thm:generator_injectivity}) yields $R_\mu(\mu f - L f) = f$, hence $\mathcal{D}(L) = \operatorname{ran}(R_\mu)$.
+\end{proof}
+
+\begin{theorem}\label{thm:hille_yosida_bijection}
+\lean{FracLap.StronglyContinuousContractionSemigroup.generatorDomain_generatedSemigroup_toContractiveResolvent, FracLap.StronglyContinuousContractionSemigroup.generatedSemigroup_toContractiveResolvent, FracLap.ContractiveResolvent.resolvent_generatedSemigroup, FracLap.ContractiveResolvent.toContractiveResolvent_generatedSemigroup}
+\uses{thm:semigroup_resolvent_inverts, thm:generated_semigroup_generator_ident, thm:generator_injectivity}
+\leanok
+The Laplace-transform map $S \mapsto R(S)$ and the Yosida-generation map $R \mapsto S(R)$ are mutually inverse bijections between strongly continuous contraction semigroups and contractive resolvents on any real Banach space $E$:
+\begin{enumerate}
+  \item starting from any strongly continuous contraction semigroup $S$, the semigroup generated by its contractive resolvent equals $S$; and
+  \item starting from any contractive resolvent $R$, the contractive resolvent of its generated semigroup equals $R$.
+\end{enumerate}
+\end{theorem}
+
+\begin{proof}
+\uses{thm:semigroup_resolvent_inverts, thm:generated_semigroup_generator_ident, thm:generator_injectivity, thm:c0_generator_uniqueness}
+\leanok
+For any semigroup $S$, Theorem~\ref{thm:semigroup_resolvent_inverts} and Theorem~\ref{thm:generated_semigroup_generator_ident} show that $S$ and the generated semigroup $S(R(S))$ share the same generator domain $\operatorname{ran}(R_1)$ and the same generator action $L(R_1 g) = R_1 g - g$; uniqueness of semigroups from their generator (Theorem~\ref{thm:c0_generator_uniqueness}) therefore gives $S(R(S)) = S$. Conversely, for any contractive resolvent $R$, both $R_\mu y$ and the Laplace resolvent of $S(R)$ at $\mu$ map under $\mu - L$ to $y$, so injectivity of $\mu - L$ (Theorem~\ref{thm:generator_injectivity}) forces them to coincide for every $\mu > 0$.
+\end{proof}

@@ -1,0 +1,46 @@
+\chapter{Positivity and Monotonicity of the Stable Kernel}
+
+This chapter mirrors \texttt{FracLap/WholeLine/StableKernelPositivity.lean}. It converts the Gaussian monotonicity of the symbol into positivity and radial monotonicity of the kernel $P_\alpha(\cdot, t)$ by Fourier inversion, for every $0 < \alpha < 2$.
+
+\begin{lemma}\label{lem:stable_symbol_integrable}
+\lean{FracLap.integrable_stableSymbol, FracLap.stableKernel_eq_integral, FracLap.stableKernel_abs}
+\uses{def:stable_kernel, thm:std_stretched_exponential}
+\leanok
+For $\alpha, t > 0$ the symbol $\omega \mapsto e^{-t \lvert \omega \rvert^\alpha}$ is integrable on $\mathbb{R}$, and
+\[
+  P_\alpha(x, t) = \frac{1}{2\pi} \int_{\mathbb{R}} \cos(x\omega)\, e^{-t \lvert \omega \rvert^\alpha}\, \mathrm{d}\omega,
+\]
+and $P_\alpha(\lvert x \rvert, t) = P_\alpha(x, t)$.
+\end{lemma}
+
+\begin{proof}
+\uses{def:stable_kernel, thm:std_stretched_exponential}
+\leanok
+The symbol is even, so its integrability on $\mathbb{R}$ follows from that on $\{\omega > 0\}$ (Theorem~\ref{thm:std_stretched_exponential}), and the integral over $\mathbb{R}$ is twice the integral over $\{\omega > 0\}$ because the cosine is even.
+\end{proof}
+
+\begin{lemma}\label{lem:gauss_regularization_limit}
+\lean{FracLap.tendsto_gaussCos_stableSymbol}
+\uses{def:gauss_cos, lem:stable_symbol_integrable, thm:std_dominated_convergence}
+\leanok
+For $\alpha, t > 0$ and $a \in \mathbb{R}$, $T_{1/(n+1)} F(a) \to \int_{\mathbb{R}} \cos(a\omega)\, e^{-t \lvert \omega \rvert^\alpha}\, \mathrm{d}\omega$ for $F(\omega) = e^{-t \lvert \omega \rvert^\alpha}$.
+\end{lemma}
+
+\begin{proof}
+\uses{def:gauss_cos, lem:stable_symbol_integrable, thm:std_dominated_convergence}
+\leanok
+The integrands $e^{-\omega^2/(n+1)} \cos(a\omega) F(\omega)$ converge pointwise to $\cos(a\omega) F(\omega)$ and are dominated by $F$, which is integrable by Lemma~\ref{lem:stable_symbol_integrable}.
+\end{proof}
+
+\begin{theorem}\label{thm:stable_kernel_positive_monotone}
+\lean{FracLap.stableKernel_nonneg, FracLap.stableKernel_antitone}
+\uses{thm:stable_symbol_monotone, lem:gauss_regularization_limit, lem:stable_symbol_integrable, def:gauss_cos}
+\leanok
+Let $0 < \alpha < 2$ and $t > 0$. Then $P_\alpha(x, t) \ge 0$ for all $x$, and $P_\alpha(b, t) \le P_\alpha(a, t)$ whenever $\lvert a \rvert \le \lvert b \rvert$.
+\end{theorem}
+
+\begin{proof}
+\uses{thm:stable_symbol_monotone, lem:gauss_regularization_limit, lem:stable_symbol_integrable, def:gauss_cos}
+\leanok
+By evenness we may assume $a, b \ge 0$. By Theorem~\ref{thm:stable_symbol_monotone}, $0 \le T_\sigma F(b) \le T_\sigma F(a)$ for every $\sigma > 0$. Letting $\sigma = 1/(n+1) \to 0$ with Lemma~\ref{lem:gauss_regularization_limit} preserves both inequalities, and Lemma~\ref{lem:stable_symbol_integrable} identifies the limits with $2\pi P_\alpha(b, t)$ and $2\pi P_\alpha(a, t)$.
+\end{proof}

@@ -1,0 +1,7 @@
+# Project ChkTeX configuration for leanblueprint + academic LaTeX
+
+WipeArg
+{
+    \lean:{} \uses:{} \proves:{} \discussion:{}
+    \label:{} \ref:{} \eqref:{} \cref:{} \Cref:{} \cite:{} \input:{}
+}

@@ -1,0 +1,29 @@
+\chapter{Bernstein Inequalities for Band-Limited Functions}
+
+This chapter mirrors \texttt{FracLap/Tools/Bernstein.lean}. It records the $L^2$ Bernstein inequalities for the fractional energy: on the Fourier side the energy is multiplication by $\lvert 2\pi\xi\rvert^{\alpha}$ (Theorem~\ref{thm:exact_symbol}), so frequency localization controls it from above and below.
+
+\begin{lemma}[Plancherel for lower integrals]\label{lem:plancherel_lintegral}
+\lean{FracLap.lintegral_enorm_sq_fourier}
+\uses{thm:std_fourier_L2}
+\leanok
+For $f \in L^2(\mathbb{R}; \mathbb{C})$, $\int \lvert \mathcal{F} f(\xi)\rvert^2\, \mathrm{d}\xi = \lVert f\rVert_2^2$ in $[0, \infty]$.
+\end{lemma}
+
+\begin{proof}
+\uses{thm:std_fourier_L2}
+\leanok
+This is Plancherel's theorem written with lower integrals.
+\end{proof}
+
+\begin{theorem}[Bernstein inequalities in $L^2$]\label{thm:bernstein_l2}
+\lean{FracLap.bernstein_upper, FracLap.bernstein_lower}
+\uses{thm:exact_symbol, lem:plancherel_lintegral}
+\leanok
+Let $0 < \alpha < 2$ and $f \in L^2(\mathbb{R}; \mathbb{C})$. If $\mathcal{F} f = 0$ almost everywhere on $\lvert\xi\rvert > R$, then $E_\alpha(f) \le (2\pi R)^{\alpha} \lVert f\rVert_2^2$. If $\mathcal{F} f = 0$ almost everywhere on $\lvert\xi\rvert < r$, then $(2\pi r)^{\alpha} \lVert f\rVert_2^2 \le E_\alpha(f)$.
+\end{theorem}
+
+\begin{proof}
+\uses{thm:exact_symbol, lem:plancherel_lintegral}
+\leanok
+By Theorem~\ref{thm:exact_symbol}, $E_\alpha(f) = \int \lvert 2\pi\xi\rvert^{\alpha} \lvert\mathcal{F} f\rvert^2$. On the support of $\mathcal{F} f$ the weight is bounded by $(2\pi R)^{\alpha}$, respectively bounded below by $(2\pi r)^{\alpha}$; conclude with Lemma~\ref{lem:plancherel_lintegral}.
+\end{proof}

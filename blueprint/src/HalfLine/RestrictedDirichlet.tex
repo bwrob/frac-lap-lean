@@ -1,0 +1,225 @@
+\chapter{Half-Line Restricted Exterior-Dirichlet Semigroup}
+
+This chapter mirrors \texttt{FracLap/HalfLine/RestrictedDirichlet.lean}, formalizing the homogeneous exterior-Dirichlet condition $u = 0$ on $(-\infty, 0)$, the restricted fractional Dirichlet form $B^\alpha_0$, inheritance of the Beurling--Deny Markov form criteria, and the orbit properties of $S_0(t)$.
+
+\begin{definition}\label{def:vanishes_on_neg}
+\lean{FracLap.VanishesOnNeg}
+\leanok
+A function $u : \mathbb{R} \to \mathbb{R}$ satisfies the homogeneous exterior Dirichlet condition on $(-\infty, 0)$ if $u(x) = 0$ for all $x < 0$.
+\end{definition}
+
+\begin{lemma}\label{lem:vanishes_on_neg_subspace}
+\lean{FracLap.vanishesOnNeg_linear_comb, FracLap.vanishesOnNeg_abs, FracLap.vanishesOnNeg_min_one}
+\uses{def:vanishes_on_neg}
+\leanok
+If $u, v : \mathbb{R} \to \mathbb{R}$ satisfy Definition~\ref{def:vanishes_on_neg} and $a, b \in \mathbb{R}$, then the linear combination $a u + b v$, the modulus $\lvert u \rvert$, and the unit truncation $\min(u, 1)$ all vanish identically on $(-\infty, 0)$.
+\end{lemma}
+
+\begin{proof}
+\uses{def:vanishes_on_neg}
+\leanok
+For any $x < 0$, $u(x) = 0$ and $v(x) = 0$, so $a u(x) + b v(x) = 0$, $\lvert u(x) \rvert = \lvert 0 \rvert = 0$, and $\min\bigl(u(x), 1\bigr) = \min(0, 1) = 0$.
+\end{proof}
+
+\begin{definition}\label{def:restrict_symmetric_accretive_form}
+\lean{FracLap.restrictSymmetricAccretiveForm}
+\uses{def:symmetric_accretive_form}
+\leanok
+Given a symmetric accretive form $B$ on an ambient form domain $V$ and a subspace inclusion $\iota : V_0 \to V$, the restricted bilinear form $B_0 : V_0 \times V_0 \to \mathbb{R}$ is defined by $B_0(u, v) = B\bigl(\iota(u), \iota(v)\bigr)$.
+\end{definition}
+
+\begin{theorem}\label{thm:restricted_form_markov}
+\lean{FracLap.restrictedForm_isMarkovDirichletForm, FracLap.restrictedSemigroup_orbit_properties}
+\uses{def:contraction_semigroup, def:symmetric_accretive_form, def:vanishes_on_neg, def:restrict_symmetric_accretive_form}
+\leanok
+If $B$ is a Markov Dirichlet form on $V$ with respect to $(\mathrm{absOp}, \mathrm{capOneOp})$ and the inclusion $\iota : V_0 \to V$ intertwines the restricted truncation operators $(\mathrm{absOp}_0, \mathrm{capOneOp}_0)$ on $V_0$, then the restricted form $B_0$ is a Markov Dirichlet form on $V_0$. Moreover, every orbit $u(t) = S_0(t) u_0$ of a contraction semigroup $S_0$ on the exterior-Dirichlet space $\{v : \mathbb{R} \to \mathbb{R} \mid \mathrm{VanishesOnNeg}(v)\}$ satisfies $S_0(0) u_0 = u_0$ and vanishes on $(-\infty, 0)$ for all $t \ge 0$.
+\end{theorem}
+
+\begin{proof}
+\uses{def:contraction_semigroup, def:symmetric_accretive_form, def:vanishes_on_neg, def:restrict_symmetric_accretive_form}
+\leanok
+For every $u \in V_0$, the intertwining identities $\iota\bigl(\mathrm{absOp}_0(u)\bigr) = \mathrm{absOp}\bigl(\iota(u)\bigr)$ and $\iota\bigl(\mathrm{capOneOp}_0(u)\bigr) = \mathrm{capOneOp}\bigl(\iota(u)\bigr)$ reduce the two Beurling--Deny inequalities for $B_0$ directly to those of $B$ at $\iota(u) \in V$. The orbit properties follow immediately from Definition~\ref{def:contraction_semigroup} and subtype membership in $\{v \mid \mathrm{VanishesOnNeg}(v)\}$.
+\end{proof}
+
+\section{Concrete Gagliardo space and Markov Dirichlet form}
+
+\begin{definition}\label{def:gagliardo_measure}
+\lean{FracLap.L2R, FracLap.L2IoiR, FracLap.gagliardoWeight, FracLap.measurable_gagliardoWeight, FracLap.gagliardoWeight_pos, FracLap.gagliardoMeasure, FracLap.L2Gagliardo, FracLap.gagliardoMeasure_ac}
+\uses{def:frac_lap_constant}
+\leanok
+For $\alpha \in \mathbb{R}$, the \emph{Gagliardo measure} on $\mathbb{R} \times \mathbb{R}$ is
+\[
+  \mathrm{d}\mu_\alpha(x, y) = \frac{C(\alpha)}{2 \lvert x - y \rvert^{1 + \alpha}} \, \mathrm{d}x \, \mathrm{d}y,
+\]
+with the measurable weight set to $0$ on the diagonal $x = y$, a Lebesgue-null set. For $\alpha \in (0, 2)$ the weight is strictly positive off the diagonal, since $C(\alpha) > 0$; for $\alpha = 0$ it vanishes identically. The measure $\mu_\alpha$ is absolutely continuous with respect to Lebesgue product measure. We write $L^2(\mathbb{R})$, $L^2(0, \infty)$, and $L^2(\mu_\alpha)$ for the associated real Hilbert spaces.
+\end{definition}
+
+\begin{lemma}\label{lem:rest_ioi_real}
+\lean{FracLap.restIoiR, FracLap.coeFn_restIoiR, FracLap.restIoiR_halfLineL2ExtendByZero, FracLap.halfLineL2ExtendByZero_restIoiR_of_ae_zero, FracLap.inner_halfLineL2ExtendByZero_eq_restIoiR}
+\uses{def:lp_extend_by_zero}
+\leanok
+The restriction $R : L^2(\mathbb{R}) \to L^2(0, \infty)$ is a bounded linear contraction. It is a left inverse of the zero extension $E_0$, satisfies $E_0 R u = u$ whenever $u = 0$ almost everywhere on $\{x \le 0\}$, and is the adjoint of $E_0$: $\langle E_0 f, u \rangle = \langle f, R u \rangle$.
+\end{lemma}
+
+\begin{proof}
+\uses{def:lp_extend_by_zero}
+\leanok
+Restriction does not increase the $L^2$ norm, and linearity holds almost everywhere. The identities follow by comparing representatives almost everywhere on $(0, \infty)$ and on $\{x \le 0\}$, and the adjoint identity by splitting $\int_{\mathbb{R}}$ into the integral over $(0, \infty)$ of $f \cdot u$.
+\end{proof}
+
+\begin{definition}\label{def:gagliardo_space}
+\lean{FracLap.GagliardoAmbient, FracLap.ae_fst_gagliardoMeasure, FracLap.ae_snd_gagliardoMeasure, FracLap.gagliardoSubmodule, FracLap.GagliardoSpace, FracLap.gagliardoL2Part, FracLap.gagliardoDiffPart, FracLap.norm_sq_gagliardoSpace, FracLap.inner_gagliardoSpace}
+\uses{def:gagliardo_measure}
+\leanok
+The \emph{Gagliardo space} $H^{\alpha/2}(\mathbb{R})$ is the graph subspace
+\[
+  \{ (u, F) \in L^2(\mathbb{R}) \times L^2(\mu_\alpha) : F(x, y) = u(x) - u(y) \text{ for } \mu_\alpha\text{-a.e. } (x, y) \}
+\]
+of the Hilbert product $L^2(\mathbb{R}) \times L^2(\mu_\alpha)$, with $\lVert (u, F) \rVert^2 = \lVert u \rVert_{L^2}^2 + \lVert F \rVert_{L^2(\mu_\alpha)}^2$.
+\end{definition}
+
+\begin{lemma}\label{lem:gagliardo_space_closed}
+\lean{FracLap.isClosed_gagliardoSubmodule, FracLap.instCompleteSpaceGagliardoSpace}
+\uses{def:gagliardo_space}
+\leanok
+The graph subspace of Definition~\ref{def:gagliardo_space} is closed, so $H^{\alpha/2}(\mathbb{R})$ is a real Hilbert space.
+\end{lemma}
+
+\begin{proof}
+\uses{def:gagliardo_space, thm:std_L2_subsequence, thm:std_withdensity}
+\leanok
+Let $(u_n, F_n) \to (u, F)$ with each $(u_n, F_n)$ in the subspace. By Theorem~\ref{thm:std_L2_subsequence}, a subsequence $u_{n_k} \to u$ Lebesgue-a.e. Since $\mu_\alpha$ is absolutely continuous with respect to Lebesgue product measure (Theorem~\ref{thm:std_withdensity}), both $u_{n_k}(x) \to u(x)$ and $u_{n_k}(y) \to u(y)$ hold $\mu_\alpha$-a.e. A further subsequence gives $F_{n_{k_j}} \to F$ $\mu_\alpha$-a.e. Passing to the limit in $F_{n_{k_j}}(x, y) = u_{n_{k_j}}(x) - u_{n_{k_j}}(y)$ yields $F(x, y) = u(x) - u(y)$ $\mu_\alpha$-a.e.
+\end{proof}
+
+\begin{definition}\label{def:gagliardo_form}
+\lean{FracLap.gagliardoForm}
+\uses{def:gagliardo_space, def:symmetric_accretive_form, thm:whole_line_form}
+\leanok
+The \emph{fractional Dirichlet form} on $H^{\alpha/2}(\mathbb{R})$ is
+\[
+  B^\alpha(u, v) = \langle F_u, F_v \rangle_{L^2(\mu_\alpha)} = \frac{C(\alpha)}{2} \iint \frac{\bigl(u(x) - u(y)\bigr)\bigl(v(x) - v(y)\bigr)}{\lvert x - y \rvert^{1 + \alpha}} \, \mathrm{d}x \, \mathrm{d}y,
+\]
+a symmetric accretive form by Theorem~\ref{thm:whole_line_form} applied to the bounded map $u \mapsto F_u$.
+\end{definition}
+
+\begin{definition}\label{def:gagliardo_normal_contraction}
+\lean{FracLap.lipschitzWith_abs_real, FracLap.lipschitzWith_min_one_real, FracLap.gagliardoCompLip, FracLap.gagliardoAbs, FracLap.gagliardoCapOne, FracLap.coeFn_gagliardoCompLip_l2Part}
+\uses{def:gagliardo_space, lem:normal_contraction_inequalities, thm:std_lipschitz_L2}
+\leanok
+For a $1$-Lipschitz map $\varphi : \mathbb{R} \to \mathbb{R}$ with $\varphi(0) = 0$ (a \emph{normal contraction}), the map $u \mapsto \varphi \circ u$ acts on $H^{\alpha/2}(\mathbb{R})$ by $(u, F_u) \mapsto \bigl(\varphi \circ u, (x, y) \mapsto \varphi(u(x)) - \varphi(u(y))\bigr)$. The difference component lies in $L^2(\mu_\alpha)$ because $\lvert \varphi(u(x)) - \varphi(u(y)) \rvert \le \lvert F_u(x, y) \rvert$ $\mu_\alpha$-a.e. The cases $\varphi = \lvert \cdot \rvert$ and $\varphi = \min(\cdot, 1)$ give the modulus and unit truncation.
+\end{definition}
+
+\begin{theorem}\label{thm:gagliardo_form_markov}
+\lean{FracLap.gagliardoForm_compLip_le, FracLap.gagliardoForm_isMarkovDirichletForm}
+\uses{def:gagliardo_form, def:gagliardo_normal_contraction, def:symmetric_accretive_form}
+\leanok
+For every normal contraction $\varphi$ and $u \in H^{\alpha/2}(\mathbb{R})$, $B^\alpha(\varphi \circ u, \varphi \circ u) \le B^\alpha(u, u)$. In particular, for $\alpha \in (0, 2)$, $B^\alpha$ is a Markov Dirichlet form with respect to $u \mapsto \lvert u \rvert$ and $u \mapsto u \wedge 1$.
+\end{theorem}
+
+\begin{proof}
+\uses{def:gagliardo_form, def:gagliardo_normal_contraction}
+\leanok
+Both sides are integrals over $\mu_\alpha$ of squared differences. For $\mu_\alpha$-a.e. $(x, y)$, the $1$-Lipschitz bound gives $\bigl(\varphi(u(x)) - \varphi(u(y))\bigr)^2 \le \bigl(u(x) - u(y)\bigr)^2$, and integrating this pointwise inequality gives the claim.
+\end{proof}
+
+\begin{definition}\label{def:restricted_gagliardo_space}
+\lean{FracLap.restrictedGagliardoSubmodule, FracLap.restrictedNegMap, FracLap.RestrictedGagliardoSpace, FracLap.restrictedGagliardoCompLip, FracLap.restrictedGagliardoAbs, FracLap.restrictedGagliardoCapOne, FracLap.restrictedGagliardoForm}
+\uses{def:gagliardo_space, def:gagliardo_normal_contraction, def:restrict_symmetric_accretive_form}
+\leanok
+The \emph{exterior-Dirichlet space} $H^{\alpha/2}_0(0, \infty)$ is the subspace of $u \in H^{\alpha/2}(\mathbb{R})$ with $u = 0$ almost everywhere on $\{x \le 0\}$, and $B^\alpha_0$ is the restriction of $B^\alpha$ to it. Normal contractions preserve this subspace because $\varphi(0) = 0$.
+\end{definition}
+
+\begin{theorem}\label{thm:restricted_gagliardo_form_markov}
+\lean{FracLap.isClosed_restrictedGagliardoSubmodule, FracLap.instCompleteSpaceRestrictedGagliardoSpace, FracLap.restrictedGagliardoForm_isMarkovDirichletForm}
+\uses{def:restricted_gagliardo_space, thm:gagliardo_form_markov, thm:restricted_form_markov}
+\leanok
+$H^{\alpha/2}_0(0, \infty)$ is a closed subspace of $H^{\alpha/2}(\mathbb{R})$, and for $\alpha \in (0, 2)$, $B^\alpha_0$ is a Markov Dirichlet form on it with respect to the restricted modulus and unit truncation.
+\end{theorem}
+
+\begin{proof}
+\uses{def:restricted_gagliardo_space, thm:gagliardo_form_markov, thm:restricted_form_markov}
+\leanok
+The subspace is the kernel of the bounded map $u \mapsto u \cdot \mathbf{1}_{\{x \le 0\}} \in L^2(\{x \le 0\})$, hence closed. The inclusion commutes with the restricted modulus and truncation by construction, so Theorem~\ref{thm:restricted_form_markov} transfers the Beurling--Deny conditions from Theorem~\ref{thm:gagliardo_form_markov}.
+\end{proof}
+
+\section{Non-vacuity witness: a tent function in $H^{\alpha/2}_0(0, \infty)$}
+
+The Markov results above would hold trivially if the Gagliardo space were $\{0\}$. This section exhibits an explicit nonzero element of strictly positive energy. We follow the Fourier-free route; the energy of $u$ is controlled through its $L^2$ translation modulus.
+
+\begin{lemma}\label{lem:gagliardo_kernel_integrable}
+\lean{FracLap.gagliardoKernel, FracLap.gagliardoKernel_neg, FracLap.lintegral_gagliardoKernel_Ioi_lt_top, FracLap.lintegral_gagliardoKernel_lt_top, FracLap.measurable_gagliardoKernel}
+\uses{def:frac_lap_constant, thm:std_power_integrability, thm:std_translation_invariance}
+\leanok
+Let $\alpha \in (0, 2)$ and $k_\alpha(h) = \dfrac{C(\alpha)\, \min(h^2, 1)}{2 \lvert h \rvert^{1 + \alpha}}$. Then $k_\alpha$ is even, measurable, and $\int_{\mathbb{R}} k_\alpha(h)\, \mathrm{d}h < \infty$.
+\end{lemma}
+
+\begin{proof}
+\uses{def:frac_lap_constant, thm:std_power_integrability, thm:std_translation_invariance}
+\leanok
+By evenness and reflection invariance (Theorem~\ref{thm:std_translation_invariance}) it suffices to integrate over $(0, \infty)$. For $0 < h \le 1$ we have $k_\alpha(h) = \tfrac{C(\alpha)}{2} h^{1 - \alpha}$, which is integrable by Theorem~\ref{thm:std_power_integrability} because $1 - \alpha > -1$. For $h > 1$ we have $k_\alpha(h) \le \tfrac{C(\alpha)}{2} h^{-(1 + \alpha)}$, which is integrable by Theorem~\ref{thm:std_power_integrability} because $-(1 + \alpha) < -1$.
+\end{proof}
+
+\begin{lemma}\label{lem:gagliardo_energy_translation}
+\lean{FracLap.lintegral_gagliardo_energy_eq}
+\uses{def:gagliardo_measure}
+\leanok
+For every measurable $u : \mathbb{R} \to \mathbb{R}$ and every $\alpha \in \mathbb{R}$, as an identity in $[0, \infty]$,
+\[
+  \iint \bigl(u(x) - u(y)\bigr)^2 \, \mathrm{d}\mu_\alpha(x, y)
+  = \int_{\mathbb{R}} \frac{C(\alpha)}{2 \lvert h \rvert^{1 + \alpha}} \Bigl( \int_{\mathbb{R}} \bigl(u(y + h) - u(y)\bigr)^2 \, \mathrm{d}y \Bigr) \mathrm{d}h.
+\]
+\end{lemma}
+
+\begin{proof}
+\uses{def:gagliardo_measure, thm:std_tonelli, thm:std_translation_invariance, thm:std_withdensity}
+\leanok
+Write $\mu_\alpha$ as Lebesgue product measure with density (Theorem~\ref{thm:std_withdensity}). Integrate first in $x$ and substitute $x = y + h$ using translation invariance (Theorem~\ref{thm:std_translation_invariance}), then exchange the order of the remaining two integrals by Tonelli's theorem (Theorem~\ref{thm:std_tonelli}).
+\end{proof}
+
+\begin{theorem}\label{thm:translation_criterion}
+\lean{FracLap.lintegral_gagliardo_diff_sq_lt_top}
+\uses{def:gagliardo_measure, lem:gagliardo_kernel_integrable, lem:gagliardo_energy_translation}
+\leanok
+Let $\alpha \in (0, 2)$ and let $u : \mathbb{R} \to \mathbb{R}$ be measurable with $\int_{\mathbb{R}} \lvert u(y + h) - u(y) \rvert^2 \, \mathrm{d}y \le K \min(h^2, 1)$ for all $h \in \mathbb{R}$ and some $K < \infty$. Then
+\[
+  \iint \lvert u(x) - u(y) \rvert^2 \, \mathrm{d}\mu_\alpha(x, y) < \infty.
+\]
+\end{theorem}
+
+\begin{proof}
+\uses{lem:gagliardo_kernel_integrable, lem:gagliardo_energy_translation}
+\leanok
+By Lemma~\ref{lem:gagliardo_energy_translation} the double integral equals $\int_{\mathbb{R}} \tfrac{C(\alpha)}{2 \lvert h \rvert^{1 + \alpha}} \bigl( \int_{\mathbb{R}} \lvert u(y + h) - u(y) \rvert^2 \, \mathrm{d}y \bigr) \mathrm{d}h$, which is at most $K \int_{\mathbb{R}} k_\alpha(h) \, \mathrm{d}h < \infty$ by Lemma~\ref{lem:gagliardo_kernel_integrable}.
+\end{proof}
+
+\begin{definition}\label{def:gagliardo_tent}
+\lean{FracLap.gagliardoTent, FracLap.continuous_gagliardoTent, FracLap.gagliardoTent_nonneg, FracLap.gagliardoTent_le_one, FracLap.gagliardoTent_eq_zero, FracLap.abs_gagliardoTent_sub_le, FracLap.gagliardoTent_sq_sub_le}
+\leanok
+The \emph{tent function} is $\tau(x) = \max\bigl(0, 1 - \lvert x - 1 \rvert\bigr)$. It is continuous, takes values in $[0, 1]$, is $1$-Lipschitz, vanishes outside $(0, 2)$, and satisfies $\bigl(\tau(x) - \tau(y)\bigr)^2 \le \min\bigl((x - y)^2, 1\bigr)$.
+\end{definition}
+
+\begin{lemma}\label{lem:tent_translation}
+\lean{FracLap.gagliardoTent_translation, FracLap.integrable_gagliardoTent_diff_sq}
+\uses{def:gagliardo_tent, thm:translation_criterion}
+\leanok
+For every $h \in \mathbb{R}$, $\int_{\mathbb{R}} \bigl(\tau(y + h) - \tau(y)\bigr)^2 \, \mathrm{d}y \le 4 \min(h^2, 1)$. Consequently, for $\alpha \in (0, 2)$, $(x, y) \mapsto \tau(x) - \tau(y)$ lies in $L^2(\mu_\alpha)$.
+\end{lemma}
+
+\begin{proof}
+\uses{def:gagliardo_tent, thm:translation_criterion}
+\leanok
+The integrand vanishes unless $y \in (0, 2) \cup (-h, 2 - h)$, a set of measure at most $4$, and on that set it is bounded by $\min(h^2, 1)$ by Definition~\ref{def:gagliardo_tent}. The second claim follows from Theorem~\ref{thm:translation_criterion} with $K = 4$.
+\end{proof}
+
+\begin{theorem}\label{thm:tent_witness}
+\lean{FracLap.memLp_gagliardoTent, FracLap.gagliardoTentL2, FracLap.memLp_gagliardoTentDiff, FracLap.gagliardoTentDiffL2, FracLap.gagliardoTent_mem, FracLap.gagliardoTentSpace, FracLap.gagliardoTentSpace_mem_restricted, FracLap.gagliardoTentRestricted, FracLap.gagliardoTentRestricted_ne_zero, FracLap.gagliardoTentDiffL2_ne_zero, FracLap.exists_restrictedGagliardoForm_pos}
+\uses{lem:tent_translation, def:gagliardo_space, def:restricted_gagliardo_space, def:gagliardo_form}
+\leanok
+For $\alpha \in (0, 2)$, the pair $(\tau, F_\tau)$ with $F_\tau(x, y) = \tau(x) - \tau(y)$ is a nonzero element of $H^{\alpha/2}_0(0, \infty)$, and $B^\alpha_0(\tau, \tau) > 0$. In particular the restricted form is not identically zero.
+\end{theorem}
+
+\begin{proof}
+\uses{lem:tent_translation, def:gagliardo_space, def:restricted_gagliardo_space, def:gagliardo_form, thm:std_compact_support_L2, thm:std_L2_sq_integrable, thm:std_open_positive, thm:std_withdensity}
+\leanok
+By Lemma~\ref{lem:tent_translation} and Theorem~\ref{thm:std_L2_sq_integrable}, $F_\tau \in L^2(\mu_\alpha)$, and $\tau \in L^2(\mathbb{R})$ by Theorem~\ref{thm:std_compact_support_L2}. The relation $F_\tau(x, y) = \tau(x) - \tau(y)$ holds everywhere, so $(\tau, F_\tau)$ lies in the Gagliardo graph; since $\tau = 0$ on $\{x \le 0\}$, it lies in the restricted subspace. It is nonzero because $\tau(1) = 1$ and a continuous function vanishing almost everywhere vanishes identically (Theorem~\ref{thm:std_open_positive}). For positivity of the energy, suppose $F_\tau = 0$ $\mu_\alpha$-almost everywhere. Since the weight is strictly positive off the diagonal and $F_\tau$ vanishes on the diagonal, Theorem~\ref{thm:std_withdensity} gives that $F_\tau = 0$ Lebesgue-almost everywhere on $\mathbb{R}^2$. But $\{F_\tau \ne 0\}$ is open and nonempty (it contains $(1, 3)$), hence has positive measure by Theorem~\ref{thm:std_open_positive}, a contradiction. Thus $B^\alpha_0(\tau, \tau) = \lVert F_\tau \rVert^2_{L^2(\mu_\alpha)} > 0$.
+\end{proof}

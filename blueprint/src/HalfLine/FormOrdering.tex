@@ -1,0 +1,63 @@
+\chapter{Ordering of the Restricted and Spectral Half-Line Energies}
+
+This chapter mirrors \texttt{FracLap/HalfLine/FormOrdering.lean}. On $L^2(0, \infty; \mathbb{C})$ there are two natural quadratic forms attached to the fractional Laplacian: the \emph{restricted} one, the whole-line Gagliardo energy $E_\alpha(u^0)$ of the zero extension $u^0$, and the \emph{spectral} one, $\tfrac12 E_\alpha(u^{\mathrm{odd}})$, the energy of the odd extension, which generates the reflected semigroup. Musina and Nazarov proved that the restricted form is dominated by the spectral one; on the half-line this follows from the positive definiteness of a Hankel kernel.
+
+Throughout $W(h) = C(\alpha)/(2\lvert h\rvert^{1+\alpha})$ and $E_\alpha(g) = \iint W(x - y)\lvert g(x) - g(y)\rvert^2 \mathrm{d}x \mathrm{d}y \in [0, \infty]$.
+
+\begin{lemma}[Laplace representation of the Hankel kernel]\label{lem:hankel_laplace}
+\lean{FracLap.hankelKernel, FracLap.hankelKernel_eq_integral, FracLap.hasDerivAt_hankel_primitive, FracLap.integrableOn_hankel, FracLap.integral_hankel}
+\uses{thm:std_gamma}
+\leanok
+For $\alpha, \varepsilon > 0$ and $x, y \ge 0$, $(x + y + \varepsilon)^{-(1+\alpha)} = \Gamma(1+\alpha)^{-1} \int_0^\infty s^{\alpha} e^{-s(x+y+\varepsilon)} \mathrm{d}s$. Moreover $\int_0^\infty (x + y + \varepsilon)^{-(1+\alpha)} \mathrm{d}y = (x+\varepsilon)^{-\alpha}/\alpha$.
+\end{lemma}
+
+\begin{proof}
+\uses{thm:std_gamma}
+\leanok
+The first identity is the Gamma integral with rate $x + y + \varepsilon$. For the second, $y \mapsto -(x + y + \varepsilon)^{-\alpha}/\alpha$ is a primitive that tends to $0$ at infinity.
+\end{proof}
+
+\begin{theorem}[Positive definiteness]\label{thm:hankel_pd}
+\lean{FracLap.hankelQuadrant, FracLap.integrable_hankelQuadrant_mul_sq, FracLap.integrable_hankelQuadrant_mul_sq_fst, FracLap.integrable_hankel_form, FracLap.laplaceU, FracLap.hankel_form_eq, FracLap.hankel_form_nonneg, FracLap.hankel_lintegral_le}
+\uses{lem:hankel_laplace, thm:std_fubini}
+\leanok
+Let $z \in L^2(\mathbb{R}; \mathbb{C})$ vanish on $x \le 0$, $\alpha, \varepsilon > 0$ and $k_\varepsilon(x, y) = (x + y + \varepsilon)^{-(1+\alpha)}$ on $x, y > 0$. Then $\iint k_\varepsilon(x, y) z(x) \overline{z(y)} \mathrm{d}x \mathrm{d}y = \Gamma(1+\alpha)^{-1} \int_0^\infty s^{\alpha} e^{-s\varepsilon} \lvert U(s)\rvert^2 \mathrm{d}s \ge 0$, where $U(s) = \int e^{-sx} z(x) \mathrm{d}x$. Consequently, for every $c \ge 0$,
+\[
+  \iint c k_\varepsilon (\lvert z(x)\rvert^2 + \lvert z(y)\rvert^2) \le \iint c k_\varepsilon \lvert z(x) + z(y)\rvert^2 .
+\]
+\end{theorem}
+
+\begin{proof}
+\uses{lem:hankel_laplace, thm:std_fubini}
+\leanok
+Insert Lemma~\ref{lem:hankel_laplace}. The resulting triple integral is absolutely convergent: the $s$-integral of the modulus is $\Gamma(1+\alpha) k_\varepsilon \lvert z(x)\rvert \lvert z(y)\rvert \le \tfrac12 \Gamma(1+\alpha) k_\varepsilon(\lvert z(x)\rvert^2 + \lvert z(y)\rvert^2)$, and $\iint k_\varepsilon \lvert z(x)\rvert^2 \le \varepsilon^{-\alpha}\alpha^{-1}\lVert z\rVert_2^2$ by the marginal bound of Lemma~\ref{lem:hankel_laplace}. By Fubini, the $(x, y)$-integral factorizes as $U(s)\overline{U(s)}$. For the last claim expand $\lvert z(x) + z(y)\rvert^2 = \lvert z(x)\rvert^2 + \lvert z(y)\rvert^2 + 2\operatorname{Re}(z(x)\overline{z(y)})$.
+\end{proof}
+
+\begin{lemma}[Quadrant decomposition]\label{lem:quadrant_decomposition}
+\lean{FracLap.pairEnergy, FracLap.qSS, FracLap.qT1, FracLap.qT2, FracLap.qI2, FracLap.lintegral_region_transfer, FracLap.pairEnergy_le, FracLap.two_qSS_add_le_pairEnergy_odd}
+\leanok
+Let $z$ vanish on $x \le 0$, let $Q = (0, \infty)^2$, and put
+\begin{align*}
+  I_1 &= \iint_Q W(x - y)\lvert z(x) - z(y)\rvert^2, & I_2 &= \iint_Q W(x + y)\lvert z(x) + z(y)\rvert^2,\\
+  T_1 &= \iint_Q W(x + y)\lvert z(x)\rvert^2, & T_2 &= \iint_Q W(x + y)\lvert z(y)\rvert^2.
+\end{align*}
+Then $E_\alpha(z) \le I_1 + T_1 + T_2$ and $2 I_1 + 2 I_2 \le E_\alpha(z - z(-\cdot))$ (both with equality).
+\end{lemma}
+
+\begin{proof}
+\leanok
+Split the plane into the four open quadrants and the coordinate axes (a null set). For $z$: on $(-\infty, 0)^2$ the integrand vanishes, and on the two mixed quadrants it reduces to $W(x - y)\lvert z(x)\rvert^2$ resp.\ $W(x-y)\lvert z(y)\rvert^2$, which the measure-preserving reflections $y \mapsto -y$ resp.\ $x \mapsto -x$ move to $Q$. For the odd extension $o = z - z(-\cdot)$, the quadrants $(0,\infty)^2$ and $(-\infty, 0)^2$ both give $I_1$ (the latter by the reflection $(x, y) \mapsto (-x, -y)$), and the two mixed quadrants give $I_2$.
+\end{proof}
+
+\begin{theorem}[Restricted $\le$ spectral]\label{thm:restricted_le_spectral}
+\lean{FracLap.qT_le_qI2, FracLap.pairEnergy_le_half_odd, FracLap.pairEnergy_congr_ae, FracLap.restricted_le_spectral}
+\uses{thm:hankel_pd, lem:quadrant_decomposition}
+\leanok
+For $0 < \alpha < 2$ and $u \in L^2(0, \infty; \mathbb{C})$, $E_\alpha(u^0) \le \tfrac12 E_\alpha(u^{\mathrm{odd}})$.
+\end{theorem}
+
+\begin{proof}
+\uses{thm:hankel_pd, lem:quadrant_decomposition}
+\leanok
+By Lemma~\ref{lem:quadrant_decomposition} it suffices to show $T_1 + T_2 \le I_2$. For $\varepsilon > 0$ and $c = C(\alpha)/2$, Theorem~\ref{thm:hankel_pd} gives $\iint c k_\varepsilon(\lvert z(x)\rvert^2 + \lvert z(y)\rvert^2) \le \iint c k_\varepsilon \lvert z(x) + z(y)\rvert^2 \le I_2$, because $c k_\varepsilon \le W(x + y)$ on $Q$. As $\varepsilon \downarrow 0$ the kernels $c k_\varepsilon$ increase to $W(x + y)$, so the monotone convergence theorem gives $T_1 + T_2 \le I_2$.
+\end{proof}

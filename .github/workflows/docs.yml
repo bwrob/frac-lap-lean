@@ -1,0 +1,83 @@
+name: Docs
+
+on:
+  push:
+    branches:
+      - main
+  workflow_dispatch:
+
+concurrency:
+  group: pages
+  cancel-in-progress: false
+
+permissions:
+  contents: read
+
+jobs:
+  deploy:
+    name: Build site and blueprint, deploy to GitHub Pages
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    permissions:
+      contents: read
+      pages: write
+      id-token: write
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v7
+        with:
+          fetch-depth: 0
+
+      - name: Install uv
+        uses: astral-sh/setup-uv@v10.3.0
+        with:
+          python-version: "3.13"
+          enable-cache: true
+
+      - name: Generate and build the documentation site (strict)
+        run: |
+          uv sync --only-group docs --no-install-project
+          uv run --only-group docs --no-project python scripts/gen_docs.py
+          uv run --only-group docs --no-project zensical build --clean --strict
+
+      - name: Build Lean project (needed by the blueprint; linting is part of CI)
+        uses: leanprover/lean-action@v1
+        with:
+          build: true
+          lint: false
+
+      - name: Install TeX Live, Graphviz & leanblueprint
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y --no-install-recommends \
+            graphviz libgraphviz-dev latexmk \
+            texlive-latex-base texlive-latex-recommended \
+            texlive-latex-extra texlive-fonts-recommended texlive-science lmodern
+          pipx install --include-deps leanblueprint
+
+      - name: Compile the interactive blueprint (web; best effort)
+        continue-on-error: true
+        run: |
+          leanblueprint web
+          mkdir -p site/blueprint
+          cp -r blueprint/web/. site/blueprint/
+
+      - name: Compile the printable blueprint PDF (best effort)
+        continue-on-error: true
+        run: |
+          leanblueprint pdf
+          cp blueprint/print/print.pdf site/blueprint/print.pdf
+
+      - name: Setup Pages
+        uses: actions/configure-pages@v6
+
+      - name: Upload Pages artifact
+        uses: actions/upload-pages-artifact@v5
+        with:
+          path: site
+
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v5

@@ -1,0 +1,45 @@
+\chapter{The Stable Kernel Realizes the Fractional Heat Semigroup}
+
+This chapter mirrors \texttt{FracLap/WholeLine/StableSemigroup.lean}. It identifies the two descriptions of the whole-line fractional heat semigroup: the $L^2$ Fourier-multiplier semigroup with symbol $e^{-t \lvert 2\pi\xi \rvert^\alpha}$ and convolution with the stable kernel $P_\alpha(\cdot, t)$.
+
+\begin{lemma}\label{lem:conv_schwartz_L2}
+\lean{FracLap.memLp_two_convolution_schwartz}
+\uses{thm:std_fubini}
+\leanok
+If $K \in L^1(\mathbb{R}; \mathbb{C})$ and $u$ is a Schwartz function, then $K \star u \in L^2(\mathbb{R}; \mathbb{C})$.
+\end{lemma}
+
+\begin{proof}
+\uses{thm:std_fubini}
+\leanok
+By Theorem~\ref{thm:std_fubini}, $K \star u$ is integrable. Since $u$ is bounded, $\lvert (K \star u)(x) \rvert \le \lVert u \rVert_\infty \lVert K \rVert_{L^1}$ for all $x$, hence $\lvert K \star u \rvert^2 \le \lVert u \rVert_\infty \lVert K \rVert_{L^1} \lvert K \star u \rvert$, which is integrable.
+\end{proof}
+
+\begin{theorem}\label{thm:stable_semigroup_convolution}
+\lean{FracLap.fracLapSemigroup_apply_schwartz}
+\uses{thm:fourier_multiplier_eq_conv, thm:concrete_frac_lap_semigroup, thm:stable_kernel_fourier_faithfulness, def:stable_heat_kernel, lem:conv_schwartz_L2}
+\leanok
+Let $0 < \alpha < 2$, $t > 0$ and let $u$ be a Schwartz function. Then the fractional heat semigroup of Theorem~\ref{thm:concrete_frac_lap_semigroup} satisfies
+\[
+  S_\alpha(t) u = P_\alpha(\cdot, t) \star u \quad \text{in } L^2(\mathbb{R}; \mathbb{C}).
+\]
+\end{theorem}
+
+\begin{proof}
+\uses{thm:fourier_multiplier_eq_conv, thm:stable_kernel_fourier_faithfulness, lem:conv_schwartz_L2}
+\leanok
+The stable kernel is integrable and its Fourier transform is $e^{-t \lvert 2\pi\xi \rvert^\alpha}$ by Theorem~\ref{thm:stable_kernel_fourier_faithfulness}, which is the symbol of $S_\alpha(t)$. Apply Theorem~\ref{thm:fourier_multiplier_eq_conv}, whose square-integrability hypothesis is supplied by Lemma~\ref{lem:conv_schwartz_L2}.
+\end{proof}
+
+\begin{theorem}[Full $L^2$ semigroup--kernel identification and Markov property]\label{thm:stable_semigroup_L2_markov}
+\lean{FracLap.memLp_two_stableKernel, FracLap.memLp_two_stable_convolution, FracLap.stableConvOp, FracLap.fracLapSemigroup_eq_stableConvOp, FracLap.fracLapSemigroup_apply_ae_eq_conv, FracLap.fracLapSemigroup_re_nonneg, FracLap.fracLapSemigroup_re_le}
+\uses{thm:stable_semigroup_convolution, lem:stable_kernel_continuous_integrable, thm:stable_kernel_fourier_faithfulness, thm:std_schwartz_dense_Lp}
+\leanok
+For every $0 < \alpha < 2$ and $t > 0$, convolution with $P_\alpha(\cdot, t)$ defines a bounded linear contraction on $L^2(\mathbb{R}; \mathbb{C})$ that coincides everywhere on $L^2(\mathbb{R}; \mathbb{C})$ with $S_\alpha(t)$, so $(S_\alpha(t) f)(x) = (P_\alpha(\cdot, t) \star f)(x)$ almost everywhere for all $f \in L^2(\mathbb{R}; \mathbb{C})$. Consequently, $S_\alpha(t)$ preserves real-valuedness, nonnegativity, and almost everywhere upper bounds $f \le M$.
+\end{theorem}
+
+\begin{proof}
+\uses{thm:stable_semigroup_convolution, lem:stable_kernel_continuous_integrable, thm:stable_kernel_fourier_faithfulness, thm:std_schwartz_dense_Lp}
+\leanok
+Applying Cauchy--Schwarz in the convolution integral together with Tonelli's theorem and the unit mass $\int_{\mathbb{R}} P_\alpha(y, t)\, \mathrm{d}y = 1$ proves Young's $L^2$ bound $\lVert P_\alpha(\cdot, t) \star f \rVert_{L^2} \le \lVert f \rVert_{L^2}$ for every $f \in L^2(\mathbb{R}; \mathbb{C})$. Since $P_\alpha(\cdot, t)$ is bounded and integrable, it lies in $L^2(\mathbb{R}; \mathbb{C})$, ensuring everywhere pointwise existence and linearity of the convolution operator. Because this contraction agrees with $S_\alpha(t)$ on the dense Schwartz subspace $\mathcal{S}(\mathbb{R}; \mathbb{C})$ by Theorem~\ref{thm:stable_semigroup_convolution}, continuity forces $S_\alpha(t) f = P_\alpha(\cdot, t) \star f$ for all $f \in L^2(\mathbb{R}; \mathbb{C})$. Reality, positivity, and $L^\infty$-contractivity follow immediately from $P_\alpha \ge 0$ and $\int_{\mathbb{R}} P_\alpha = 1$.
+\end{proof}

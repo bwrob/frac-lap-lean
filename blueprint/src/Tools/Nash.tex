@@ -1,0 +1,47 @@
+\chapter{The Fractional Nash Inequality}
+
+This chapter mirrors \texttt{FracLap/Tools/Nash.lean}. For $0 < \alpha < 2$ and $f \in L^1 \cap L^2(\mathbb{R})$ with finite Gagliardo energy $E_\alpha(f)$ we prove the Nash inequality used in Biler--Imbert--Karch and Karch--Miao--Xu:
+\[
+  \bigl(\lVert f \rVert_2^2\bigr)^{1+\alpha} \le \frac{3^{1+\alpha}}{\Lambda_\alpha(1)}\, E_\alpha(f)\, \bigl(\lVert f \rVert_1^2\bigr)^{\alpha},
+\]
+that is $\lVert f \rVert_2^{2(1+\alpha)} \le C E_\alpha(f) \lVert f \rVert_1^{2\alpha}$ with the explicit constant $C = 3^{1+\alpha} / \Lambda_\alpha(1)$.
+
+\begin{lemma}\label{lem:nash_optimize}
+\lean{FracLap.nash_optimize}
+\leanok
+Let $\alpha > 0$ and $S, T, e \ge 0$ satisfy $S \le 2 R T + R^{-\alpha} e$ for every $R > 0$. Then $S^{1+\alpha} \le 3^{1+\alpha}\, e\, T^\alpha$.
+\end{lemma}
+
+\begin{proof}
+\leanok
+If $T = 0$, letting $R \to \infty$ gives $S = 0$; if $e = 0$, letting $R \to 0$ gives $S = 0$. Otherwise choose $R = (e/T)^{1/(1+\alpha)}$, for which $R^{-\alpha} e = R T$, so $S \le 3 R T$, and raise to the power $1 + \alpha$.
+\end{proof}
+
+\begin{lemma}\label{lem:nash_cut}
+\lean{FracLap.ae_enorm_fourier_le, FracLap.nash_cut, FracLap.nash_cut_real}
+\uses{thm:gagliardo_symbol_homogeneous, thm:gagliardo_symbol_unit, thm:std_fourier_L1, thm:std_fourier_L2}
+\leanok
+For $f \in L^1 \cap L^2(\mathbb{R}; \mathbb{C})$ and every $R > 0$,
+\[
+  \lVert f \rVert_2^2 \le 2R \lVert f \rVert_1^2 + \frac{E_\alpha(f)}{R^\alpha \Lambda_\alpha(1)}.
+\]
+\end{lemma}
+
+\begin{proof}
+\uses{thm:gagliardo_symbol_homogeneous, thm:gagliardo_symbol_unit, thm:std_fourier_L1, thm:std_fourier_L2}
+\leanok
+By Plancherel (Theorem~\ref{thm:std_fourier_L2}), $\lVert f \rVert_2^2 = \int \lvert \mathcal{F} f \rvert^2$. On $\lvert \xi \rvert \le R$ use $\lvert \mathcal{F} f \rvert \le \lVert f \rVert_1$ (Theorem~\ref{thm:std_fourier_L1}), which contributes at most $2R \lVert f \rVert_1^2$. On $\lvert \xi \rvert > R$, Theorem~\ref{thm:gagliardo_symbol_homogeneous} gives $\Lambda_\alpha(\xi) \ge R^\alpha \Lambda_\alpha(1)$, so $\int_{\lvert \xi \rvert > R} \lvert \mathcal{F} f \rvert^2 \le (R^\alpha \Lambda_\alpha(1))^{-1} \int \Lambda_\alpha \lvert \mathcal{F} f \rvert^2 = (R^\alpha \Lambda_\alpha(1))^{-1} E_\alpha(f)$.
+\end{proof}
+
+\begin{theorem}[Fractional Nash inequality]\label{thm:fractional_nash}
+\lean{FracLap.fractional_nash, FracLap.fractional_nash_real}
+\uses{lem:nash_optimize, lem:nash_cut}
+\leanok
+For $0 < \alpha < 2$ and $f \in L^1 \cap L^2$ (complex or real valued) with $E_\alpha(f) < \infty$, $(\lVert f \rVert_2^2)^{1+\alpha} \le 3^{1+\alpha} \Lambda_\alpha(1)^{-1} E_\alpha(f) (\lVert f \rVert_1^2)^\alpha$.
+\end{theorem}
+
+\begin{proof}
+\uses{lem:nash_optimize, lem:nash_cut}
+\leanok
+Apply Lemma~\ref{lem:nash_optimize} with $S = \lVert f \rVert_2^2$, $T = \lVert f \rVert_1^2$ and $e = E_\alpha(f) / \Lambda_\alpha(1)$, whose hypothesis is Lemma~\ref{lem:nash_cut}. The real case follows because the complexification of a real function has the same norms and Gagliardo energy.
+\end{proof}

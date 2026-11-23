@@ -1,0 +1,6 @@
+feat(<scope>): <concise formalization description>
+
+- Lean 4 module(s): FracLap/<Module>.lean
+- Blueprint section(s): blueprint/src/content.tex
+- Axiom check clean (propext, Classical.choice, Quot.sound only)
+- Blueprint checkdecls & resource parity verified

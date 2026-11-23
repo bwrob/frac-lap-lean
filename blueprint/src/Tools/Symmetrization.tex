@@ -1,0 +1,48 @@
+\chapter{Symmetrization of Nonlocal Energies}
+
+This chapter mirrors \texttt{FracLap/Tools/Symmetrization.lean}. It formalizes the ``symmetrization argument'' of Karch--Chasseigne--Ignat (Remark on symmetrization in the framework paper for nonlocal nonlinear initial value problems), which underlies the Kato-type inequality and every energy estimate for jump kernels: for a jump measure $\nu$ on $X \times X$ that is invariant under $(x, y) \mapsto (y, x)$,
+\[
+  \iint (u(x) - u(y))\, g(x)\, \mathrm{d}\nu = \frac12 \iint (u(x) - u(y))\bigl(g(x) - g(y)\bigr)\, \mathrm{d}\nu.
+\]
+
+\begin{lemma}\label{lem:swap_integral}
+\lean{FracLap.integral_swap_eq}
+\uses{thm:std_product_swap}
+\leanok
+Let $\nu$ be a measure on $X \times X$ invariant under the swap. Then $\int h(y, x)\, \mathrm{d}\nu(x, y) = \int h(x, y)\, \mathrm{d}\nu(x, y)$ for every $h$.
+\end{lemma}
+
+\begin{proof}
+\uses{thm:std_product_swap}
+\leanok
+This is the statement that the swap is measure preserving.
+\end{proof}
+
+\begin{theorem}\label{thm:symmetrization}
+\lean{FracLap.integral_sub_mul_eq_half}
+\uses{lem:swap_integral}
+\leanok
+Let $\nu$ be swap invariant and let $(u(x) - u(y)) g(x)$ and $(u(x) - u(y)) g(y)$ be $\nu$-integrable. Then
+\[
+  \int (u(x) - u(y))\, g(x)\, \mathrm{d}\nu = \frac12 \int (u(x) - u(y))\bigl(g(x) - g(y)\bigr)\, \mathrm{d}\nu.
+\]
+\end{theorem}
+
+\begin{proof}
+\uses{lem:swap_integral}
+\leanok
+Exchanging $x$ and $y$ in the first integral (Lemma~\ref{lem:swap_integral}) and noting that $u(y) - u(x) = -(u(x) - u(y))$ shows $\int (u(x) - u(y)) g(x)\, \mathrm{d}\nu = -\int (u(x) - u(y)) g(y)\, \mathrm{d}\nu$. Hence $\int (u(x) - u(y))(g(x) - g(y))\, \mathrm{d}\nu = 2 \int (u(x) - u(y)) g(x)\, \mathrm{d}\nu$.
+\end{proof}
+
+\begin{theorem}[Dissipation of monotone functionals]\label{thm:monotone_dissipation}
+\lean{FracLap.integral_sub_mul_comp_nonneg}
+\uses{thm:symmetrization}
+\leanok
+Let $\nu$ be swap invariant, $\varphi : \mathbb{R} \to \mathbb{R}$ nondecreasing, and let $(u(x) - u(y)) \varphi(u(x))$ and $(u(x) - u(y)) \varphi(u(y))$ be integrable. Then $\int (u(x) - u(y))\, \varphi(u(x))\, \mathrm{d}\nu \ge 0$.
+\end{theorem}
+
+\begin{proof}
+\uses{thm:symmetrization}
+\leanok
+By Theorem~\ref{thm:symmetrization} the integral equals $\frac12 \int (u(x) - u(y))(\varphi(u(x)) - \varphi(u(y)))\, \mathrm{d}\nu$, and the integrand is nonnegative pointwise because $\varphi$ is nondecreasing. Choosing $\varphi = \operatorname{sgn}$ gives the $L^1$ contraction property, which is the Kato-type inequality in the linear case.
+\end{proof}

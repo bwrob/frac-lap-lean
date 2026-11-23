@@ -1,0 +1,42 @@
+\chapter{Bernstein's Inequality in $L^p$}
+
+This chapter mirrors \texttt{FracLap/Tools/BernsteinLp.lean}. For a Schwartz function $\varphi$ whose Fourier transform vanishes outside $[-R, R]$, differentiation costs a factor $R$ in every $L^p$ norm, $1 \le p \le \infty$, with a constant independent of $p$, $R$ and $\varphi$.
+
+\begin{lemma}[Kernel of the band-limited derivative]\label{lem:bernstein_kernel}
+\lean{FracLap.fourier_scale_sq, FracLap.bernBump, FracLap.bernSymbolFun, FracLap.bernSymbol, FracLap.bernKernel₁, FracLap.fourier_bernKernel₁, FracLap.bernKernel, FracLap.integrable_bernKernel, FracLap.fourier_bernKernel, FracLap.bernConst, FracLap.integral_norm_bernKernel, FracLap.bernConst_pos}
+\uses{thm:std_fourier_inversion, thm:std_line_scaling}
+\leanok
+Fix a smooth cutoff $\chi$ with $\chi = 1$ on $\lvert\eta\rvert \le 1$ and compact support, let $D_1 = \mathcal{F}^{-1}(2\pi i \eta\chi(\eta))$ (a Schwartz function) and $D_R(x) = R^2 D_1(Rx)$. Then $\mathcal{F} D_R(\xi) = 2\pi i \xi \chi(\xi/R)$ and $\lVert D_R\rVert_1 = R C$ with $C = \lVert D_1\rVert_1 > 0$.
+\end{lemma}
+
+\begin{proof}
+\uses{thm:std_fourier_inversion, thm:std_line_scaling}
+\leanok
+The Fourier transform of $x \mapsto R^2 g(Rx)$ is $R \mathcal{F} g(\xi/R)$ by the change of variables $y = Rx$ (Theorem~\ref{thm:std_line_scaling}), and $\mathcal{F} D_1 = 2\pi i \eta\chi$ by Fourier inversion. The same change of variables gives the $L^1$ norm. $C > 0$ because $D_1 \ne 0$: its transform at $\eta = 1$ is $2\pi i \ne 0$.
+\end{proof}
+
+\begin{lemma}[$\varphi' = D_R \star \varphi$]\label{lem:deriv_conv}
+\lean{FracLap.deriv_eq_bernKernel_conv}
+\uses{lem:bernstein_kernel, thm:std_fourier_L1}
+\leanok
+If $\varphi$ is Schwartz and $\mathcal{F}\varphi = 0$ on $\lvert\xi\rvert > R$, then $\varphi' = D_R \star \varphi$.
+\end{lemma}
+
+\begin{proof}
+\uses{lem:bernstein_kernel, thm:std_fourier_L1}
+\leanok
+$\mathcal{F}(D_R \star \varphi) = \mathcal{F} D_R \cdot \mathcal{F}\varphi = 2\pi i\xi\chi(\xi/R)\mathcal{F}\varphi = 2\pi i \xi \mathcal{F}\varphi = \mathcal{F}(\varphi')$, because $\chi(\xi/R) = 1$ where $\mathcal{F}\varphi \ne 0$. Both $D_R \star \varphi$ and $\varphi'$ are continuous and integrable with integrable Fourier transform, so they agree by Fourier inversion.
+\end{proof}
+
+\begin{theorem}[Bernstein's inequality]\label{thm:bernstein_lp}
+\lean{FracLap.bernstein_Lp, FracLap.bernstein_Linfty}
+\uses{lem:deriv_conv, thm:young}
+\leanok
+With $C = \lVert D_1\rVert_1$: for $1 \le p < \infty$, $\lVert\varphi'\rVert_p \le C R \lVert\varphi\rVert_p$, and $\lVert\varphi'\rVert_\infty \le C R \lVert\varphi\rVert_\infty$.
+\end{theorem}
+
+\begin{proof}
+\uses{lem:deriv_conv, thm:young}
+\leanok
+Apply Young's inequality (Theorem~\ref{thm:young}) to $\varphi' = D_R \star \varphi$ with $\lVert D_R\rVert_1 = CR$; for $p = \infty$ bound the convolution integral pointwise.
+\end{proof}

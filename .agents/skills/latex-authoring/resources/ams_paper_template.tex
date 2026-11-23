@@ -1,0 +1,91 @@
+\documentclass[11pt,reqno]{amsart}
+
+\usepackage[T1]{fontenc}
+\usepackage{geometry}
+\geometry{margin=1in}
+
+\usepackage{amsmath,amssymb,amsthm,mathtools}
+\usepackage{microtype}
+\usepackage{booktabs}
+\usepackage[shortlabels]{enumitem}
+\usepackage[unicode,colorlinks=true,linkcolor=blue,urlcolor=magenta,citecolor=blue]{hyperref}
+\usepackage[capitalize,nameinlink]{cleveref}
+
+% Paired delimiters and differential
+\DeclarePairedDelimiter{\abs}{\lvert}{\rvert}
+\DeclarePairedDelimiter{\norm}{\lVert}{\rVert}
+\DeclarePairedDelimiterX{\inner}[2]{\langle}{\rangle}{#1, #2}
+\newcommand{\dd}{\mathop{}\!\mathrm{d}}
+
+% Common operators and spaces
+\DeclareMathOperator{\supp}{supp}
+\DeclareMathOperator{\dist}{dist}
+\DeclareMathOperator{\pv}{p.v.}
+\newcommand{\R}{\mathbb{R}}
+\newcommand{\N}{\mathbb{N}}
+\newcommand{\flap}{(-\Delta)^{s}}
+
+% Theorem environments (AMS numbering within sections)
+\theoremstyle{plain}
+\newtheorem{theorem}{Theorem}[section]
+\newtheorem{lemma}[theorem]{Lemma}
+\newtheorem{proposition}[theorem]{Proposition}
+\newtheorem{corollary}[theorem]{Corollary}
+
+\theoremstyle{definition}
+\newtheorem{definition}[theorem]{Definition}
+\newtheorem{assumption}[theorem]{Assumption}
+\newtheorem{example}[theorem]{Example}
+
+\theoremstyle{remark}
+\newtheorem{remark}[theorem]{Remark}
+
+\numberwithin{equation}{section}
+
+\title[Short Running Title]{Full Paper Title}
+\author{Author Name}
+\address{Department, Institution}
+\email{author@example.edu}
+\date{\today}
+
+\begin{document}
+
+\begin{abstract}
+Concise summary of the problem, main theorem, and key analytic techniques.
+\end{abstract}
+
+\maketitle
+
+\section{Introduction}\label{sec:intro}
+
+State the mathematical setting, motivate the main objects, and summarize the primary theorem.
+For $s \in (0, 1)$ and $d \ge 1$, let $u \in \mathcal{S}(\R^d)$ be a Schwartz function.
+
+\begin{definition}[Fractional Laplacian]\label{def:flap}
+For $s \in (0, 1)$ and $u \in \mathcal{S}(\R^d)$, the fractional Laplacian is defined by
+\begin{equation}\label{eq:flap_pv}
+  \flap u(x) \coloneqq c_{d,s} \pv \int_{\R^d} \frac{u(x) - u(y)}{\abs{x - y}^{d + 2s}} \dd y,
+\end{equation}
+where $c_{d,s} > 0$ is the standard normalization constant.
+\end{definition}
+
+\begin{theorem}[Energy Identity]\label{thm:energy}
+Let $s \in (0, 1)$ and suppose that $u \in C([0, T]; L^2(\R^d)) \cap L^2(0, T; \dot{H}^s(\R^d))$
+solves $\partial_t u + \flap u = 0$ on $\R^d \times (0, T)$. Then, for all $t \in [0, T]$,
+\begin{equation}\label{eq:energy_id}
+  \frac{1}{2}\norm{u(t)}_{L^2(\R^d)}^2
+  + \int_0^t \norm{(-\Delta)^{s/2} u(\tau)}_{L^2(\R^d)}^2 \dd\tau
+  = \frac{1}{2}\norm{u(0)}_{L^2(\R^d)}^2.
+\end{equation}
+\end{theorem}
+
+\begin{proof}
+Testing the equation against $u$ and integrating in time over $[0, t]$ yields
+\begin{align*}
+  \frac{1}{2}\norm{u(t)}_{L^2(\R^d)}^2 - \frac{1}{2}\norm{u(0)}_{L^2(\R^d)}^2
+  &= -\int_0^t \inner{\flap u(\tau)}{u(\tau)}_{L^2(\R^d)} \dd\tau \\
+  &= -\int_0^t \norm{(-\Delta)^{s/2} u(\tau)}_{L^2(\R^d)}^2 \dd\tau. \qedhere
+\end{align*}
+\end{proof}
+
+\end{document}

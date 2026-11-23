@@ -1,0 +1,29 @@
+\chapter{Interpolation of Fractional Energies}
+
+This chapter mirrors \texttt{FracLap/Tools/Interpolation.lean}.
+
+\begin{lemma}\label{lem:holder_interpolation}
+\lean{FracLap.lintegral_interpolation}
+\uses{thm:std_holder}
+\leanok
+Let $w_0, w_2, F \ge 0$ be measurable and $w_1 \le w_0^{1-\theta} w_2^\theta$ pointwise, $\theta \in [0, 1]$. Then $\int w_1 F \le (\int w_0 F)^{1-\theta} (\int w_2 F)^\theta$.
+\end{lemma}
+
+\begin{proof}
+\uses{thm:std_holder}
+\leanok
+For $0 < \theta < 1$ apply Theorem~\ref{thm:std_holder} with $p = 1/(1-\theta)$, $q = 1/\theta$ to $(w_0 F)^{1-\theta}$ and $(w_2 F)^\theta$. The endpoints are immediate.
+\end{proof}
+
+\begin{theorem}\label{thm:energy_interpolation}
+\lean{FracLap.gagliardoEnergyC_interpolation}
+\uses{lem:holder_interpolation, thm:exact_symbol}
+\leanok
+For $0 < a, c < 2$, $\theta \in [0, 1]$ and $b = (1 - \theta) a + \theta c$, $E_b(f) \le E_a(f)^{1-\theta} E_c(f)^\theta$ for every $f \in L^2(\mathbb{R}; \mathbb{C})$.
+\end{theorem}
+
+\begin{proof}
+\uses{lem:holder_interpolation, thm:exact_symbol}
+\leanok
+By Theorem~\ref{thm:exact_symbol} the energies are $\int \lvert 2\pi\xi \rvert^\alpha \lvert \mathcal{F} f \rvert^2$, and $\lvert 2\pi\xi \rvert^b = (\lvert 2\pi\xi \rvert^a)^{1-\theta} (\lvert 2\pi\xi \rvert^c)^\theta$. Apply Lemma~\ref{lem:holder_interpolation}.
+\end{proof}

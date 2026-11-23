@@ -1,0 +1,29 @@
+\chapter{Homogeneity of the Fourier-Side Gagliardo Weight}
+
+This chapter mirrors \texttt{FracLap/WholeLine/GagliardoScaling.lean}. Recall $\Lambda_\alpha(\xi) = \int w(h) \lvert e^{2\pi \mathrm{i} h \xi} - 1 \rvert^2\, \mathrm{d}h$ with $w(h) = C(\alpha) / (2 \lvert h \rvert^{1+\alpha})$, so that $E_\alpha(f) = \int \Lambda_\alpha \lvert \mathcal{F} f \rvert^2$. This chapter shows $\Lambda_\alpha(\xi) = \lvert \xi \rvert^\alpha \Lambda_\alpha(1)$ with $0 < \Lambda_\alpha(1) < \infty$, without computing the constant.
+
+\begin{theorem}\label{thm:gagliardo_symbol_homogeneous}
+\lean{FracLap.gagliardoWeight_scale, FracLap.gagliardoSymbol_scale, FracLap.gagliardoSymbol_neg, FracLap.gagliardoSymbol_eq}
+\uses{thm:std_line_scaling, thm:std_translation_invariance}
+\leanok
+For $\alpha > 0$ and $\xi \ne 0$, $\Lambda_\alpha(\xi) = \lvert \xi \rvert^\alpha \Lambda_\alpha(1)$, and $\Lambda_\alpha(-\xi) = \Lambda_\alpha(\xi)$.
+\end{theorem}
+
+\begin{proof}
+\uses{thm:std_line_scaling, thm:std_translation_invariance}
+\leanok
+For $\xi > 0$ one has $w(s/\xi) = \xi^{1+\alpha} w(s)$. Substituting $s = \xi h$ (Theorem~\ref{thm:std_line_scaling}) gives $\Lambda_\alpha(\xi) = \xi^{-1} \xi^{1+\alpha} \Lambda_\alpha(1)$. Evenness follows from the reflection $h \mapsto -h$ (Theorem~\ref{thm:std_translation_invariance}), since $w$ is even.
+\end{proof}
+
+\begin{theorem}\label{thm:gagliardo_symbol_unit}
+\lean{FracLap.gagliardoSymbol_one_lt_top, FracLap.fourierChar_ne_one, FracLap.gagliardoSymbol_one_pos}
+\uses{thm:gagliardo_symbol_homogeneous, thm:std_open_positive}
+\leanok
+For $0 < \alpha < 2$, $0 < \Lambda_\alpha(1) < \infty$.
+\end{theorem}
+
+\begin{proof}
+\uses{thm:gagliardo_symbol_homogeneous, thm:std_open_positive}
+\leanok
+Finiteness is the polynomial bound on the symbol. For positivity, $e^{2\pi \mathrm{i} h} \ne 1$ for $0 < h < 1$ and the weight is positive off the origin, so the integrand is positive on the interval $0 < h < 1$ of positive measure (Theorem~\ref{thm:std_open_positive}).
+\end{proof}

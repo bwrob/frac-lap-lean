@@ -1,0 +1,62 @@
+\chapter{Nonlocal Poincar\'e Inequalities for General Kernels}
+
+This chapter mirrors \texttt{FracLap/Tools/Poincare.lean}. Only a lower bound for the jump kernel on $I \times I$ is needed, so fractional kernels, kernels with bounded singular parts and measures dominating Lebesgue measure are all covered. Kernels supported on a single translation (pure atoms) are not: the test file contains the counterexample.
+
+\begin{lemma}[Variance identity]\label{lem:variance_identity}
+\lean{FracLap.variance_identity, FracLap.integrable_sq_sub_restrict}
+\leanok
+Let $I$ have finite positive measure $\lvert I\rvert$, $u \in L^2(I)$ and $\bar u = \lvert I\rvert^{-1}\int_I u$. Then $(u(x) - u(y))^2$ is integrable on $I \times I$ and
+\[
+  \iint_{I \times I} (u(x) - u(y))^2\, \mathrm{d}x\, \mathrm{d}y = 2 \lvert I\rvert \int_I (u - \bar u)^2.
+\]
+\end{lemma}
+
+\begin{proof}
+\leanok
+Expand $(u(x) - u(y))^2 = u(x)^2 + u(y)^2 - 2u(x)u(y)$. By Fubini each term is integrable on the product, and the integral equals $2\lvert I\rvert \int_I u^2 - 2(\int_I u)^2$. The right side expands to the same expression.
+\end{proof}
+
+\begin{theorem}[Poincar\'e inequality for a jump measure]\label{thm:poincare_measure}
+\lean{FracLap.poincare_of_lower_bound}
+\uses{lem:variance_identity}
+\leanok
+Let $\nu$ be a measure on $\mathbb{R}^2$ with $\nu \ge m\, \mathrm{Leb}|_{I \times I}$ for some $m > 0$. Then for $u \in L^2(I)$,
+\[
+  \int_I (u - \bar u)^2 \le \frac{1}{2 m \lvert I\rvert} \int (u(x) - u(y))^2\, \mathrm{d}\nu(x, y).
+\]
+\end{theorem}
+
+\begin{proof}
+\uses{lem:variance_identity}
+\leanok
+By Lemma~\ref{lem:variance_identity}, $2\lvert I\rvert \int_I (u - \bar u)^2 = \iint_{I \times I}(u(x) - u(y))^2$, and $m \iint_{I \times I} \le \int \cdot \mathrm{d}\nu$ by the assumed domination.
+\end{proof}
+
+\begin{theorem}[Poincar\'e inequality for a kernel bounded below]\label{thm:poincare_kernel}
+\lean{FracLap.poincare_of_kernel_lower_bound}
+\uses{thm:poincare_measure}
+\leanok
+If $J \ge m > 0$ almost everywhere on $I \times I$ and $u$ is measurable with $u \in L^2(I)$, then $\int_I (u - \bar u)^2 \le (2m\lvert I\rvert)^{-1} \iint J(x, y) (u(x) - u(y))^2\, \mathrm{d}x\, \mathrm{d}y$.
+\end{theorem}
+
+\begin{proof}
+\uses{thm:poincare_measure}
+\leanok
+Apply Theorem~\ref{thm:poincare_measure} to $\nu = J\, \mathrm{Leb}^2$, using that $J \ge m$ almost everywhere on $I \times I$.
+\end{proof}
+
+\begin{theorem}[Fractional Poincar\'e inequality on an interval]\label{thm:poincare_gagliardo}
+\lean{FracLap.poincare_gagliardo_interval, FracLap.volume_prod_diagonal}
+\uses{thm:poincare_kernel}
+\leanok
+Let $a < b$, $\alpha > 0$, $C > 0$ and $u \in L^2(a, b)$ measurable. Then
+\[
+  \int_a^b (u - \bar u)^2 \le \frac{(b - a)^{\alpha}}{C} \iint \frac{C}{2\lvert x - y\rvert^{1+\alpha}} (u(x) - u(y))^2\, \mathrm{d}x\, \mathrm{d}y.
+\]
+\end{theorem}
+
+\begin{proof}
+\uses{thm:poincare_kernel}
+\leanok
+For $x \ne y$ in $[a, b]$ we have $\lvert x - y\rvert \le b - a$, so $J(x, y) \ge m := \frac C2 (b-a)^{-1-\alpha}$; the diagonal is a null set. Theorem~\ref{thm:poincare_kernel} gives the constant $(2 m (b-a))^{-1} = (b-a)^{\alpha}/C$.
+\end{proof}

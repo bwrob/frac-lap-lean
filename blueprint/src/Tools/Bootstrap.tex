@@ -1,0 +1,16 @@
+\chapter{The Bootstrap Lemma}
+
+This chapter mirrors \texttt{FracLap/Tools/Bootstrap.lean}. It formalizes the continuity argument of Karch--Droniou--Imbert (Lemma on functions with $g \le A + B g^p$, in the fractal Hamilton--Jacobi paper), used to turn a quantitative a priori inequality into a uniform bound on an interval of times.
+
+\begin{theorem}\label{thm:bootstrap}
+\lean{FracLap.bootstrapThreshold, FracLap.bootstrapThreshold_pow, FracLap.bootstrap_threshold_pos, FracLap.bootstrap_le, FracLap.bootstrap_bound}
+\uses{thm:std_ivt}
+\leanok
+Let $A, B > 0$, $p > 1$ with $A^{p-1} B < p^{-1} (1 - p^{-1})^{p-1}$, put $x_0 = (pB)^{-1/(p-1)}$, and let $g \ge 0$ be continuous on an interval $J$ with $g \le A + B g^p$ on $J$. If $g(t_0) \le x_0$ for some $t_0 \in J$, then $g \le x_0$ on $J$, and in fact $g \le A p / (p - 1)$ on $J$.
+\end{theorem}
+
+\begin{proof}
+\uses{thm:std_ivt}
+\leanok
+Since $B x_0^{p-1} = 1/p$, the function $f(x) = x - A - B x^p$ satisfies $f(x_0) = x_0 (1 - 1/p) - A$, which is positive exactly under the smallness condition. Hence $x_0$ cannot be a value of $g$. If $g(t) > x_0$ for some $t \in J$, the intermediate value theorem (Theorem~\ref{thm:std_ivt}) between $t_0$ and $t$ produces a time with $g = x_0$, a contradiction; so $g \le x_0$ on $J$. Then $B g^{p-1} \le B x_0^{p-1} = 1/p$, whence $g \le A + B g^{p-1} g \le A + g/p$, i.e. $g \le A p / (p - 1)$.
+\end{proof}

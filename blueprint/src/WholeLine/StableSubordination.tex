@@ -1,0 +1,74 @@
+\chapter{Gaussian Mixtures and Monotone Regularized Transforms}
+
+This chapter mirrors \texttt{FracLap/WholeLine/StableSubordination.lean}. It develops a purely analytic calculus that yields positivity and radial monotonicity of Fourier inversions: the Gaussian mixtures $\xi \mapsto \int e^{-\xi^2 s}\, \mathrm{d}m(s)$ of finite measures on $\mathbb{R}_{\ge 0}$ are closed under sums, nonnegative multiples and products, and their Gaussian-regularized cosine transform is an explicit mixture of Gaussians. The resulting positivity and monotonicity property passes to bounded pointwise limits.
+
+\begin{lemma}\label{lem:gaussian_cosine_integral}
+\lean{FracLap.integral_exp_neg_mul_sq_mul_cos}
+\uses{thm:std_gaussian_fourier}
+\leanok
+For $b > 0$ and $a \in \mathbb{R}$,
+\[
+  \int_{\mathbb{R}} e^{-b \xi^2} \cos(a \xi)\, \mathrm{d}\xi = \sqrt{\frac{\pi}{b}}\, \exp\Bigl(-\frac{a^2}{4b}\Bigr).
+\]
+\end{lemma}
+
+\begin{proof}
+\uses{thm:std_gaussian_fourier}
+\leanok
+Take the real part of the Gaussian Fourier integral of Theorem~\ref{thm:std_gaussian_fourier}.
+\end{proof}
+
+\begin{definition}\label{def:gauss_mixture}
+\lean{FracLap.gaussMixture, FracLap.mixMul, FracLap.IsGaussMix}
+\leanok
+For a finite measure $m$ on $\mathbb{R}_{\ge 0}$ its \emph{Gaussian mixture} is $\xi \mapsto \int e^{-\xi^2 s}\, \mathrm{d}m(s)$. A function is a Gaussian mixture if it equals the mixture of some finite measure. The measure $m_1 \star m_2$ is the image of $m_1 \otimes m_2$ under $(s, s') \mapsto s + s'$.
+\end{definition}
+
+\begin{lemma}\label{lem:gauss_mixture_closure}
+\lean{FracLap.gaussMixture_nonneg, FracLap.gaussMixture_le, FracLap.gaussMixture_add, FracLap.gaussMixture_smul, FracLap.gaussMixture_dirac_zero, FracLap.gaussMixture_mixMul, FracLap.IsGaussMix.const, FracLap.IsGaussMix.add, FracLap.IsGaussMix.const_mul, FracLap.IsGaussMix.mul}
+\uses{def:gauss_mixture, thm:std_fubini}
+\leanok
+Gaussian mixtures take values between $0$ and the total mass $m(\mathbb{R}_{\ge 0})$, add and scale with the measure, and $\int e^{-\xi^2 s}\, \mathrm{d}(m_1 \star m_2)(s)$ equals the product of the mixtures of $m_1$ and $m_2$. Consequently nonnegative constants are mixtures and the set of mixtures is closed under sums, nonnegative multiples and products.
+\end{lemma}
+
+\begin{proof}
+\uses{def:gauss_mixture, thm:std_fubini}
+\leanok
+Boundedness and additivity are immediate from the integrand $0 < e^{-\xi^2 s} \le 1$. For the product, $e^{-\xi^2 (s + s')} = e^{-\xi^2 s} e^{-\xi^2 s'}$, and Theorem~\ref{thm:std_fubini} evaluates the integral over the product measure as the product of the two integrals.
+\end{proof}
+
+\begin{definition}\label{def:gauss_cos}
+\lean{FracLap.gaussCos, FracLap.IsGaussMonotone}
+\leanok
+For $\sigma > 0$ and $a \in \mathbb{R}$ let $T_\sigma F(a) = \int_{\mathbb{R}} e^{-\sigma \xi^2} \cos(a \xi) F(\xi)\, \mathrm{d}\xi$. A function $F$ is \emph{Gaussian monotone} if for all $\sigma > 0$ and $0 \le a \le b$, $0 \le T_\sigma F(b) \le T_\sigma F(a)$.
+\end{definition}
+
+\begin{theorem}\label{thm:gauss_mixture_monotone}
+\lean{FracLap.gaussCos_gaussMixture, FracLap.integrable_gaussProfile, FracLap.IsGaussMix.isGaussMonotone}
+\uses{def:gauss_mixture, def:gauss_cos, lem:gaussian_cosine_integral, thm:std_fubini}
+\leanok
+Let $m$ be a finite measure on $\mathbb{R}_{\ge 0}$ and $\sigma > 0$. Then
+\[
+  T_\sigma F(a) = \int \sqrt{\frac{\pi}{\sigma + s}}\, \exp\Bigl(-\frac{a^2}{4(\sigma + s)}\Bigr)\, \mathrm{d}m(s)
+\]
+for the mixture $F$ of $m$. In particular every Gaussian mixture is Gaussian monotone.
+\end{theorem}
+
+\begin{proof}
+\uses{def:gauss_mixture, def:gauss_cos, lem:gaussian_cosine_integral, thm:std_fubini}
+\leanok
+The integrand $e^{-\sigma \xi^2} \cos(a \xi) e^{-\xi^2 s}$ is dominated by $e^{-\sigma \xi^2}$, which is integrable against $\mathrm{d}\xi \otimes m$ since $m$ is finite. Theorem~\ref{thm:std_fubini} exchanges the integrals and Lemma~\ref{lem:gaussian_cosine_integral} with $b = \sigma + s$ evaluates the inner integral. The resulting profile is positive and, since $a^2 \le b^2$ for $0 \le a \le b$, nonincreasing in $a$.
+\end{proof}
+
+\begin{theorem}\label{thm:gauss_monotone_limit}
+\lean{FracLap.IsGaussMonotone.of_tendsto}
+\uses{def:gauss_cos, thm:std_dominated_convergence}
+\leanok
+Let $F_n$ be measurable, uniformly bounded, Gaussian monotone functions converging pointwise to $F$. Then $F$ is Gaussian monotone.
+\end{theorem}
+
+\begin{proof}
+\uses{def:gauss_cos, thm:std_dominated_convergence}
+\leanok
+For fixed $\sigma > 0$ and $a$, the integrands of $T_\sigma F_n(a)$ are dominated by $C e^{-\sigma \xi^2}$, which is integrable, so Theorem~\ref{thm:std_dominated_convergence} gives $T_\sigma F_n(a) \to T_\sigma F(a)$. The inequalities $0 \le T_\sigma F_n(b) \le T_\sigma F_n(a)$ pass to the limit.
+\end{proof}

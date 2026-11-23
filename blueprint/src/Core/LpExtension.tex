@@ -1,0 +1,37 @@
+\chapter{$L^p$ Zero-Extension Isometry and Smooth Cutoffs}
+
+This chapter mirrors \texttt{FracLap/Core/LpExtension.lean}, onboarding the measure-theoretic $L^p$ extension-by-zero linear isometry and smooth partition-of-unity cutoff construction from \texttt{alejandro-soto-franco/EllipticPDE} and specializing them to $L^2(0, \infty) \hookrightarrow L^2_0(\mathbb{R})$ and the Constantin--Vicol exterior cutoff.
+
+\begin{definition}\label{def:lp_extend_by_zero}
+\lean{FracLap.lpExtendByZero, FracLap.halfLineL2ExtendByZero}
+\leanok
+For a measurable set $s \subseteq \alpha$ and $1 \le p \le \infty$, the \emph{zero-extension operator}
+\[
+  \mathrm{lpExtendByZero} : L^p(s, \mu|_s) \to L^p(\alpha, \mu)
+\]
+maps an equivalence class $f \in L^p(s, \mu|_s)$ to the equivalence class of its indicator extension $\mathbf{1}_s f \in L^p(\alpha, \mu)$. Specializing to $\alpha = \mathbb{R}$, $s = (0, \infty)$, and $p = 2$ defines the canonical half-line linear isometry $\mathrm{halfLineL2ExtendByZero} : L^2(0, \infty) \to L^2(\mathbb{R})$.
+\end{definition}
+
+\begin{theorem}\label{thm:lp_extend_by_zero_properties}
+\lean{FracLap.memLp_indicator_extend, FracLap.coeFn_lpExtendByZero, FracLap.lpExtendByZero_ae_eq_zero, FracLap.halfLineL2ExtendByZero_ae_zero_of_nonpos}
+\uses{def:lp_extend_by_zero}
+\leanok
+For every measurable set $s$ and $f \in L^p(s, \mu|_s)$, the indicator $\mathbf{1}_s f$ is $p$-integrable on $(\alpha, \mu)$, the linear isometry $\mathrm{lpExtendByZero}$ preserves the $L^p$ norm $\lVert \mathrm{lpExtendByZero}(f) \rVert_{L^p(\mu)} = \lVert f \rVert_{L^p(\mu|_s)}$, and $\mathrm{lpExtendByZero}(f)(x) = 0$ for $\mu$-almost every $x \notin s$. In particular, for every $f \in L^2(0, \infty)$, $\mathrm{halfLineL2ExtendByZero}(f)(x) = 0$ for Lebesgue-almost every $x \le 0$.
+\end{theorem}
+
+\begin{proof}
+\uses{def:lp_extend_by_zero, thm:std_indicator_Lp}
+\leanok
+By Theorem~\ref{thm:std_indicator_Lp}, the $L^p(\mu)$ seminorm of $\mathbf{1}_s f$ equals the $L^p(\mu|_s)$ seminorm of $f$. Almost-everywhere vanishing outside $s$ follows immediately from the definition of $\mathbf{1}_s f$.
+\end{proof}
+
+\begin{theorem}\label{thm:exists_smooth_cutoffs}
+\lean{FracLap.exists_contDiff_one_on_compact, FracLap.exists_smooth_exterior_cutoff}
+\leanok
+Let $E$ be a finite-dimensional real normed space. For every compact set $K \subseteq E$ and open neighborhood $U \supseteq K$, there exists a smooth cutoff function $\chi \in C_c^\infty(E)$ taking values in $[0, 1]$ such that $\chi \equiv 1$ on $K$ and $\operatorname{supp}(\chi) \subseteq U$. Consequently, on $\mathbb{R}$ there exists a smooth exterior cutoff $\phi \in C^\infty(\mathbb{R})$ with $0 \le \phi \le 1$, $\phi(x) = 0$ for $\lvert x \rvert \le 1$, and $\phi(x) = 1$ for $\lvert x \rvert \ge 2$.
+\end{theorem}
+
+\begin{proof}
+\leanok
+Applying smooth Urysohn/partition-of-unity separation to $K \subseteq \operatorname{int}(L) \subseteq L \subseteq U$ for an intermediate compact neighborhood $L$ yields $\chi \in C_c^\infty(E)$. Specializing to $K = [-1, 1] \subset (-2, 2) = U$ on $\mathbb{R}$ and setting $\phi(x) = 1 - \chi(x)$ produces the desired smooth exterior cutoff.
+\end{proof}
