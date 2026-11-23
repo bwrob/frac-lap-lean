@@ -1,0 +1,31 @@
+\chapter{Parabolic Smoothing of the Restricted Semigroup}
+
+This chapter mirrors \texttt{FracLap/HalfLine/RestrictedAnalytic.lean}. It proves the parabolic smoothing that the thesis derives from analyticity of the restricted fractional heat semigroup $S_0$, directly from self-adjointness. A holomorphic extension of $S_0$ to complex times is not constructed here: only its consequences for positive real times (range in the generator domain, the decay $1/t$ of the generator along orbits, and immediate differentiability) are formalized.
+
+The reason smoothing holds: the resolvent $R_\mu$ solves a variational problem for a symmetric coercive form, so it is self-adjoint. The semigroup is a strong limit of exponentials $e^{tG}$ of symmetric nonpositive bounded operators $G$, and for such an operator $\lVert G e^{tG} \rVert \le 1/t$, because $\lambda e^{-t\lambda} \le 1/t$ for all $\lambda \ge 0$. This bound is stable under the limit and also shows that the orbit stays in the domain of the closed generator.
+
+\begin{theorem}[Immediate regularization of $S_0$]\label{thm:restricted_smoothing}
+\lean{FracLap.restrictedFracLapResolvent_symm, FracLap.restrictedFracLapSemigroup_mem_generatorDomain_of_pos, FracLap.norm_generator_restrictedFracLapSemigroup_le, FracLap.restrictedFracLapSemigroup_hasDerivAt_of_pos}
+\uses{prop:analytic_domain, thm:restricted_frac_lap_semigroup}
+\leanok
+Let $0 < \alpha < 2$ and let $u \in L^2((0,\infty))$ be arbitrary. For every $t > 0$ one has $S_0(t) u \in \mathcal{D}(A_0)$ and $\lVert A_0 S_0(t) u \rVert \le \lVert u \rVert / t$. Moreover $s \mapsto S_0(s) u$ is differentiable at every $t > 0$ with derivative $A_0 S_0(t) u$.
+\end{theorem}
+
+\begin{proof}
+\uses{prop:analytic_domain, thm:restricted_frac_lap_semigroup}
+\leanok
+The Lax--Milgram resolvent is symmetric because the shifted form is symmetric, so the abstract smoothing theorem for symmetric contractive resolvents applies to the restricted resolvent.
+\end{proof}
+
+\begin{theorem}[Energy smoothing and orbit properties]\label{thm:restricted_orbit_properties}
+\lean{FracLap.restrictedFracLapSemigroup_exists_form_bound, FracLap.restrictedFracLapSemigroup_hasDerivWithinAt_Ici, FracLap.tendsto_restrictedFracLapSemigroup_zero}
+\uses{thm:restricted_smoothing, thm:restricted_generator_weak_form}
+\leanok
+For $u \in L^2((0,\infty))$ and $t > 0$, $S_0(t) u$ is the image of some $v \in H_0^{\alpha/2}((0,\infty))$ with $B_0^\alpha(v, v) \le \lVert u \rVert^2 / t$. For $u \in \mathcal{D}(A_0)$ the orbit has a right derivative $A_0 S_0(t) u$ at every $t \ge 0$, and $S_0(t) u \to u$ as $t \to 0^+$ for every $u \in L^2((0,\infty))$.
+\end{theorem}
+
+\begin{proof}
+\uses{thm:restricted_smoothing, thm:restricted_generator_weak_form}
+\leanok
+The weak-form characterization of the generator provides $v$ with $\iota v = S_0(t)u$ and shows $B_0^\alpha(v,v) = -\langle A_0 S_0(t)u, S_0(t)u\rangle$. By Cauchy--Schwarz, the decay $1/t$ of the generator, and contractivity, this is at most $\lVert u \rVert^2 / t$. The remaining statements are the general facts that orbits of a $C_0$-semigroup with data in the generator domain are differentiable from the right, and that orbits are strongly continuous.
+\end{proof}

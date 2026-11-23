@@ -1,0 +1,93 @@
+\chapter{Singular Integral and Fourier Multiplier Agree on Schwartz Functions}
+
+This chapter mirrors \texttt{FracLap/WholeLine/PointwiseEquivalence.lean}. It identifies the pointwise definition of the fractional Laplacian (the second-difference singular integral used in the maximum principles) with the Fourier multiplier $\lvert 2\pi\xi\rvert^{\alpha}$ underlying the semigroup, at every point and for every Schwartz function (Kwa\'snicki's equivalence of definitions on $\mathbb{R}$).
+
+\begin{lemma}[Exact symbol in integrable form]\label{lem:cos_kernel}
+\lean{FracLap.cosKernel, FracLap.cosKernel_nonneg, FracLap.measurable_cosKernel, FracLap.integrable_cosKernel, FracLap.integral_cosKernel}
+\uses{thm:subordination_identity}
+\leanok
+For $0 < \alpha < 2$ and real $x$, $h \mapsto C(\alpha) \lvert h\rvert^{-1-\alpha}(1 - \cos(xh))$ is nonnegative and integrable, with integral $\lvert x\rvert^{\alpha}$.
+\end{lemma}
+
+\begin{proof}
+\uses{thm:subordination_identity}
+\leanok
+Theorem~\ref{thm:subordination_identity} states this identity for the lower integral; finiteness of the value gives integrability, and nonnegativity lets one convert to the Bochner integral.
+\end{proof}
+
+\begin{lemma}[Fourier representation of a second difference]\label{lem:second_diff_fourier}
+\lean{FracLap.schwartz_fourier_inversion, FracLap.two_sub_fourierChar, FracLap.integrable_phase_mul, FracLap.integrable_phase_mul_of_integrable, FracLap.second_diff_fourier_of_inversion, FracLap.second_diff_fourier, FracLap.integrable_rpow_mul_schwartz}
+\uses{thm:std_fourier_inversion}
+\leanok
+For a Schwartz function $\varphi$, $2\varphi(x) - \varphi(x+y) - \varphi(x-y) = \int e^{2\pi i x\xi}\,\mathcal{F}\varphi(\xi)\, 2(1 - \cos(2\pi\xi y))\, \mathrm{d}\xi$, and $\xi \mapsto \lvert 2\pi\xi\rvert^{\alpha}\lvert\mathcal{F}\varphi(\xi)\rvert$ is integrable for $0 < \alpha < 2$.
+\end{lemma}
+
+\begin{proof}
+\uses{thm:std_fourier_inversion}
+\leanok
+Apply the Fourier inversion formula at $x$, $x + y$ and $x - y$, subtract, and use $2 - e^{2\pi i t} - e^{-2\pi i t} = 2(1 - \cos 2\pi t)$. For the integrability, $\lvert 2\pi\xi\rvert^{\alpha} \le (2\pi)^2(1 + \xi^2)$ and Schwartz functions are integrable against $1$ and $\xi^2$.
+\end{proof}
+
+\begin{theorem}[Singular integral $=$ Fourier multiplier]\label{thm:pointwise_equivalence}
+\lean{FracLap.fracLap_pointwise_eq_fourier_of_integrable, FracLap.fracLap_pointwise_eq_fourier, FracLap.fracLapSecondDiff_eq_fourier}
+\uses{lem:cos_kernel, lem:second_diff_fourier, thm:std_fubini}
+\leanok
+Let $0 < \alpha < 2$, $\varphi$ Schwartz and $x \in \mathbb{R}$. Then
+\[
+  \frac{C(\alpha)}{2} \int \frac{2\varphi(x) - \varphi(x+y) - \varphi(x-y)}{\lvert y\rvert^{1+\alpha}}\, \mathrm{d}y = \int \lvert 2\pi\xi\rvert^{\alpha}\, e^{2\pi i x\xi}\, \mathcal{F}\varphi(\xi)\, \mathrm{d}\xi.
+\]
+The same identity holds, with the same proof, for every $u$ of the form $u(z) = \int e^{2\pi i z\xi} g(\xi)\, \mathrm{d}\xi$ with $g$ measurable such that $g$ and $\lvert 2\pi\xi\rvert^{\alpha} \lvert g(\xi)\rvert$ are integrable and $\mathcal{F}\varphi$ replaced by $g$. This covers functions such as the iterates $e^{-tA}\varphi$ of the fractional heat semigroup, which are not Schwartz. In particular, for a real function $u$ that is the restriction of a Schwartz function, the pointwise operator $(-\Delta)^{\alpha/2} u(x)$ defined by the weighted second difference equals the right side.
+\end{theorem}
+
+\begin{proof}
+\uses{lem:cos_kernel, lem:second_diff_fourier, thm:std_fubini}
+\leanok
+Insert Lemma~\ref{lem:second_diff_fourier} for the second difference. The resulting double integral over $(y, \xi)$ is absolutely convergent: integrating $\lvert y\rvert$ first gives $\lvert\mathcal{F}\varphi(\xi)\rvert\lvert 2\pi\xi\rvert^{\alpha}$ by Lemma~\ref{lem:cos_kernel}, which is integrable. By Fubini, exchange the integrals and evaluate the inner $y$-integral with Lemma~\ref{lem:cos_kernel} (with $x = 2\pi\xi$), which gives $\lvert 2\pi\xi\rvert^{\alpha}$.
+\end{proof}
+
+\begin{theorem}[Inverse Fourier multiplier and negative semigroup generator on $\mathcal{S}(\mathbb{R})$]\label{thm:pointwise_eq_neg_generator}
+\lean{FracLap.fracLap_pointwise_eq_fourierInv, FracLap.fracLapSecondDiff_eq_fourierInv, FracLap.integrable_fracLapSymbol_mul_fourier, FracLap.memLp_two_fracLapSymbol_mul_fourier, FracLap.fracLapSemigroup_schwartz_mem_generatorDomain, FracLap.toLp_fracLapSymbol_mul_fourier_eq, FracLap.generator_fracLapSemigroup_schwartz, FracLap.fracLapSecondDiff_ae_eq_neg_generator}
+\uses{thm:pointwise_equivalence, thm:fourier_multiplier_generator}
+\leanok
+For every $0 < \alpha < 2$ and $\varphi \in \mathcal{S}(\mathbb{R}; \mathbb{C})$, the symbol product $\xi \mapsto \lvert 2\pi\xi \rvert^\alpha \mathcal{F}\varphi(\xi)$ belongs to $L^1(\mathbb{R}; \mathbb{C}) \cap L^2(\mathbb{R}; \mathbb{C})$, and the pointwise second-difference fractional Laplacian coincides with $\mathcal{F}^{-1}(\lvert 2\pi\xi \rvert^\alpha \mathcal{F}\varphi)$. Consequently, every $\varphi \in \mathcal{S}(\mathbb{R}; \mathbb{C})$ lies in the generator domain of $S_\alpha$ and, when $u : \mathbb{R} \to \mathbb{R}$ agrees with $\varphi$, $(-\Delta)^{\alpha/2} u$ agrees almost everywhere with $-A_\alpha \varphi$.
+\end{theorem}
+
+\begin{proof}
+\uses{thm:pointwise_equivalence, thm:fourier_multiplier_generator}
+\leanok
+Rewriting the Fourier integral of Theorem~\ref{thm:pointwise_equivalence} with Mathlib's inverse Fourier normalization gives $\mathcal{F}^{-1}(\lvert 2\pi\xi \rvert^\alpha \mathcal{F}\varphi)$. Bounding $\lvert 2\pi\xi \rvert^\alpha \le (2\pi)^2(1 + \lvert \xi \rvert^2)$ and using Schwartz rapid decay shows $\lvert 2\pi\xi \rvert^\alpha \mathcal{F}\varphi \in L^1 \cap L^2$. Theorem~\ref{thm:fourier_multiplier_generator} then yields $\varphi \in \mathcal{D}(A_\alpha)$ with $A_\alpha \varphi = -\mathcal{F}^{-1}(\lvert 2\pi\xi \rvert^\alpha \mathcal{F}\varphi)$ in $L^2$, which matches the pointwise integral almost everywhere by $L^1 \cap L^2$ inverse Fourier consistency.
+\end{proof}
+
+\begin{theorem}[Explicit cosine-integral normalization]\label{thm:frac_lap_constant_integral}
+\lean{FracLap.integral_one_sub_cos_div_abs_rpow, FracLap.fracLapConstant_eq_inv_integral_cos}
+\uses{lem:cos_kernel, thm:frac_lap_constant_limits}
+\leanok
+For every $0 < \alpha < 2$,
+\[
+  C(\alpha) = \left( \int_{\mathbb{R}} \frac{1 - \cos \omega}{\lvert \omega \rvert^{1 + \alpha}}\, \mathrm{d}\omega \right)^{-1}.
+\]
+\end{theorem}
+
+\begin{proof}
+\uses{lem:cos_kernel}
+\leanok
+Evaluating the exact-symbol identity of Lemma~\ref{lem:cos_kernel} at $x = 1$ gives $C(\alpha) \int_{\mathbb{R}} (1 - \cos \omega) \lvert \omega \rvert^{-1-\alpha}\, \mathrm{d}\omega = 1$. Since $C(\alpha) > 0$, taking reciprocals yields the stated formula.
+\end{proof}
+
+\begin{theorem}[Strong $L^2$ endpoint limits as $\alpha \to 0^+$ and $\alpha \to 2^-$]\label{thm:pointwise_endpoint_limits}
+\lean{FracLap.fourier_neg_secondDeriv_schwartz, FracLap.tendsto_neg_generator_fracLapSemigroup_zero, FracLap.tendsto_fracLapSecondDiff_zero_L2, FracLap.tendsto_neg_generator_fracLapSemigroup_two, FracLap.tendsto_fracLapSecondDiff_two_L2}
+\uses{thm:pointwise_eq_neg_generator, thm:plancherel_and_parseval}
+\leanok
+For every Schwartz function $\varphi \in \mathcal{S}(\mathbb{R}; \mathbb{C})$, the negative second derivative $-\varphi''$ has Fourier transform $\lvert 2\pi\xi \rvert^2 \mathcal{F}\varphi(\xi)$, and as $\alpha \to 0^+$ or $\alpha \to 2^-$ the generator $-A_\alpha \varphi$ converges strongly in $L^2(\mathbb{R}; \mathbb{C})$ to $\varphi$ and $-\varphi''$, respectively. In particular, whenever a real function $u$ agrees with $\varphi$,
+\[
+  \lim_{\alpha \to 0^+} \lVert (-\Delta)^{\alpha/2} u - u \rVert_{L^2(\mathbb{R})} = 0
+  \qquad \text{and} \qquad
+  \lim_{\alpha \to 2^-} \lVert (-\Delta)^{\alpha/2} u - (-u'') \rVert_{L^2(\mathbb{R})} = 0.
+\]
+\end{theorem}
+
+\begin{proof}
+\uses{thm:pointwise_eq_neg_generator, thm:plancherel_and_parseval}
+\leanok
+Differentiating the Fourier transform twice gives $\mathcal{F}(-\varphi'')(\xi) = -(2\pi i \xi)^2 \mathcal{F}\varphi(\xi) = \lvert 2\pi\xi \rvert^2 \mathcal{F}\varphi(\xi)$. By Theorem~\ref{thm:pointwise_eq_neg_generator} and Plancherel's isometry, the $L^2$ distance between $-A_\alpha \varphi$ and $\varphi$ or $-\varphi''$ equals the $L^2$ norm of $(\lvert 2\pi\xi \rvert^\alpha - m(\xi))\mathcal{F}\varphi(\xi)$ with $m(\xi) = 1$ or $m(\xi) = \lvert 2\pi\xi \rvert^2$. Across $0 < \alpha < 2$, $\lvert 2\pi\xi \rvert^\alpha \le 1 + (2\pi\xi)^2$, so the squared difference against $\lvert \mathcal{F}\varphi(\xi) \rvert^2$ is dominated by a constant multiple of $(1 + \lvert \xi \rvert^4)\lvert \mathcal{F}\varphi(\xi) \rvert \in L^1(\mathbb{R})$. Since $\lvert 2\pi\xi \rvert^\alpha \to 1$ for every $\xi \neq 0$ as $\alpha \to 0^+$ and $\lvert 2\pi\xi \rvert^\alpha \to \lvert 2\pi\xi \rvert^2$ everywhere as $\alpha \to 2^-$, dominated convergence yields both strong $L^2$ limits.
+\end{proof}

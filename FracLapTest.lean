@@ -45,3 +45,14 @@ public import FracLapTest.YoungTest
 public import FracLapTest.BernsteinLpTest
 public import FracLapTest.HardyLittlewoodTest
 public import FracLapTest.SteinMaximalTest
+public import FracLapTest.PointwiseEquivalenceTest
+public import FracLapTest.HeatSubordinationTest
+public import FracLapTest.GagliardoMultiplierTest
+public import FracLapTest.RestrictedDensityTest
+public import FracLapTest.RestrictedSemigroupTest
+public import FracLapTest.SobolevEquivalenceTest
+public import FracLapTest.AnalyticSemigroupTest
+public import FracLapTest.FractionalAnalyticTest
+public import FracLapTest.RestrictedAnalyticTest
+public import FracLapTest.MaximumPrinciplesTest
+public import FracLapTest.WholeLineMaximumPrincipleTest

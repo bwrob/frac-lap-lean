@@ -1,0 +1,145 @@
+\chapter{Half-Line Pointwise Maximum Principles}
+
+This chapter mirrors \texttt{FracLap/HalfLine/MaximumPrinciples.lean}, formalizing the whole-line and half-line linear maximum principles and the quantitative Constantin--Vicol nonlinear lower bound for $(-\widetilde{\Delta})^{\alpha/2}$.
+
+\begin{theorem}\label{thm:whole_line_linear_max_principle}
+\lean{FracLap.fracLapSecondDiff_nonneg_of_isMax}
+\uses{def:fractional_exponent, thm:frac_lap_constant_pos, lem:second_diff_nonpos, def:frac_lap_second_diff}
+\leanok
+Let $\alpha \in (0, 2)$ and let $v : \mathbb{R} \to \mathbb{R}$ attain a global maximum at $x_0 \in \mathbb{R}$. Then
+\[
+  (-\Delta)^{\alpha/2} v(x_0) \ge 0.
+\]
+\end{theorem}
+
+\begin{proof}
+\uses{def:fractional_exponent, thm:frac_lap_constant_pos, lem:second_diff_nonpos, def:frac_lap_second_diff}
+\leanok
+By Lemma~\ref{lem:second_diff_nonpos}, $\delta_2 v(x_0, y) \le 0$ for all $y \in \mathbb{R}$. Dividing by $\lvert y \rvert^{1 + \alpha} \ge 0$ preserves nonpositivity, so the integral $\int_{\mathbb{R}} \delta_2 v(x_0, y) \lvert y \rvert^{-1-\alpha}\, \mathrm{d}y$ is nonpositive. Multiplying by $-\frac{1}{2} C(\alpha) < 0$ (Theorem~\ref{thm:frac_lap_constant_pos}) yields $(-\Delta)^{\alpha/2} v(x_0) \ge 0$.
+\end{proof}
+
+\begin{theorem}\label{thm:half_line_linear_max_principle}
+\lean{FracLap.reflectedFracLapSecondDiff_nonneg_of_isMaxOn_Ioi}
+\uses{def:fractional_exponent, lem:odd_ext_max, def:reflected_frac_lap, thm:whole_line_linear_max_principle}
+\leanok
+Let $\alpha \in (0, 2)$ and let $u : \mathbb{R} \to \mathbb{R}$ satisfy $u(x) \ge 0$ for all $x > 0$. If $x_0 > 0$ is a global maximum point of $u$ on $(0, \infty)$, then
+\[
+  (-\widetilde{\Delta})^{\alpha/2} u(x_0) \ge 0.
+\]
+\end{theorem}
+
+\begin{proof}
+\uses{def:fractional_exponent, lem:odd_ext_max, def:reflected_frac_lap, thm:whole_line_linear_max_principle}
+\leanok
+By Lemma~\ref{lem:odd_ext_max}, $x_0$ is a global maximum point of the antisymmetric extension $\widetilde{u}$ on all of $\mathbb{R}$. Applying Theorem~\ref{thm:whole_line_linear_max_principle} to $v = \widetilde{u}$ at $x_0$ gives $(-\widetilde{\Delta})^{\alpha/2} u(x_0) = (-\Delta)^{\alpha/2} \widetilde{u}(x_0) \ge 0$.
+\end{proof}
+
+\begin{definition}\label{def:nlmp_constants}
+\lean{FracLap.nlmpConstantC1, FracLap.nlmpConstantC2, FracLap.nlmpOptimalConstant, FracLap.nlmpOptimalRadius, FracLap.SatisfiesCutoffAntiderivativeBound}
+\uses{def:frac_lap_constant}
+\leanok
+For $\alpha \in (0, 2)$, we define the far-field tail constant, the antiderivative integration-by-parts remainder constant, and the optimal Constantin--Vicol constant by
+\[
+  C_1(\alpha) = \frac{C(\alpha)}{\alpha \cdot 2^{\alpha - 1}}, \qquad
+  C_2(\alpha) = C(\alpha)\Bigl(\frac{8}{\alpha} + 2\Bigr), \qquad
+  C_{\mathrm{opt}}(\alpha) = \frac{C_1(\alpha)^{1 + \alpha}}{2^{1 + \alpha}\, C_2(\alpha)^\alpha}.
+\]
+For $U_0, M > 0$, the optimal cutoff radius is $R_{\mathrm{opt}} = \frac{2 C_2(\alpha) M}{C_1(\alpha) U_0}$. A value $L \in \mathbb{R}$ (representing $(-\widetilde{\Delta})^{\alpha/2} u(x_0)$) satisfies the \emph{cutoff-and-antiderivative decomposition bound} with maximum value $U_0 = u(x_0)$ and $L^1(0, \infty)$-mass $M = \lVert u \rVert_{L^1(0, \infty)}$ if for every scale $R > 0$,
+\[
+  L \ge \frac{C_1(\alpha)\, U_0}{R^\alpha} - \frac{C_2(\alpha)\, M}{R^{1 + \alpha}}.
+\]
+\end{definition}
+
+\begin{lemma}\label{lem:nlmp_constants_pos}
+\lean{FracLap.nlmpConstantC1_pos, FracLap.nlmpConstantC2_pos, FracLap.nlmpOptimalConstant_pos, FracLap.nlmpOptimalRadius_pos}
+\uses{def:fractional_exponent, thm:frac_lap_constant_pos, def:nlmp_constants}
+\leanok
+For every $\alpha \in (0, 2)$ and $U_0, M > 0$, the constants $C_1(\alpha)$, $C_2(\alpha)$, $C_{\mathrm{opt}}(\alpha)$, and the optimal cutoff radius $R_{\mathrm{opt}}$ are strictly positive.
+\end{lemma}
+
+\begin{proof}
+\uses{def:fractional_exponent, thm:frac_lap_constant_pos, def:nlmp_constants}
+\leanok
+By Theorem~\ref{thm:frac_lap_constant_pos}, $C(\alpha) > 0$. Since $\alpha > 0$, every factor and denominator in $C_1(\alpha)$, $C_2(\alpha)$, $C_{\mathrm{opt}}(\alpha)$, and $R_{\mathrm{opt}}$ is strictly positive.
+\end{proof}
+
+\begin{lemma}\label{lem:nlmp_scale_optimization}
+\lean{FracLap.nlmp_scale_optimization}
+\uses{def:nlmp_constants, lem:nlmp_constants_pos}
+\leanok
+For all $\alpha \in \mathbb{R}$ and $C_1, C_2, U_0, M > 0$, evaluating the scale-dependent difference at $R = \frac{2 C_2 M}{C_1 U_0}$ yields the exact algebraic identity
+\[
+  \frac{C_1 U_0}{R^\alpha} - \frac{C_2 M}{R^{1 + \alpha}} = \frac{C_1^{1 + \alpha}}{2^{1 + \alpha} C_2^\alpha} \frac{U_0^{1 + \alpha}}{M^\alpha}.
+\]
+\end{lemma}
+
+\begin{proof}
+\uses{def:nlmp_constants, lem:nlmp_constants_pos}
+\leanok
+Writing $R^{1 + \alpha} = R \cdot R^\alpha$ and substituting $\frac{C_2 M}{R} = \frac{C_1 U_0}{2}$ reduces the left-hand side to $\frac{C_1 U_0}{2 R^\alpha}$. Expanding $R^\alpha = \frac{2^\alpha C_2^\alpha M^\alpha}{C_1^\alpha U_0^\alpha}$ and combining powers via $C_1 \cdot C_1^\alpha = C_1^{1 + \alpha}$, $U_0 \cdot U_0^\alpha = U_0^{1 + \alpha}$, and $2 \cdot 2^\alpha = 2^{1 + \alpha}$ gives the right-hand side.
+\end{proof}
+
+\begin{theorem}\label{thm:nonlinear_max_principle}
+\lean{FracLap.nonlinear_max_principle}
+\uses{def:fractional_exponent, def:nlmp_constants, lem:nlmp_constants_pos, lem:nlmp_scale_optimization}
+\leanok
+Let $\alpha \in (0, 2)$, let $U_0 = u(x_0) > 0$ be the positive global maximum of $u$ on $(0, \infty)$, let $M = \lVert u \rVert_{L^1(0, \infty)} > 0$, and suppose $L = (-\widetilde{\Delta})^{\alpha/2} u(x_0)$ satisfies the cutoff-and-antiderivative bound of Definition~\ref{def:nlmp_constants}. Then
+\[
+  (-\widetilde{\Delta})^{\alpha/2} u(x_0) \ge C_{\mathrm{opt}}(\alpha)\, \frac{u(x_0)^{1 + \alpha}}{\lVert u \rVert_{L^1(0, \infty)}^\alpha},
+\]
+where $C_{\mathrm{opt}}(\alpha) > 0$ depends only on $\alpha$.
+\end{theorem}
+
+\begin{proof}
+\uses{def:fractional_exponent, def:nlmp_constants, lem:nlmp_constants_pos, lem:nlmp_scale_optimization}
+\leanok
+By Lemma~\ref{lem:nlmp_constants_pos}, the optimal cutoff radius $R = R_{\mathrm{opt}} = \frac{2 C_2(\alpha) M}{C_1(\alpha) U_0}$ is strictly positive. Specializing the cutoff-and-antiderivative lower bound of Definition~\ref{def:nlmp_constants} to $R = R_{\mathrm{opt}}$ and applying Lemma~\ref{lem:nlmp_scale_optimization} yields the desired inequality.
+\end{proof}
+
+\begin{lemma}\label{lem:odd_ext_integrable_and_norm}
+\lean{FracLap.integrable_oddExt_of_integrableOn_Ioi, FracLap.integral_abs_oddExt}
+\uses{def:odd_ext}
+\leanok
+If $u \in L^1(0, \infty)$, then its antisymmetric extension $\widetilde{u}$ is integrable on all of $\mathbb{R}$. When $u \ge 0$ on $(0, \infty)$, its $L^1(\mathbb{R})$ mass satisfies
+\[
+  \int_{\mathbb{R}} \lvert \widetilde{u}(z) \rvert \, \mathrm{d}z = 2 \int_0^\infty u(x)\, \mathrm{d}x.
+\]
+\end{lemma}
+
+\begin{proof}
+\uses{def:odd_ext}
+\leanok
+Splitting $\mathbb{R} = (-\infty, 0) \cup \{x \ge 0\}$ gives $\widetilde{u} = u$ on $(0, \infty)$ and $\widetilde{u}(z) = -u(-z)$ on $(-\infty, 0)$. Since negation is measure-preserving for Lebesgue measure, integrability on $(0, \infty)$ transfers to $(-\infty, 0)$, and summing the two half-line integrals yields $\lVert \widetilde{u} \rVert_{L^1(\mathbb{R})} = 2 \int_0^\infty u(x)\, \mathrm{d}x$ when $u \ge 0$.
+\end{proof}
+
+\begin{lemma}\label{lem:exterior_rpow_tail}
+\lean{FracLap.integrableOn_inv_abs_rpow_exterior, FracLap.integral_inv_abs_rpow_exterior}
+\uses{def:fractional_exponent}
+\leanok
+For every $\alpha > 0$ and $R > 0$, the kernel $y \mapsto \lvert y \rvert^{-(1 + \alpha)}$ is integrable on the exterior region $S_R = (-\infty, -2R) \cup (2R, \infty)$ with exact integral
+\[
+  \int_{S_R} \lvert y \rvert^{-(1 + \alpha)}\, \mathrm{d}y = \frac{2}{\alpha (2R)^\alpha}.
+\]
+\end{lemma}
+
+\begin{proof}
+\uses{def:fractional_exponent}
+\leanok
+On $(2R, \infty)$ we have $\lvert y \rvert^{-(1 + \alpha)} = y^{-(1 + \alpha)}$, whose improper integral equals $\alpha^{-1}(2R)^{-\alpha}$. By reflection invariance $y \mapsto -y$, the integral over $(-\infty, -2R)$ has the same value, and disjoint union additivity gives $\frac{2}{\alpha (2R)^\alpha}$.
+\end{proof}
+
+\begin{theorem}\label{thm:unconditional_nlmp_cutoff_bound}
+\lean{FracLap.reflectedFracLapSecondDiff_satisfiesCutoffAntiderivativeBound, FracLap.reflectedFracLapSecondDiff_nonlinear_max_principle}
+\uses{thm:half_line_linear_max_principle, lem:odd_ext_integrable_and_norm, lem:exterior_rpow_tail, thm:nonlinear_max_principle}
+\leanok
+Let $\alpha \in (0, 2)$ and let $u \in L^1(0, \infty)$ be nonnegative on $(0, \infty)$ attaining a strictly positive global maximum $U_0 = u(x_0) > 0$ at $x_0 > 0$, with $M = \int_0^\infty u(x)\, \mathrm{d}x > 0$ and integrable weighted second difference of $\widetilde{u}$ at $x_0$. Then $(-\widetilde{\Delta})^{\alpha/2} u(x_0)$ unconditionally satisfies the cutoff-and-mass decomposition bound of Definition~\ref{def:nlmp_constants}, and consequently
+\[
+  (-\widetilde{\Delta})^{\alpha/2} u(x_0) \ge C_{\mathrm{opt}}(\alpha)\, \frac{u(x_0)^{1 + \alpha}}{\bigl(\int_0^\infty u(x)\, \mathrm{d}x\bigr)^\alpha}.
+\]
+\end{theorem}
+
+\begin{proof}
+\uses{thm:half_line_linear_max_principle, lem:odd_ext_integrable_and_norm, lem:exterior_rpow_tail, thm:nonlinear_max_principle}
+\leanok
+Because $-\delta_2 \widetilde{u}(x_0, y) \lvert y \rvert^{-(1 + \alpha)} \ge 0$ everywhere by Lemma~\ref{lem:odd_ext_max}, restricting the integral to the exterior domain $S_R = (-\infty, -2R) \cup (2R, \infty)$ for any $R > 0$ preserves a lower bound. Writing $-\delta_2 \widetilde{u}(x_0, y) = 2 u(x_0) - \widetilde{u}(x_0 + y) - \widetilde{u}(x_0 - y)$ splits off the main tail term $\frac{C(\alpha)}{2} \cdot 2 u(x_0) \int_{S_R} \lvert y \rvert^{-(1 + \alpha)}\, \mathrm{d}y = C_1(\alpha) u(x_0) / R^\alpha$ via Lemma~\ref{lem:exterior_rpow_tail}. On $S_R$ we have $\lvert y \rvert > R$, so translation invariance and Lemma~\ref{lem:odd_ext_integrable_and_norm} bound each remaining integral by $2M / R^{1 + \alpha}$, giving a total remainder bounded by $2 C(\alpha) M / R^{1 + \alpha} \le C_2(\alpha) M / R^{1 + \alpha}$. Applying Theorem~\ref{thm:nonlinear_max_principle} yields the quantitative nonlinear maximum principle.
+\end{proof}

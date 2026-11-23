@@ -1,0 +1,43 @@
+\chapter{Analyticity of the Fractional Heat Semigroup}
+
+This chapter mirrors \texttt{FracLap/WholeLine/FractionalAnalytic.lean}. The idea is that after the Fourier transform the semigroup is multiplication by $e^{-z\psi}$ with $\psi(\xi) = \lvert 2\pi\xi \rvert^\alpha \ge 0$. For $\operatorname{Re} z > 0$ this symbol has modulus $e^{-(\operatorname{Re} z)\psi} \le 1$, and it depends holomorphically on $z$ with a derivative that stays bounded because the decay $e^{-(\operatorname{Re} z)\psi}$ beats the polynomial factor $\psi$. Hence the operator family is differentiable in $z$ already in operator norm.
+
+\begin{lemma}[Taylor remainder of the heat symbol]\label{lem:exp_taylor_symbol}
+\lean{FracLap.norm_exp_sub_one_sub_le, FracLap.norm_exp_taylor_symbol, FracLap.mul_exp_neg_quarter_le, FracLap.mul_exp_neg_le_inv}
+\leanok
+For every complex $w$, $\lvert e^{w} - 1 - w \rvert \le 3 \lvert w \rvert^2 e^{\max(\operatorname{Re} w, 0)}$. Consequently, if $\operatorname{Re} z = a > 0$, $\lvert h \rvert \le a/2$ and $p \ge 0$, then
+\[
+  \bigl\lvert e^{-(z+h)p} - e^{-zp} + h p\, e^{-zp} \bigr\rvert \le \frac{48}{a^2} \lvert h \rvert^2 .
+\]
+\end{lemma}
+
+\begin{proof}
+\leanok
+For $\lvert w \rvert \le 1$ the quadratic Taylor bound for the exponential applies. For $\lvert w \rvert > 1$ the three terms $\lvert e^{w} \rvert$, $1$ and $\lvert w \rvert$ are each at most $\lvert w \rvert^2 e^{\max(\operatorname{Re} w, 0)}$. For the second claim factor $e^{-(z+h)p} = e^{-zp}e^{w}$ with $w = -hp$, so $\operatorname{Re} w \le ap/2$, and use $p^2 e^{-ap/2} = (p e^{-ap/4})^2 \le (4/a)^2$, which follows from $y e^{-y} \le 1$.
+\end{proof}
+
+\begin{theorem}[Analyticity of Fourier multiplier semigroups]\label{thm:s_analytic}
+\lean{FracLap.fourierAnalyticSemigroup, FracLap.hasDerivAt_fourierOp, FracLap.tendsto_fourierOp_zero, FracLap.fourierOp_add, FracLap.fourierOp_zero}
+\uses{def:analytic_semigroup, lem:exp_taylor_symbol, thm:std_fourier_L2, thm:std_dominated_convergence}
+\leanok
+Let $\psi \ge 0$ be measurable. For $\operatorname{Re} z \ge 0$ let $T(z) = \mathcal{F}^{-1} M_{e^{-z\psi}} \mathcal{F}$ on $L^2(\mathbb{R};\mathbb{C})$. Then $T(0) = I$, $T(z_1 + z_2) = T(z_1) T(z_2)$, $\lVert T(z) \rVert \le 1$, every orbit $z \mapsto T(z) f$ is complex differentiable on the open right half-plane with derivative $\mathcal{F}^{-1}(-\psi e^{-z\psi} \mathcal{F} f)$, and $T(z) f \to f$ as $z \to 0$ with $\operatorname{Re} z > 0$. In other words, $T$ is an analytic semigroup of angle $\pi/2$.
+\end{theorem}
+
+\begin{proof}
+\uses{lem:exp_taylor_symbol, thm:std_fourier_L2, thm:std_dominated_convergence}
+\leanok
+Plancherel reduces every statement to multiplication by symbols in $L^\infty$, and a product of symbols is the symbol of the sum of times. By the Taylor lemma, the symbol $e^{-(z+h)\psi} - e^{-z\psi} + h\psi e^{-z\psi}$ is bounded by $48\lvert h \rvert^2 / (\operatorname{Re} z)^2$ uniformly in the frequency, hence the remainder of the orbit is $O(\lvert h \rvert^2)$, which gives the derivative. Strong continuity at $0$ follows from dominated convergence: the integrand $\lvert e^{-z\psi} - 1 \rvert^2 \lvert \hat f \rvert^2$ is dominated by $4\lvert \hat f \rvert^2$ and tends to $0$ pointwise.
+\end{proof}
+
+\begin{theorem}[Immediate regularization of the fractional heat semigroup]\label{thm:s_analytic_frac}
+\lean{FracLap.fracLapAnalyticSemigroup, FracLap.fracLapAnalyticSemigroup_ofReal_apply, FracLap.fourierMultiplierSemigroup_mem_generatorDomain_of_pos, FracLap.generator_fourierMultiplierSemigroup_apply, FracLap.fracLapSemigroup_mem_generatorDomain_of_pos, FracLap.fracLapSemigroup_contDiffOn_orbit, FracLap.exists_fracLapAnalyticSemigroup_nontrivial}
+\uses{thm:s_analytic, prop:analytic_domain, prop:analytic_diff, thm:concrete_frac_lap_semigroup}
+\leanok
+For $\alpha > 0$ the whole-line fractional heat semigroup $S_\alpha(t)$ is the restriction to positive real times of an analytic semigroup. For every $f \in L^2(\mathbb{R})$ and $t > 0$ one has $S_\alpha(t) f \in \mathcal{D}(A_\alpha)$, the orbit $t \mapsto S_\alpha(t) f$ is smooth on $(0, \infty)$, and $A_\alpha S_\alpha(t) f = \mathcal{F}^{-1}(-\psi e^{-t\psi} \mathcal{F} f)$ with $\psi(\xi) = \lvert 2\pi\xi \rvert^\alpha$.
+\end{theorem}
+
+\begin{proof}
+\uses{thm:s_analytic, prop:analytic_domain, prop:analytic_diff}
+\leanok
+On positive real times the symbol $e^{-t\psi}$ is the symbol of the real-time semigroup, so the analytic family extends $S_\alpha$. An orbit of an analytic semigroup is smooth for $t > 0$, lies in the generator domain, and its generator value is the time derivative, which is computed from the derivative formula of the previous theorem.
+\end{proof}

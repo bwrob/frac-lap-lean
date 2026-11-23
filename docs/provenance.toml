@@ -160,3 +160,36 @@
 
 [modules."WholeLine/TranslationFourier"]
     origin = "thesis"
+
+[modules."WholeLine/PointwiseEquivalence"]
+    origin = "corpus"
+
+[modules."WholeLine/HeatSubordination"]
+    origin = "corpus"
+
+[modules."WholeLine/GagliardoMultiplier"]
+    origin = "corpus"
+
+[modules."HalfLine/RestrictedDensity"]
+    origin = "thesis"
+
+[modules."HalfLine/RestrictedSemigroup"]
+    origin = "thesis"
+
+[modules."WholeLine/SobolevEquivalence"]
+    origin = "corpus"
+
+[modules."Core/AnalyticSemigroup"]
+    origin = "corpus"
+
+[modules."WholeLine/FractionalAnalytic"]
+    origin = "corpus"
+
+[modules."HalfLine/RestrictedAnalytic"]
+    origin = "corpus"
+
+[modules."HalfLine/MaximumPrinciples"]
+    origin = "thesis"
+
+[modules."HalfLine/WholeLineMaximumPrinciple"]
+    origin = "corpus"

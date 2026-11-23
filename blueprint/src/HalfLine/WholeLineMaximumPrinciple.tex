@@ -1,0 +1,57 @@
+\chapter{The Whole-Line Nonlinear Maximum Principle}
+
+This chapter mirrors \texttt{FracLap/HalfLine/WholeLineMaximumPrinciple.lean}. It is the whole-line Constantin--Vicol lower bound: at a positive global maximum of a nonnegative integrable function, the fractional Laplacian dominates $u(x_0)^{1+\alpha}/\lVert u\rVert_{L^1}^{\alpha}$. Unlike the reflected half-line version in Theorem~\ref{thm:nonlinear_max_principle}, no antiderivative and no smooth cutoff are needed: a sharp cutoff already suffices.
+
+\begin{definition}\label{def:whole_line_nlmp_constant}
+\lean{FracLap.wholeLineNlmpConstant, FracLap.wholeLineNlmpConstant_pos}
+\leanok
+Write $C = C(\alpha)$ for the normalizing constant of the fractional Laplacian. The whole-line constant is
+\[
+  c(\alpha) = \frac{(2C/\alpha)^{1+\alpha}}{2^{1+\alpha}\, C^{\alpha}} > 0 \qquad (0 < \alpha < 2).
+\]
+\end{definition}
+
+\begin{lemma}[Sharp-cutoff lower bound]\label{lem:whole_line_cutoff}
+\lean{FracLap.fracLapSecondDiff_cutoff_bound}
+\uses{lem:exterior_rpow_tail, def:whole_line_nlmp_constant}
+\leanok
+Let $0 < \alpha < 2$, let $u \ge 0$ be integrable with $u \le u(x_0)$ everywhere, and suppose $y \mapsto (u(x_0 + y) + u(x_0 - y) - 2u(x_0))/\lvert y\rvert^{1+\alpha}$ is integrable. Then for every $\rho > 0$,
+\[
+  \frac{2C}{\alpha}\, \frac{u(x_0)}{\rho^{\alpha}} - C\, \frac{\lVert u \rVert_{1}}{\rho^{1+\alpha}} \le (-\Delta)^{\alpha/2} u(x_0).
+\]
+\end{lemma}
+
+\begin{proof}
+\uses{lem:exterior_rpow_tail}
+\leanok
+Write $(-\Delta)^{\alpha/2} u(x_0) = \frac{C}{2} \int I(y)\, \mathrm{d}y$ with $I(y) = (2u(x_0) - u(x_0+y) - u(x_0-y))/\lvert y\rvert^{1+\alpha} \ge 0$. Put $g(y) = 2u(x_0) \mathbf 1_{\lvert y\rvert > \rho}\lvert y\rvert^{-1-\alpha} - \rho^{-1-\alpha}(u(x_0+y) + u(x_0-y))$. For $\lvert y\rvert \le \rho$ we have $g \le 0 \le I$; for $\lvert y\rvert > \rho$ we use $u \ge 0$ and $\lvert y\rvert^{-1-\alpha} \le \rho^{-1-\alpha}$ to get $g \le I$. Both functions are integrable, so $\int I \ge \int g = 4u(x_0)/(\alpha\rho^{\alpha}) - 2\lVert u\rVert_1 \rho^{-1-\alpha}$ by translation invariance and Lemma~\ref{lem:exterior_rpow_tail}.
+\end{proof}
+
+\begin{theorem}[Whole-line nonlinear maximum principle]\label{thm:whole_line_nlmp}
+\lean{FracLap.fracLapSecondDiff_nonlinear_max_principle}
+\uses{lem:whole_line_cutoff, lem:nlmp_scale_optimization}
+\leanok
+Under the hypotheses of Lemma~\ref{lem:whole_line_cutoff}, with $u(x_0) > 0$ and $\lVert u\rVert_1 > 0$,
+\[
+  (-\Delta)^{\alpha/2} u(x_0) \ge c(\alpha)\, \frac{u(x_0)^{1+\alpha}}{\lVert u \rVert_1^{\alpha}}.
+\]
+\end{theorem}
+
+\begin{proof}
+\uses{lem:whole_line_cutoff, lem:nlmp_scale_optimization}
+\leanok
+Apply Lemma~\ref{lem:whole_line_cutoff} with $\rho = 2 C \lVert u\rVert_1 / ((2C/\alpha) u(x_0))$ and evaluate the resulting difference with Lemma~\ref{lem:nlmp_scale_optimization}, where $C_1 = 2C/\alpha$ and $C_2 = C$.
+\end{proof}
+
+\begin{theorem}[Linear minimum principle on the whole line]\label{thm:whole_line_linear_min_principle}
+\lean{FracLap.fracLapSecondDiff_nonpos_of_isMin, FracLap.fracLapSecondDiff_nonpos_of_zero_min}
+\uses{thm:whole_line_linear_max_principle}
+\leanok
+Let $0 < \alpha < 2$. If $u$ attains its global minimum at $x_0$, then $(-\Delta)^{\alpha/2} u(x_0) \le 0$. In particular, if $f \ge 0$ and $f(x_0) = 0$ then $(-\Delta)^{\alpha/2} f(x_0) \le 0$.
+\end{theorem}
+
+\begin{proof}
+\uses{thm:whole_line_linear_max_principle}
+\leanok
+At a global minimum the second difference $u(x_0+y) + u(x_0-y) - 2u(x_0)$ is nonnegative for every $y$, so the weighted integral is nonnegative; the operator carries a negative sign. If the integral is not absolutely convergent the Bochner integral is zero and the claim holds trivially. This is the mirror image of the maximum principle.
+\end{proof}

@@ -80,7 +80,9 @@ private def witnesses : List (Name × Name) :=
   [ (``FracLap.gagliardoForm_isMarkovDirichletForm, ``FracLap.exists_restrictedGagliardoForm_pos)
   , (``FracLap.restrictedGagliardoForm_isMarkovDirichletForm,
       ``FracLap.exists_restrictedGagliardoForm_pos)
-  , (``FracLap.stableHeatKernel, ``FracLap.fourier_stableKernel_eq) ]
+  , (``FracLap.stableHeatKernel, ``FracLap.fourier_stableKernel_eq)
+  , (``FracLap.restrictedFracLapSemigroup, ``FracLap.exists_restrictedFracLapSemigroup_nontrivial)
+  , (``FracLap.fracLapAnalyticSemigroup, ``FracLap.exists_fracLapAnalyticSemigroup_nontrivial) ]
 
 private def auditEnvironment (strict : Bool) : CoreM UInt32 := do
   let env ← getEnv

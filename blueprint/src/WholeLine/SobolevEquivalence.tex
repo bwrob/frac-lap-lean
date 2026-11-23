@@ -1,0 +1,71 @@
+\chapter{Sobolev Equivalence, Self-Adjointness, and Dirichlet Form Packaging}
+
+This chapter mirrors \texttt{FracLap/WholeLine/SobolevEquivalence.lean}, assembling the Bessel potential Hilbert space $\widehat{H}^s(\mathbb{R})$, its identification with the Gagliardo space $H^{\alpha/2}(\mathbb{R})$ and Mathlib tempered Sobolev spaces, self-adjointness of the fractional Laplacian generator, the whole-line Friedrichs weak-form identity, and closedness/density of the exterior-Dirichlet subspaces $L^2_0(\mathbb{R})$ and $H^{\alpha/2}_0(\mathbb{R})$.
+
+\begin{theorem}[Hilbert space structure of $\widehat{H}^s(\mathbb{R})$]\label{thm:fracsobolevhilbert}
+\lean{FracLap.MemFourierSobolev, FracLap.FourierSobolevSpace, FracLap.fourierSobolevToL2, FracLap.fourierSobolevEquivL2, FracLap.instCompleteSpaceFourierSobolevSpace, FracLap.separableSpaceFourierSobolevSpace, FracLap.memSobolev_two_iff_memFourierSobolev}
+\uses{thm:plancherel_and_parseval}
+\leanok
+For every $s \ge 0$, the Fourier Sobolev space $\widehat{H}^s(\mathbb{R})$ endowed with the weighted $L^2$-Fourier inner product $\langle u, v \rangle_{\widehat{H}^s} = \int_{\mathbb{R}} (1 + \xi^2)^s \langle \mathcal{F}u(\xi), \mathcal{F}v(\xi) \rangle \mathrm{d}\xi$ is isometrically isomorphic to $L^2(\mathbb{R}; \mathbb{C})$ via $J_s u = (1 + \xi^2)^{s/2} \mathcal{F}u$, and is therefore a complete separable complex Hilbert space. Moreover, for $f \in L^2(\mathbb{R}; \mathbb{C})$, $f \in \widehat{H}^s(\mathbb{R})$ if and only if $f$ belongs to the tempered Bessel potential space of order $(s, 2)$.
+\end{theorem}
+
+\begin{proof}
+\uses{thm:plancherel_and_parseval}
+\leanok
+Weighting $\mathcal{F}u$ by the strictly positive factor $(1 + \xi^2)^{s/2}$ defines an injective linear map $J_s : \widehat{H}^s(\mathbb{R}) \to L^2(\mathbb{R}; \mathbb{C})$. For $s \ge 0$, the reciprocal factor $(1 + \xi^2)^{-s/2} \le 1$ is bounded and of temperate growth, so $w \mapsto \mathcal{F}^{-1}\bigl((1 + \xi^2)^{-s/2} w\bigr)$ furnishes a two-sided linear inverse, transferring completeness and separability from $L^2(\mathbb{R}; \mathbb{C})$. Tempered distribution identification follows by applying the inverse multiplier $(1 + \xi^2)^{-s/2}$.
+\end{proof}
+
+\begin{theorem}[Equality of Fourier and Gagliardo Sobolev spaces]\label{thm:sobolev_equal}
+\lean{FracLap.besselSymbol_equiv_gagliardoSymbol, FracLap.gagliardoEnergyC_lt_top_iff_memFourierSobolev, FracLap.gagliardoEnergyC_lt_top_iff_memSobolev, FracLap.fourierSobolevOfGagliardo, FracLap.norm_sq_gagliardoSpace_equiv_fourierSobolev}
+\uses{thm:fracsobolevhilbert, thm:exact_symbol}
+\leanok
+For every $0 < \alpha < 2$, the symbol $1 + \lvert 2\pi\xi \rvert^\alpha$ is uniformly equivalent to $(1 + \xi^2)^{\alpha/2}$ on $\mathbb{R}$. Consequently, an $L^2(\mathbb{R})$ function has finite Gagliardo energy $E_\alpha(f) < \infty$ if and only if $f \in \widehat{H}^{\alpha/2}(\mathbb{R})$ (equivalently, $f$ lies in the tempered Sobolev space of order $(\alpha/2, 2)$), and the Gagliardo space norm is two-sidedly equivalent to the $\widehat{H}^{\alpha/2}(\mathbb{R})$ norm.
+\end{theorem}
+
+\begin{proof}
+\uses{thm:fracsobolevhilbert, thm:exact_symbol}
+\leanok
+Comparing both symbols with $\max(1,\lvert \xi\rvert)^\alpha$ and using $1 \le 2\pi$ gives $2^{-\alpha/2}(1+\xi^2)^{\alpha/2} \le 1 + \lvert 2\pi\xi \rvert^\alpha \le 2(2\pi)^\alpha(1+\xi^2)^{\alpha/2}$. Substituting the exact Fourier energy identity of Theorem~\ref{thm:exact_symbol} gives both membership equivalence and the squared norm bounds.
+\end{proof}
+
+\begin{theorem}[Symmetry, nonnegativity, and self-adjointness of $-A_\alpha$]\label{thm:frac_lap_selfadjoint}
+\lean{FracLap.inner_neg_generator_fracLapSemigroup_eq, FracLap.inner_neg_generator_fracLapSemigroup_symm, FracLap.inner_neg_generator_fracLapSemigroup_re_nonneg, FracLap.fracLapSemigroup_selfAdjoint}
+\uses{thm:fourier_multiplier_generator, thm:plancherel_and_parseval}
+\leanok
+For $\alpha \in \mathbb{R}$, the negated semigroup generator $-A_\alpha$ on $L^2(\mathbb{R}; \mathbb{C})$ satisfies $\langle -A_\alpha u, v \rangle = \int_{\mathbb{R}} \lvert 2\pi\xi \rvert^\alpha \langle \mathcal{F}u(\xi), \mathcal{F}v(\xi) \rangle \mathrm{d}\xi$, is symmetric and nonnegative on $\mathcal{D}(A_\alpha)$, and is self-adjoint: any $y, w \in L^2(\mathbb{R}; \mathbb{C})$ satisfying $\langle y, -A_\alpha u \rangle = \langle w, u \rangle$ for all $u \in \mathcal{D}(A_\alpha)$ satisfy $y \in \mathcal{D}(A_\alpha)$ and $-A_\alpha y = w$.
+\end{theorem}
+
+\begin{proof}
+\uses{thm:fourier_multiplier_generator, thm:plancherel_and_parseval}
+\leanok
+Plancherel's identity converts the multiplier representation of $A_\alpha$ into the stated integral pairing, giving symmetry and nonnegativity immediately from reality and nonnegativity of $\lvert 2\pi\xi \rvert^\alpha$. Given the adjoint relation $\langle y, -A_\alpha u \rangle = \langle w, u \rangle$, the bounded multiplier $(1 + \lvert 2\pi\xi \rvert^\alpha)^{-1}\mathcal{F}(y+w)$ solves $(I - A_\alpha)z = y + w$, and surjectivity of $I - A_\alpha$ via the semigroup resolvent forces $y = z \in \mathcal{D}(A_\alpha)$.
+\end{proof}
+
+\begin{theorem}[Whole-line Dirichlet form properties and Friedrichs weak identity]\label{thm:frac_form_friedrichs}
+\lean{FracLap.denseRange_gagliardoL2Part, FracLap.gagliardoForm_continuous, FracLap.gagliardoForm_eq_inner_neg_generator}
+\uses{thm:sobolev_equal, thm:frac_lap_selfadjoint, thm:exact_symbol}
+\leanok
+For every $0 < \alpha < 2$, $H^{\alpha/2}(\mathbb{R})$ embeds densely into $L^2(\mathbb{R}; \mathbb{R})$, the Dirichlet form $B^\alpha$ is continuous and accretive on $H^{\alpha/2}(\mathbb{R})$, and for all $u, v \in H^{\alpha/2}(\mathbb{R})$ whose complexifications lie in $\mathcal{D}(A_\alpha)$,
+\[
+  B^\alpha(u, v) = \operatorname{Re}\langle -A_\alpha u, v \rangle_{L^2(\mathbb{R}; \mathbb{C})}.
+\]
+\end{theorem}
+
+\begin{proof}
+\uses{thm:sobolev_equal, thm:frac_lap_selfadjoint, thm:exact_symbol}
+\leanok
+Density follows by taking real parts of complex Schwartz approximations in $L^2(\mathbb{R}; \mathbb{C})$, and continuity follows from Cauchy--Schwarz for the difference-quotient $L^2$ inner product. On the diagonal $u = v$, both $B^\alpha(u, u)$ and $\operatorname{Re}\langle -A_\alpha u, u \rangle$ equal $\int_{\mathbb{R}} \lvert 2\pi\xi \rvert^\alpha \lvert \mathcal{F}u(\xi) \rvert^2\, \mathrm{d}\xi$; polarization extends the identity to all pairs $(u, v)$.
+\end{proof}
+
+\begin{theorem}[Closedness and density of $L^2_0(\mathbb{R})$ and $H^{\alpha/2}_0(\mathbb{R})$]\label{thm:zero_spaces}
+\lean{FracLap.l2ZeroSubmodule, FracLap.isClosed_l2ZeroSubmodule, FracLap.l2ZeroIsoIoi, FracLap.denseRange_restrictedGagliardoL2Zero}
+\uses{thm:frac_form_friedrichs}
+\leanok
+The subspace $L^2_0(\mathbb{R}) \subseteq L^2(\mathbb{R}; \mathbb{R})$ of functions vanishing almost everywhere on $\{x \in \mathbb{R} : x \le 0\}$ is closed and complete, is linearly isometric to $L^2((0, \infty); \mathbb{R})$, and contains the natural image of $H^{\alpha/2}_0(\mathbb{R})$ as a dense subspace for every $0 < \alpha < 2$.
+\end{theorem}
+
+\begin{proof}
+\uses{thm:frac_form_friedrichs}
+\leanok
+Realize $L^2_0(\mathbb{R})$ as the kernel of the continuous restriction map to $L^2(\{x \in \mathbb{R} : x \le 0\}; \mathbb{R})$, deduce completeness, construct the canonical extension-by-zero isometric isomorphism with $L^2((0, \infty); \mathbb{R})$, and transport the density of $H^{\alpha/2}_0(0, \infty)$ in $L^2((0, \infty); \mathbb{R})$.
+\end{proof}

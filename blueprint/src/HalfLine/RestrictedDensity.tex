@@ -1,0 +1,58 @@
+\chapter{Density in the Exterior-Dirichlet Space}
+
+This chapter mirrors \texttt{FracLap/HalfLine/RestrictedDensity.lean}. We show that the exterior-Dirichlet space $H^{\alpha/2}_0(0, \infty)$ of Definition~\ref{def:restricted_gagliardo_space} admits, as a dense subset, real Schwartz functions that vanish for all $x \le \delta$, for some $\delta > 0$. The argument has three ingredients: continuity of translation in the Gagliardo norm, the whole-line density theorem, and the multiplier estimate for a smooth cutoff.
+
+\begin{lemma}\label{lem:gagliardo_n2_add}
+\lean{FracLap.enorm_sq_add_le_two, FracLap.gagliardoN2, FracLap.gagliardoN2_add_le}
+\uses{thm:norm_energy_fourier, def:gagliardo_measure}
+\leanok
+Write $N_\alpha(f)^2 = \lVert f \rVert_{L^2}^2 + E_\alpha(f)$ for $f \in L^2(\mathbb{R}; \mathbb{C})$. Then for all $a, b$,
+\[
+  N_\alpha(a + b)^2 \le 2\, N_\alpha(a)^2 + 2\, N_\alpha(b)^2.
+\]
+\end{lemma}
+
+\begin{proof}
+\uses{def:gagliardo_measure}
+\leanok
+Use $\lvert u + v \rvert^2 \le 2 \lvert u \rvert^2 + 2 \lvert v \rvert^2$ pointwise, once for the $L^2$ part and once for the integrand of the Gagliardo energy.
+\end{proof}
+
+\begin{theorem}\label{thm:translation_continuity}
+\lean{FracLap.gagliardoN2_translate_sub, FracLap.exists_translate_close}
+\uses{thm:norm_energy_fourier, thm:fourier_translate_l2, def:gagliardo_spectral_measure, thm:std_dominated_convergence, lem:gagliardo_n2_add}
+\leanok
+Let $f \in L^2(\mathbb{R}; \mathbb{C})$ with $E_\alpha(f) < \infty$. Then $N_\alpha(\tau_{-s} f - f)^2 \to 0$ as $s \to 0$; in particular for every $\eta > 0$ there is $s > 0$ with $N_\alpha(\tau_{-s} f - f)^2 < \eta$.
+\end{theorem}
+
+\begin{proof}
+\uses{thm:norm_energy_fourier, thm:fourier_translate_l2, def:gagliardo_spectral_measure, thm:std_dominated_convergence}
+\leanok
+By Theorem~\ref{thm:norm_energy_fourier} and Theorem~\ref{thm:fourier_translate_l2}, $N_\alpha(\tau_h f - f)^2 = \int \lvert \mathbf{e}(h \xi) - 1 \rvert^2 \, \lvert \mathcal{F}f(\xi) \rvert^2 \, \mathrm{d}\nu_\alpha(\xi)$. The integrand is bounded by $4 \lvert \mathcal{F}f(\xi) \rvert^2$, which is $\nu_\alpha$-integrable with integral $4 N_\alpha(f)^2 < \infty$, and it tends to $0$ pointwise as $h \to 0$ since $\mathbf{e}$ is continuous with $\mathbf{e}(0) = 1$. Dominated convergence (Theorem~\ref{thm:std_dominated_convergence}) gives the claim.
+\end{proof}
+
+\begin{lemma}\label{lem:gagliardo_n2_mul}
+\lean{FracLap.exists_mulL2C, FracLap.enorm_sq_mul_le, FracLap.exists_gagliardoN2_mul_le}
+\uses{thm:gagliardo_multiplier, def:fourier_multiplier_op}
+\leanok
+Let $\theta : \mathbb{R} \to \mathbb{R}$ be measurable, bounded by $B$, and $L$-Lipschitz. Every $f \in L^2(\mathbb{R}; \mathbb{C})$ has a product $\theta f \in L^2$, and there is a constant $C \ge 0$, depending only on $\alpha$, $B$ and $L$, such that $N_\alpha(g)^2 \le C\, N_\alpha(f)^2$ whenever $g = \theta f$ almost everywhere.
+\end{lemma}
+
+\begin{proof}
+\uses{thm:gagliardo_multiplier, def:fourier_multiplier_op}
+\leanok
+Multiplication by $\theta$ is a bounded operator on $L^2$ (Definition~\ref{def:fourier_multiplier_op}) with $\lVert \theta f \rVert^2 \le B^2 \lVert f \rVert^2$. Combine this with Theorem~\ref{thm:gagliardo_multiplier} for the energy and take $C = 3B^2 + 2M \int k_\alpha$.
+\end{proof}
+
+\begin{theorem}\label{thm:restricted_density}
+\lean{FracLap.exists_schwartz_close_restricted}
+\uses{thm:schwartz_density_complex, thm:schwartz_density_real, thm:translation_continuity, lem:gagliardo_n2_mul, lem:gagliardo_n2_add, def:cutoff_step, def:restricted_gagliardo_space, lem:real_part_contraction, thm:norm_gagliardo_space}
+\leanok
+Let $\alpha \in (0, 2)$. For every $u \in H^{\alpha/2}_0(0, \infty)$ and $\varepsilon > 0$ there are a real Schwartz function $\psi$ and $\delta > 0$ with $\psi(x) = 0$ for all $x \le \delta$ such that $\lVert \psi - u \rVert_{H^{\alpha/2}} < \varepsilon$. Thus real Schwartz functions vanishing for $x \le \delta$, some $\delta > 0$, are dense in $H^{\alpha/2}_0(0, \infty)$.
+\end{theorem}
+
+\begin{proof}
+\uses{thm:schwartz_density_complex, thm:translation_continuity, lem:gagliardo_n2_mul, lem:gagliardo_n2_add, def:cutoff_step, lem:real_part_contraction, thm:norm_gagliardo_space}
+\leanok
+Let $f$ be the complexification of the $L^2$ part of $u$; it vanishes for $x \le 0$ and has finite energy. By Theorem~\ref{thm:translation_continuity} choose $s > 0$ with $N_\alpha(\tau_{-s} f - f)^2 < \varepsilon^2/4$. The shifted function $f_s = \tau_{-s} f$ vanishes for $x \le s$. Let $\theta = \theta_s$ be the cutoff of Definition~\ref{def:cutoff_step}, so $\theta f_s = f_s$. Theorem~\ref{thm:schwartz_density_complex} gives a Schwartz function $\varphi$ with $N_\alpha(\varphi - f_s)^2$ as small as we wish. By Lemma~\ref{lem:gagliardo_n2_mul}, $N_\alpha(\theta\varphi - f_s)^2 = N_\alpha\bigl(\theta(\varphi - f_s)\bigr)^2 \le C\, N_\alpha(\varphi - f_s)^2$, which we make smaller than $\varepsilon^2/4$. By Lemma~\ref{lem:gagliardo_n2_add}, $N_\alpha(\theta\varphi - f)^2 \le 2 N_\alpha(\theta\varphi - f_s)^2 + 2 N_\alpha(f_s - f)^2 < \varepsilon^2$. Finally $\psi = \theta \operatorname{Re}\varphi$ is a real Schwartz function vanishing for $x \le s/2$, and as in the proof of Theorem~\ref{thm:schwartz_density_real}, taking real parts does not increase $N_\alpha$, so $\lVert \psi - u \rVert^2 \le N_\alpha(\theta\varphi - f)^2 < \varepsilon^2$.
+\end{proof}

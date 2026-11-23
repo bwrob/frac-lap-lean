@@ -1,0 +1,136 @@
+\chapter{Restricted Half-Line Fractional Semigroup via Lax--Milgram}
+
+This chapter mirrors \texttt{FracLap/HalfLine/RestrictedSemigroup.lean}. Starting from the concrete restricted Markov Dirichlet form $B^\alpha_0$ on $H^{\alpha/2}_0(0,\infty)$ constructed in the previous chapter, it uses the Lax--Milgram theorem on the shifted bilinear forms $B_\mu = B^\alpha_0 + \mu \langle \cdot, \cdot \rangle$ to build the contractive resolvent $R_\mu = \bigl(\mu + (-\Delta)_{(0,\infty)}^{\alpha/2}\bigr)^{-1}$ on $L^2(0,\infty)$, generates the strongly continuous contraction semigroup $S_0(t)$ via Yosida approximations and the Hille--Yosida theorem, and derives positivity and sub-Markov $L^\infty$-contractivity from the Beurling--Deny form inequalities.
+
+\begin{definition}\label{def:restricted_l2_map}
+\lean{FracLap.restrictedL2Map, FracLap.inner_restrictedL2Map_eq, FracLap.norm_sq_restrictedGagliardoSpace, FracLap.norm_restrictedL2Map_le}
+\uses{def:restricted_gagliardo_space, lem:rest_ioi_real}
+\leanok
+Let $\iota : H^{\alpha/2}_0(0,\infty) \to L^2(0,\infty)$ be the canonical continuous linear embedding given by taking the $L^2(\mathbb{R})$ component of $u \in H^{\alpha/2}_0(0,\infty)$ and restricting it to $\{x > 0\}$. Because elements of $H^{\alpha/2}_0(0,\infty)$ vanish almost everywhere on $\{x \le 0\}$, $\iota$ preserves the $L^2$ inner product, satisfies $\lVert u \rVert^2 = \lVert \iota u \rVert_{L^2(0,\infty)}^2 + B^\alpha_0(u, u)$, and is a contraction $\lVert \iota u \rVert_{L^2(0,\infty)} \le \lVert u \rVert$.
+\end{definition}
+
+\begin{lemma}\label{lem:dense_range_restricted_l2_map}
+\lean{FracLap.exists_restrictedGagliardoSpace_of_contDiff_tsupport, FracLap.denseRange_restrictedL2Map}
+\uses{def:restricted_l2_map, thm:std_schwartz_dense_Lp, thm:std_du_bois_reymond}
+\leanok
+For every $\alpha$ with $0 < \alpha < 2$, every smooth compactly supported function $\varphi$ whose closed support lies in $\{x > 0\}$ belongs to $H^{\alpha/2}_0(0,\infty)$, and the range of $\iota : H^{\alpha/2}_0(0,\infty) \to L^2(0,\infty)$ is dense in $L^2(0,\infty)$.
+\end{lemma}
+
+\begin{proof}
+\uses{def:restricted_l2_map, thm:std_schwartz_dense_Lp, thm:std_du_bois_reymond}
+\leanok
+Every smooth function compactly supported in $\{x > 0\}$ is a real Schwartz function vanishing on $\{x \le 0\}$, hence has finite Gagliardo energy by Plancherel and defines an element of $H^{\alpha/2}_0(0,\infty)$. If $f \in L^2(0,\infty)$ is orthogonal to the range of $\iota$, then $f$ is locally integrable on $\{x > 0\}$ and its integral against every such smooth test function vanishes. By Theorem~\ref{thm:std_du_bois_reymond}, $f = 0$ almost everywhere on $\{x > 0\}$, so the orthogonal complement of $\operatorname{ran}(\iota)$ is trivial and $\operatorname{ran}(\iota)$ is dense.
+\end{proof}
+
+\section{Lax--Milgram resolvent and Hille--Yosida semigroup}
+
+\begin{definition}\label{def:restricted_shifted_form}
+\lean{FracLap.restrictedShiftedForm, FracLap.restrictedShiftedForm_apply, FracLap.restrictedShiftedForm_symm, FracLap.restrictedShiftedForm_isCoercive}
+\uses{def:restricted_l2_map, def:restricted_gagliardo_space}
+\leanok
+For $\alpha, \mu \in \mathbb{R}$, the \emph{shifted Dirichlet form} on $H^{\alpha/2}_0(0,\infty)$ is
+\[
+  B_\mu(u, v) = B^\alpha_0(u, v) + \mu \langle \iota u, \iota v \rangle_{L^2(0,\infty)}.
+\]
+It is symmetric and bounded with norm at most $1 + \lvert \mu \rvert$. Whenever $\mu > 0$, the norm decomposition $\lVert u \rVert^2 = \lVert \iota u \rVert_{L^2(0,\infty)}^2 + B^\alpha_0(u, u)$ makes $B_\mu$ coercive with constant $\min(1, \mu) > 0$.
+\end{definition}
+
+\begin{definition}\label{def:restricted_resolvent_op}
+\lean{FracLap.restrictedResolventSol, FracLap.restrictedShiftedForm_resolventSol, FracLap.restrictedResolventOp, FracLap.restrictedGagliardoForm_resolventSol}
+\uses{def:restricted_shifted_form, thm:std_lax_milgram}
+\leanok
+For each $\mu > 0$, applying Theorem~\ref{thm:std_lax_milgram} to $B_\mu$ and composing with the Hilbert-space adjoint $\iota^*$ yields the continuous linear variational solution map $f \mapsto u_\mu \in H^{\alpha/2}_0(0,\infty)$ determined by
+\[
+  B^\alpha_0(u_\mu, v) + \mu \langle \iota u_\mu, \iota v \rangle_{L^2(0,\infty)} = \langle f, \iota v \rangle_{L^2(0,\infty)} \qquad \text{for all } v \in H^{\alpha/2}_0(0,\infty).
+\]
+The \emph{restricted resolvent operator} is $R_\mu \coloneqq \iota \circ (f \mapsto u_\mu) : L^2(0,\infty) \to L^2(0,\infty)$.
+\end{definition}
+
+\begin{theorem}\label{thm:restricted_frac_lap_resolvent}
+\lean{FracLap.inner_restrictedResolventOp_symm, FracLap.restrictedResolventOp_identity, FracLap.opNorm_restrictedResolventOp_le, FracLap.denseRange_restrictedResolventOp, FracLap.restrictedFracLapResolvent}
+\uses{def:restricted_resolvent_op, lem:dense_range_restricted_l2_map, def:contractive_resolvent}
+\leanok
+For every $0 < \alpha < 2$, the family $(R_\mu)_{\mu > 0}$ is a self-adjoint contractive resolvent on $L^2(0,\infty)$:
+\begin{enumerate}
+\item $\langle R_\mu f, g \rangle_{L^2(0,\infty)} = \langle f, R_\mu g \rangle_{L^2(0,\infty)}$ for all $f, g \in L^2(0,\infty)$;
+\item $R_\mu - R_\nu = (\nu - \mu) R_\mu R_\nu$ for all $\mu, \nu > 0$;
+\item $\lVert R_\mu \rVert \le \mu^{-1}$ for all $\mu > 0$;
+\item $R_\mu$ has dense range in $L^2(0,\infty)$ for all $\mu > 0$.
+\end{enumerate}
+\end{theorem}
+
+\begin{proof}
+\uses{def:restricted_resolvent_op, lem:dense_range_restricted_l2_map, thm:std_lax_milgram}
+\leanok
+Symmetry follows directly from symmetry of $B_\mu$ by testing the variational identity for $g$ against $u_\mu(f)$ and vice versa. For the resolvent identity, subtracting the shifted variational identities at $\mu$ and $\nu$ shows that $u_\mu(f) - u_\nu(f) - (\nu - \mu) u_\mu(R_\nu f)$ is $B_\mu$-orthogonal to all of $H^{\alpha/2}_0(0,\infty)$ and hence zero by coercivity. Taking $v = u_\mu(f)$ and using nonnegativity of $B^\alpha_0(u_\mu, u_\mu)$ gives $\mu \lVert R_\mu f \rVert_{L^2}^2 \le \langle f, R_\mu f \rangle_{L^2} \le \lVert f \rVert_{L^2} \lVert R_\mu f \rVert_{L^2}$, yielding $\lVert R_\mu \rVert \le \mu^{-1}$. Finally, if $g \in \operatorname{ran}(R_\mu)^\perp$, then $B_\mu(u_\mu(g), u_\mu(g)) = \langle g, R_\mu g \rangle_{L^2} = 0$, so $u_\mu(g) = 0$ by coercivity and hence $\langle g, \iota v \rangle_{L^2} = 0$ for all $v \in H^{\alpha/2}_0(0,\infty)$; Lemma~\ref{lem:dense_range_restricted_l2_map} forces $g = 0$.
+\end{proof}
+
+\begin{theorem}\label{thm:restricted_frac_lap_semigroup}
+\lean{FracLap.restrictedFracLapSemigroup, FracLap.restrictedFracLapSemigroup_resolvent_eq}
+\uses{thm:restricted_frac_lap_resolvent, thm:yosida_strong_limit_and_generation, thm:hille_yosida_bijection}
+\leanok
+For every $0 < \alpha < 2$, the Yosida strong limit of the resolvent $R_\mu$ defines a concrete strongly continuous contraction semigroup $S_0(t)$ on $L^2(0,\infty)$ whose Laplace-transform resolvent agrees identically with $R_\mu$ for every $\mu > 0$.
+\end{theorem}
+
+\begin{proof}
+\uses{thm:restricted_frac_lap_resolvent, thm:yosida_strong_limit_and_generation, thm:hille_yosida_bijection}
+\leanok
+This follows by applying the Hille--Yosida semigroup generation construction and the round-trip resolvent identification theorem to the contractive resolvent of Theorem~\ref{thm:restricted_frac_lap_resolvent}.
+\end{proof}
+
+\begin{theorem}[Weak-form Friedrichs characterization of the restricted generator]\label{thm:restricted_generator_weak_form}
+\lean{FracLap.restrictedL2Map_injective, FracLap.restrictedFracLapSemigroup_mem_generatorDomain_forward, FracLap.restrictedFracLapSemigroup_mem_generatorDomain_of_weakForm, FracLap.restrictedFracLapSemigroup_mem_generatorDomain_iff, FracLap.inner_generator_restrictedFracLapSemigroup_eq_neg_form, FracLap.inner_generator_restrictedFracLapSemigroup_symm}
+\uses{thm:restricted_frac_lap_semigroup, def:restricted_l2_map, def:restricted_resolvent_op}
+\leanok
+For every $0 < \alpha < 2$, the embedding $\iota : H^{\alpha/2}_0(0,\infty) \to L^2(0,\infty)$ is injective, and a vector $u \in L^2(0,\infty)$ lies in the generator domain $\mathcal{D}(A_0)$ of $S_0(t)$ if and only if there exist $u' \in H^{\alpha/2}_0(0,\infty)$ and $f \in L^2(0,\infty)$ with $\iota u' = u$ and
+\[
+  B^\alpha_0(u', v) = \langle f, \iota v \rangle_{L^2(0,\infty)} \qquad \text{for all } v \in H^{\alpha/2}_0(0,\infty),
+\]
+in which case $A_0 u = -f$. Consequently, $A_0$ is symmetric on $\mathcal{D}(A_0)$ and dissipative with $\langle A_0 u, u \rangle_{L^2(0,\infty)} = -B^\alpha_0(u', u') \le 0$.
+\end{theorem}
+
+\begin{proof}
+\uses{thm:restricted_frac_lap_semigroup, thm:hille_yosida_bijection}
+\leanok
+If $\iota u' = 0$, the whole-line $L^2$ component of $u'$ vanishes almost everywhere, forcing its Gagliardo difference quotient in $L^2$ over the jump measure to vanish and hence $\lVert u' \rVert = 0$. For the forward direction, Theorem~\ref{thm:hille_yosida_bijection} gives $u \in \mathcal{D}(A_0) = \operatorname{ran}(R_1)$ with $u = R_1 g$ and $A_0 u = u - g$; subtracting $\langle u, \iota v \rangle$ from Definition~\ref{def:restricted_resolvent_op} at $\mu = 1$ yields $B^\alpha_0(u', v) = \langle -A_0 u, \iota v \rangle$. Conversely, if $B^\alpha_0(u', v) = \langle f, \iota v \rangle$ with $\iota u' = u$, coercivity of $B_1$ identifies $u'$ with the shifted Lax--Milgram solution for $g = u + f$, so $R_1(u + f) = u$ and $A_0 u = u - (u + f) = -f$. Dissipativity and symmetry then follow directly from accretiveness and symmetry of $B^\alpha_0$.
+\end{proof}
+
+\section{Beurling--Deny positivity and sub-Markovianity}
+
+\begin{lemma}\label{lem:restricted_resolvent_markov}
+\lean{FracLap.isClosed_ae_mem_L2IoiR, FracLap.restrictedResolventOp_ae_nonneg, FracLap.lipschitzWith_min_const_real, FracLap.restrictedResolventOp_ae_le_of_le_mul, FracLap.restrictedResolventOp_ae_le}
+\uses{def:restricted_resolvent_op, thm:restricted_gagliardo_form_markov, thm:std_L2_subsequence}
+\leanok
+Every pointwise almost everywhere closed condition defines a closed subset of $L^2(0,\infty)$. Moreover, for every $0 < \alpha < 2$ and $\mu > 0$:
+\begin{enumerate}
+\item if $f \ge 0$ almost everywhere on $\{x > 0\}$, then $R_\mu f \ge 0$ almost everywhere;
+\item if $f \le M$ almost everywhere on $\{x > 0\}$ with $M \ge 0$, then $\mu R_\mu f \le M$ almost everywhere.
+\end{enumerate}
+\end{lemma}
+
+\begin{proof}
+\uses{def:restricted_resolvent_op, thm:restricted_gagliardo_form_markov, thm:std_L2_subsequence}
+\leanok
+By Theorem~\ref{thm:std_L2_subsequence}, every convergent sequence in $L^2(0,\infty)$ admits a subsequence converging almost everywhere, so closed pointwise predicates define closed sets in $L^2(0,\infty)$. For positivity, writing $w = \lvert u_\mu \rvert - u_\mu \in H^{\alpha/2}_0(0,\infty)$ gives $w \ge 0$ everywhere and
+\[
+  B_\mu(w, w) = \bigl(B_\mu(\lvert u_\mu \rvert, \lvert u_\mu \rvert) - B_\mu(u_\mu, u_\mu)\bigr) - 2 \langle f, \iota w \rangle_{L^2(0,\infty)} \le 0
+\]
+by the first Beurling--Deny inequality, so $w = 0$ by coercivity and hence $u_\mu = \lvert u_\mu \rvert \ge 0$ almost everywhere. For the upper bound with $c = M / \mu \ge 0$, let $u_c = u_\mu \wedge c \in H^{\alpha/2}_0(0,\infty)$ and $w = u_\mu - u_c$. Pointwise monotonicity of $t \mapsto t \wedge c$ and $t \mapsto t - (t \wedge c)$ yields $B^\alpha_0(u_c, w) \ge 0$, so
+\[
+  0 \le B^\alpha_0(w, w) \le B^\alpha_0(u_\mu, w) = \int_0^\infty (f - \mu u_\mu) w \, \mathrm{d}x \le -\mu \int_0^\infty w^2 \, \mathrm{d}x \le 0,
+\]
+forcing $\iota w = 0$ and thus $R_\mu f \le c$ almost everywhere.
+\end{proof}
+
+\begin{theorem}\label{thm:restricted_semigroup_markov}
+\lean{FracLap.restrictedFracLapSemigroup_ae_nonneg, FracLap.restrictedFracLapSemigroup_ae_le, FracLap.exists_restrictedFracLapSemigroup_nontrivial}
+\uses{thm:restricted_frac_lap_semigroup, lem:restricted_resolvent_markov, thm:tent_witness}
+\leanok
+For every $0 < \alpha < 2$ and $t \ge 0$, the restricted semigroup $S_0(t)$ on $L^2(0,\infty)$ is sub-Markovian: if $f \ge 0$ almost everywhere then $S_0(t) f \ge 0$ almost everywhere, and if $f \le M$ almost everywhere with $M \ge 0$ then $S_0(t) f \le M$ almost everywhere. Furthermore, the resolvent $R_\mu$ acts nontrivially on the nonnegative tent datum in $L^2(0,\infty)$.
+\end{theorem}
+
+\begin{proof}
+\uses{thm:restricted_frac_lap_semigroup, lem:restricted_resolvent_markov, thm:tent_witness}
+\leanok
+For each shift $\mu > 0$, the Yosida exponential expands as $e^{-t\mu} \sum_{n=0}^{\infty} \frac{(t\mu)^n}{n!} (\mu R_\mu)^n f$, a convergent series of nonnegative-coefficient terms whose weights sum to $1$. By Lemma~\ref{lem:restricted_resolvent_markov} and induction, each iterate $(\mu R_\mu)^n f$ remains in the nonnegative cone or below $M$, and every partial sum obeys the corresponding bound; passing to the $L^2$-limit in the Yosida exponentials and then in $\mu \to \infty$ preserves both closed sets. Testing against the positive-energy tent datum gives $\langle f, R_\mu f \rangle_{L^2} = B_\mu(u_\mu, u_\mu) > 0$, so $R_\mu f \ne 0$.
+\end{proof}

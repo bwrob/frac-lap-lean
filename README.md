@@ -11,8 +11,9 @@ The library covers the theory of the fractional Laplacian $(-\Delta)^{\alpha/2}$
 
 - **Whole line**: the stable heat kernel (positivity, monotonicity, algebraic tail decay, unit mass), the
   fractional heat semigroup as an $L^2$ Fourier multiplier and as convolution, the Gagliardo energy and its
-  exact Fourier symbol.
-- **Half line**: the reflected (spectral) semigroup, the restricted exterior-Dirichlet form, and the
+  exact Fourier symbol, Sobolev equivalence, and the pointwise singular-integral and heat-subordination
+  identities. The whole-line semigroup extends holomorphically to the right half-plane.
+- **Half line**: the reflected (spectral) semigroup, the restricted exterior-Dirichlet form and its semigroup, energy ordering, smoothing, and
   Constantin–Vicol type maximum principles.
 - **Semigroup core**: $C_0$ contraction semigroups, contractive resolvents and the Hille–Yosida
   correspondence, written for the needs of the above.

@@ -1,0 +1,42 @@
+\chapter{Multipliers and a Smooth Cutoff for the Gagliardo Energy}
+
+This chapter mirrors \texttt{FracLap/WholeLine/GagliardoMultiplier.lean}. It records the two ingredients needed to localize elements of $H^{\alpha/2}(\mathbb{R})$ to a half-line: a bound for multiplication by a bounded Lipschitz function, and a smooth step function.
+
+\begin{lemma}\label{lem:gagliardo_shear}
+\lean{FracLap.lintegral_gagliardo_shear}
+\uses{def:gagliardo_measure, thm:std_tonelli, thm:std_translation_invariance, thm:std_withdensity}
+\leanok
+For every jointly measurable $G : \mathbb{R} \times \mathbb{R} \to [0, \infty]$ and every $\alpha \in \mathbb{R}$,
+\[
+  \iint G(x, y)\, \frac{C(\alpha)}{2 \lvert x - y \rvert^{1 + \alpha}} \, \mathrm{d}x\, \mathrm{d}y
+  = \int_{\mathbb{R}} \frac{C(\alpha)}{2 \lvert h \rvert^{1 + \alpha}} \Bigl( \int_{\mathbb{R}} G(y + h, y)\, \mathrm{d}y \Bigr) \mathrm{d}h.
+\]
+\end{lemma}
+
+\begin{proof}
+\uses{thm:std_tonelli, thm:std_translation_invariance, thm:std_withdensity}
+\leanok
+Exactly as in Lemma~\ref{lem:gagliardo_energy_translation}: integrate first in $x$ and substitute $x = y + h$ (Theorem~\ref{thm:std_translation_invariance}), then exchange the order of integration by Tonelli's theorem (Theorem~\ref{thm:std_tonelli}).
+\end{proof}
+
+\begin{theorem}\label{thm:gagliardo_multiplier}
+\lean{FracLap.norm_add_sq_le_two, FracLap.norm_mul_sub_mul_sq_le, FracLap.sq_sub_le_of_lipschitz, FracLap.gagliardoEnergyC_mul_le}
+\uses{lem:gagliardo_shear, lem:gagliardo_kernel_integrable, thm:norm_energy_fourier}
+\leanok
+Let $\alpha \in (0, 2)$ and let $\theta : \mathbb{R} \to \mathbb{R}$ be measurable with $\lvert \theta \rvert \le B$ and $\lvert \theta(x) - \theta(y) \rvert \le L \lvert x - y \rvert$. If $f, g \in L^2(\mathbb{R}; \mathbb{C})$ satisfy $g = \theta f$ almost everywhere, then
+\[
+  E_\alpha(g) \le 2 B^2 E_\alpha(f) + 2 M \Bigl( \int k_\alpha \Bigr) \lVert f \rVert_{L^2}^2, \qquad M = \max(L^2, 4 B^2).
+\]
+\end{theorem}
+
+\begin{proof}
+\uses{lem:gagliardo_shear, lem:gagliardo_kernel_integrable}
+\leanok
+Write $\theta(x) f(x) - \theta(y) f(y) = \theta(x)\bigl(f(x) - f(y)\bigr) + \bigl(\theta(x) - \theta(y)\bigr) f(y)$ and use $\lvert u + v \rvert^2 \le 2 \lvert u \rvert^2 + 2 \lvert v \rvert^2$. The first term gives $2 B^2 E_\alpha(f)$. For the second, Lemma~\ref{lem:gagliardo_shear} reduces the double integral to $\int w(h) \int \lvert f(y) \rvert^2 \bigl(\theta(y + h) - \theta(y)\bigr)^2 \, \mathrm{d}y\, \mathrm{d}h$. Since $\lvert \theta(y + h) - \theta(y) \rvert \le \min(L \lvert h \rvert, 2B)$, we have $\bigl(\theta(y + h) - \theta(y)\bigr)^2 \le M \min(h^2, 1)$, and the double integral is at most $M \lVert f \rVert^2 \int k_\alpha$, finite by Lemma~\ref{lem:gagliardo_kernel_integrable}.
+\end{proof}
+
+\begin{definition}\label{def:cutoff_step}
+\lean{FracLap.cutoffStep, FracLap.contDiff_cutoffStep, FracLap.cutoffStep_eq_zero, FracLap.cutoffStep_eq_one, FracLap.cutoffStep_nonneg, FracLap.cutoffStep_le_one, FracLap.abs_cutoffStep_le, FracLap.hasCompactSupport_fderiv_cutoffStep, FracLap.hasTemperateGrowth_cutoffStep, FracLap.exists_lipschitz_cutoffStep}
+\leanok
+For $\varepsilon > 0$ the \emph{cutoff} $\theta_\varepsilon(x) = \sigma\bigl((2x - \varepsilon)/\varepsilon\bigr)$, where $\sigma$ is the smooth step with $\sigma = 0$ on $\{t \le 0\}$ and $\sigma = 1$ on $\{t \ge 1\}$, is smooth, takes values in $[0, 1]$, vanishes for $x \le \varepsilon/2$, equals $1$ for $x \ge \varepsilon$, is Lipschitz, and has temperate growth: its derivative is smooth with compact support.
+\end{definition}

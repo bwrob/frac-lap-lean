@@ -54,3 +54,14 @@ public import FracLap.Tools.Young
 public import FracLap.Tools.BernsteinLp
 public import FracLap.Tools.HardyLittlewood
 public import FracLap.WholeLine.SteinMaximal
+public import FracLap.WholeLine.PointwiseEquivalence
+public import FracLap.WholeLine.HeatSubordination
+public import FracLap.WholeLine.GagliardoMultiplier
+public import FracLap.HalfLine.RestrictedDensity
+public import FracLap.HalfLine.RestrictedSemigroup
+public import FracLap.WholeLine.SobolevEquivalence
+public import FracLap.Core.AnalyticSemigroup
+public import FracLap.WholeLine.FractionalAnalytic
+public import FracLap.HalfLine.RestrictedAnalytic
+public import FracLap.HalfLine.MaximumPrinciples
+public import FracLap.HalfLine.WholeLineMaximumPrinciple

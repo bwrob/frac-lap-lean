@@ -1,0 +1,35 @@
+\chapter{Analytic Semigroups and Symmetric Parabolic Smoothing}
+
+This chapter mirrors \texttt{FracLap/Core/AnalyticSemigroup.lean}, formalizing the abstract notion of an analytic semigroup on a complex sector $\Sigma_\delta$, immediate time differentiability and range inclusion in the generator domain, and the $1/t$ parabolic smoothing estimate for symmetric contractive resolvents on real Hilbert spaces.
+
+\begin{definition}[Analytic semigroup on a sector]\label{def:analytic_semigroup}
+\lean{FracLap.openSector, FracLap.AnalyticSemigroup}
+\leanok
+For an angle $\delta$ with $0 < \delta \le \pi/2$, let $\Sigma_\delta$ be the open sector of all complex $z \neq 0$ with $\lvert \arg z \rvert < \delta$. A family $T(z)$ with $z \in \Sigma_\delta$ or $z = 0$ of bounded linear operators on a complex Banach space $E$ is an \emph{analytic semigroup} if $T(0) = I$, $T(z_1 + z_2) = T(z_1)T(z_2)$ on $\Sigma_\delta$, every orbit $z \mapsto T(z)x$ is complex-differentiable on $\Sigma_\delta$, and $T(z)x \to x$ as $z \to 0$ within $\Sigma_{\delta'}$ for every $0 < \delta' < \delta$ and $x \in E$.
+\end{definition}
+
+\begin{proposition}[Immediate real-time differentiability]\label{prop:analytic_diff}
+\lean{FracLap.AnalyticSemigroup.hasDerivAt_real_orbit, FracLap.AnalyticSemigroup.contDiffOn_real_orbit}
+\uses{def:analytic_semigroup}
+\leanok
+For every analytic semigroup $S$ on a complex Banach space $E$ and every initial vector $x \in E$, the restricted real-time orbit $t \mapsto S(t)x$ is $C^\infty$-smooth and differentiable on $(0, \infty)$.
+\end{proposition}
+
+\begin{proof}
+\uses{def:analytic_semigroup}
+\leanok
+Because $\Sigma_\delta$ is open in $\mathbb{C}$ and contains $(0, \infty)$, holomorphicity of $z \mapsto S(z)x$ on $\Sigma_\delta$ restricts along $\mathbb{R} \hookrightarrow \mathbb{C}$ to smooth real differentiability on $(0, \infty)$.
+\end{proof}
+
+\begin{proposition}[Range of an analytic semigroup in the generator domain]\label{prop:analytic_domain}
+\lean{FracLap.AnalyticSemigroup.real_orbit_mem_generatorDomain, FracLap.AnalyticSemigroup.generator_real_orbit_eq, FracLap.ContractiveResolvent.generatedSemigroup_mem_generatorDomain_of_pos, FracLap.ContractiveResolvent.norm_generator_generatedSemigroup_of_pos_le, FracLap.ContractiveResolvent.generatedSemigroup_hasDerivAt_of_pos}
+\uses{def:analytic_semigroup, prop:analytic_diff, thm:generated_semigroup_generator_ident, thm:hille_yosida_bijection}
+\leanok
+If a $C_0$-contraction semigroup $T$ agrees on nonnegative real times with an analytic semigroup $S$, then $T(t)x \in \mathcal{D}(L)$ and $L T(t)x = \frac{\mathrm{d}}{\mathrm{d}t} T(t)x$ for every $x \in E$ and $t > 0$. Independently, for any symmetric contractive resolvent on a real Hilbert space, energy identities along the Yosida approximants yield $\lVert L S(t)u \rVert \le \lVert u \rVert / t$ and $S(t)u \in \mathcal{D}(L)$ for every rough datum $u$ and $t > 0$.
+\end{proposition}
+
+\begin{proof}
+\uses{def:analytic_semigroup, prop:analytic_diff, thm:generated_semigroup_generator_ident, thm:hille_yosida_bijection}
+\leanok
+Passing the difference quotient $h^{-1}(T(h)T(t)x - T(t)x) = h^{-1}(S(t+h)x - S(t)x)$ to the right-hand limit $h \to 0^+$ identifies $L T(t)x$ with the time derivative. For symmetric real Hilbert resolvents, integrating the two monotone energy functionals $\lVert E_n(s)u \rVert^2$ and $-\langle G_n E_n(s)u, E_n(s)u \rangle$ along the Yosida exponential yields $\lVert G_n E_n(t)u \rVert \le \lVert u \rVert / t$, which passes to the closed generator by density of $\mathcal{D}(L)$.
+\end{proof}

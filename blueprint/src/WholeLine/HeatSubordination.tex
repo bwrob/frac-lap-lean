@@ -1,0 +1,36 @@
+\chapter{Bochner Heat Subordination of the Fractional Laplacian}
+
+This chapter mirrors \texttt{FracLap/WholeLine/HeatSubordination.lean}, establishing the rigorous Balakrishnan--Bochner heat-semigroup subordination representation of $(-\Delta)^{\alpha/2}$ on $\mathbb{R}$ for $0 < \alpha < 2$.
+
+\begin{lemma}[Negative Gamma constant and Gaussian heat density identification]\label{lem:heat_sub_constants}
+\lean{FracLap.inv_gamma_neg_half_eq_neg_levyConst, FracLap.gamma_neg_half_neg, FracLap.gaussianHeatKernel_P_eq_gaussDensity}
+\uses{def:fractional_exponent}
+\leanok
+For $0 < \alpha < 2$, $\Gamma(-\alpha/2)^{-1} = -c_{\alpha/2} = -(\alpha/2)/\Gamma(1 - \alpha/2)$ and in particular $\Gamma(-\alpha/2) < 0$. Moreover, for all $y \in \mathbb{R}$ and $t > 0$, the Gaussian heat kernel coincides with the subordinated heat density $g_t(y) = (4\pi t)^{-1/2} \exp(-y^2 / (4t))$.
+\end{lemma}
+
+\begin{proof}
+\uses{def:fractional_exponent}
+\leanok
+Apply the Euler Gamma recurrence $\Gamma(1 - \alpha/2) = (-\alpha/2)\Gamma(-\alpha/2)$ together with positivity of $\Gamma(1 - \alpha/2)$ for $0 < \alpha < 2$. Rewriting $(4\pi t)^{-1/2}$ using $\sqrt{\cdot}$ gives the Gaussian kernel identity.
+\end{proof}
+
+\begin{theorem}[Spectral and physical heat subordination]\label{thm:heat_subordination}
+\lean{FracLap.fracLapSymbol_eq_heat_subordination, FracLap.fracHeatConv_gaussian_sub_eq_secondDiff, FracLap.integrable_secondDiff_div_abs_rpow, FracLap.fracLapSecondDiff_eq_heat_subordination}
+\uses{lem:heat_sub_constants, thm:subordination_identity, def:frac_lap_second_diff, thm:std_fubini}
+\leanok
+For $0 < \alpha < 2$ and $\xi \in \mathbb{R}$,
+\[
+  \lvert 2\pi\xi \rvert^\alpha = \frac{1}{\Gamma(-\alpha/2)} \int_0^\infty t^{-\alpha/2 - 1} \bigl(e^{-t(2\pi\xi)^2} - 1\bigr)\, \mathrm{d}t.
+\]
+Furthermore, for every real Schwartz function $\varphi \in \mathcal{S}(\mathbb{R}; \mathbb{R})$ and every $x \in \mathbb{R}$, writing $e^{t\Delta}\varphi$ for spatial convolution against the Gaussian heat kernel, $(e^{t\Delta}\varphi)(x) - \varphi(x) = \frac{1}{2}\int_{\mathbb{R}} g_t(y)\,\delta_2 \varphi(x, y)\, \mathrm{d}y$ and
+\[
+  (-\Delta)^{\alpha/2} \varphi(x) = \frac{1}{\Gamma(-\alpha/2)} \int_0^\infty t^{-\alpha/2 - 1} \bigl( (e^{t\Delta} \varphi)(x) - \varphi(x) \bigr)\, \mathrm{d}t.
+\]
+\end{theorem}
+
+\begin{proof}
+\uses{lem:heat_sub_constants, thm:subordination_identity, thm:std_fubini}
+\leanok
+On the Fourier side, scaling the L\'evy subordination integral for $\lambda = (2\pi\xi)^2$ and substituting $\Gamma(-\alpha/2)^{-1} = -c_{\alpha/2}$ gives the symbol formula. In physical space, unit mass and spatial evenness of $g_t$ express $(e^{t\Delta}\varphi)(x) - \varphi(x)$ as half the Gaussian average of the second difference $\delta_2 \varphi(x, y)$. Mean-value bounds on $\varphi''$ yield $\lvert \delta_2 \varphi(x, y) \rvert \le \min(2 \lVert \varphi'' \rVert_\infty y^2, 4 \lVert \varphi \rVert_\infty)$, so $\delta_2 \varphi(x, y) / \lvert y \rvert^{1+\alpha}$ is Lebesgue integrable on $\mathbb{R}$. Applying Tonelli and evaluating the inner time integral $\int_0^\infty t^{-\alpha/2 - 1} g_t(y)\, \mathrm{d}t = (C(\alpha) / c_{\alpha/2}) \lvert y \rvert^{-1-\alpha}$ proves joint integrability on $(0, \infty) \times \mathbb{R}$; Fubini's theorem then exchanges the integrals and yields the subordination formula.
+\end{proof}
